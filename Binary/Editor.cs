@@ -50,7 +50,7 @@ namespace Binary
             this.splitContainer2.FixedPanel = FixedPanel.Panel1;
             this.ToggleTheme();
             this.ManageExperimentalFeatures();
-            this.Text = $"Binarius - v{this.ProductVersion}";
+            this.Text = $"TexWizard Packer - v{this.ProductVersion}";
         }
 
         #region Theme
@@ -1071,7 +1071,7 @@ namespace Binary
             about.Show();
         }
 
-        private void EMSHelpTutorials_Click(object sender, EventArgs e) => MessageBox.Show("Join Discord server at the start page to get help and full tool documentation!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        private void EMSHelpTutorials_Click(object sender, EventArgs e) => Utils.OpenBrowser("https://github.com/R-033/texwizard/wiki");
 
         private void EMSOptionsSpeedReflect_Click(object sender, EventArgs e)
         {
@@ -1899,7 +1899,7 @@ namespace Binary
                 Configurations.Default.LaunchFile = filename;
                 Configurations.Default.CurrentGame = (int)this.Profile.GameINT;
                 Configurations.Default.Save();
-                this.Text = $"Binarius - v{this.ProductVersion} - {this.Profile.GameSTR}";
+                this.Text = $"TexWizard Packer - v{this.ProductVersion} - {this.Profile.GameSTR}";
                 this.ToggleTheme();
 
 #if !DEBUG

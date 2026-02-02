@@ -662,7 +662,7 @@ namespace Binary
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimumSize = new System.Drawing.Size(912, 477);
             this.Name = "Editor";
-            this.Text = "Binarius";
+            this.Text = "TexWizard Packer";
             this.FormClosing += this.Editor_FormClosing;
             this.Load += this.Editor_Load;
             this.EditorMenuStrip.ResumeLayout(false);

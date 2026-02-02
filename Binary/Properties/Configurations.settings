@@ -9,7 +9,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Watermark" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Binarius | Automated</Value>
+      <Value Profile="(Default)">TexWizard Packer | Automated</Value>
     </Setting>
     <Setting Name="AutoBackups" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

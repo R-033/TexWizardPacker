@@ -90,7 +90,7 @@ namespace Binary.UI
             this.labelProductName.Name = "labelProductName";
             this.labelProductName.Size = new System.Drawing.Size(316, 20);
             this.labelProductName.TabIndex = 19;
-            this.labelProductName.Text = "Binarius";
+            this.labelProductName.Text = "TexWizard Packer";
             this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelVersion
@@ -156,7 +156,7 @@ namespace Binary.UI
             this.Name = "About";
             this.Padding = new System.Windows.Forms.Padding(10);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "About Binarius";
+            this.Text = "About TexWizard Packer";
             this.tableLayoutPanel.ResumeLayout(false);
             this.tableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)this.logoPictureBox).EndInit();

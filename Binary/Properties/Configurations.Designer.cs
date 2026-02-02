@@ -49,7 +49,7 @@ namespace Binary.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Binarius | Automated")]
+        [global::System.Configuration.DefaultSettingValueAttribute("TexWizard Packer | Automated")]
         public string Watermark {
             get {
                 return ((string)(this["Watermark"]));

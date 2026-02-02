@@ -18,12 +18,12 @@ namespace Binary.UI
         {
             this.InitializeComponent();
             this.ToggleTheme();
-            this.labelProductName.Text = "Binarius";
+            this.labelProductName.Text = "TexWizard Packer";
             this.labelVersion.Text = String.Format("v{0}", AssemblyVersion);
         #if DEBUG
             this.labelVersion.Text += " (Debug)";
         #endif
-            this.labelCopyright.Text = "© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX and nlgxzef.\r\nNo rights reserved.";
+            this.labelCopyright.Text = "© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033.\r\nNo rights reserved.";
             this.textBoxDescription.Text = AssemblyDescription + "\r\n"
                 + "Powered with Endscript and Darius.";
         }

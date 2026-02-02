@@ -156,7 +156,7 @@
             this.LabelBinary.Name = "LabelBinary";
             this.LabelBinary.Size = new System.Drawing.Size(163, 54);
             this.LabelBinary.TabIndex = 2;
-            this.LabelBinary.Text = "Binarius";
+            this.LabelBinary.Text = "TexWizard Packer";
             this.LabelBinary.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.LabelBinary.Click += this.LabelBinary_Click;
             // 
@@ -258,7 +258,7 @@
             this.MaximizeBox = false;
             this.Name = "IntroUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Binarius";
+            this.Text = "TexWizard Packer";
             this.IntroPanelModder.ResumeLayout(false);
             this.IntroPanelModder.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)this.IntroPictureModder).EndInit();

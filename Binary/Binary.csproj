@@ -4,17 +4,17 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>binarius.ico</ApplicationIcon>
+    <ApplicationIcon>texwizard_packer.ico</ApplicationIcon>
     <Version>2.10.4</Version>
-    <Authors>MaxHwoy</Authors>
-    <PublisherName>MaxHwoy, rx, avail, Sh2dow, NI240SX and nlgxzef</PublisherName>
-    <Description>Tool for editing Need for Speed binary files (.BIN, .BUN, .LZC). Based on Binary by MaxHwoy and also implemments some fixes and improvements done on the forks made by rx, Sh2dow and NI240SX.</Description>
-    <Copyright>© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX and nlgxzef. No rights reserved.</Copyright>
+    <Authors>r033</Authors>
+    <PublisherName>MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033</PublisherName>
+    <Description>Tool for editing TexWizard texture packs for Need for Speed games. Based on Binarius fork by nlgxzef of Binary tool by MaxHwoy.</Description>
+    <Copyright>© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033. No rights reserved.</Copyright>
     <AssemblyVersion>2.10.4</AssemblyVersion>
     <FileVersion>2.10.4</FileVersion>
 	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-	<Product>Binarius</Product>
-	<AssemblyName>Binarius</AssemblyName>
+	<Product>TexWizard Packer</Product>
+	<AssemblyName>TexWizard Packer</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,7 +27,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <Content Include="binarius.ico" />
+    <Content Include="texwizard_packer.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -31,14 +31,14 @@ namespace Binary
         {
             this.InitializeComponent();
 
-            this.IntroToolTip.SetToolTip(this.IntroPictureUser, "Launch Binarius for Users");
-            this.IntroToolTip.SetToolTip(this.IntroPictureModder, "Launch Binarius for Modders");
-            this.IntroToolTip.SetToolTip(this.PictureBoxUpdates, "Check updates for Binarius");
+            this.IntroToolTip.SetToolTip(this.IntroPictureUser, "Launch TexWizard Packer for Users");
+            this.IntroToolTip.SetToolTip(this.IntroPictureModder, "Launch TexWizard Packer for Modders");
+            this.IntroToolTip.SetToolTip(this.PictureBoxUpdates, "Check updates for TexWizard Packer");
             this.IntroToolTip.SetToolTip(this.PictureBoxTools, "Tools");
             this.IntroToolTip.SetToolTip(this.PictureBoxTheme, "Change theme");
 
             this.ToggleTheme();
-            this.Text = $"Binarius - v{this.ProductVersion}";
+            this.Text = $"TexWizard Packer - v{this.ProductVersion}";
         }
 
         #region Theme
@@ -405,7 +405,7 @@ namespace Binary
 
         private void PictureBoxUpdates_Click(object sender, EventArgs e)
         {
-            Utils.OpenBrowser("https://github.com/nlgxzef/Binarius/releases");
+            Utils.OpenBrowser("https://github.com/r033/TexWizardPacker/releases");
         }
 
         private void PictureBoxAutoBackups_Click(object sender, EventArgs e)

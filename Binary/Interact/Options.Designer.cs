@@ -79,7 +79,7 @@
             this.OptionsCheckDisableAdminWarning.Size = new System.Drawing.Size(220, 19);
             this.OptionsCheckDisableAdminWarning.TabIndex = 2;
             this.OptionsCheckDisableAdminWarning.Text = "Disable Administrator mode warning";
-            this.OptionsToolTip.SetToolTip(this.OptionsCheckDisableAdminWarning, "Disables the warning that gets shown when Binarius is not ran in Administrator mode.");
+            this.OptionsToolTip.SetToolTip(this.OptionsCheckDisableAdminWarning, "Disables the warning that gets shown when TexWizard Packer is not ran in Administrator mode.");
             this.OptionsCheckDisableAdminWarning.UseVisualStyleBackColor = true;
             // 
             // OptionsCheckSoonFeature
@@ -112,7 +112,7 @@
             this.OptionsCheckAutoBackups.Size = new System.Drawing.Size(179, 19);
             this.OptionsCheckAutoBackups.TabIndex = 2;
             this.OptionsCheckAutoBackups.Text = "Automatically make backups";
-            this.OptionsToolTip.SetToolTip(this.OptionsCheckAutoBackups, "Automatically makes backups of the files modified and saved using Binarius if they didn't get backed up before.\r\nBackup files have .bacc file format.");
+            this.OptionsToolTip.SetToolTip(this.OptionsCheckAutoBackups, "Automatically makes backups of the files modified and saved using TexWizard Packer if they didn't get backed up before.\r\nBackup files have .bacc file format.");
             this.OptionsCheckAutoBackups.UseVisualStyleBackColor = true;
             // 
             // OptionsLabelWatermark
@@ -123,7 +123,7 @@
             this.OptionsLabelWatermark.Size = new System.Drawing.Size(65, 15);
             this.OptionsLabelWatermark.TabIndex = 1;
             this.OptionsLabelWatermark.Text = "Watermark";
-            this.OptionsToolTip.SetToolTip(this.OptionsLabelWatermark, "Adds this watermark into the files modified and saved using Binarius.");
+            this.OptionsToolTip.SetToolTip(this.OptionsLabelWatermark, "Adds this watermark into the files modified and saved using TexWizard Packer.");
             // 
             // OptionsTextWatermark
             // 
