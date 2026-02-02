@@ -176,6 +176,11 @@ namespace Binary
 
             foreach (var manager in sdb.Database.Managers)
             {
+                if (manager.Name != "TPKBlocks")
+                {
+                    continue;
+                }
+
                 var managenode = new TreeNode(manager.Name);
 
                 foreach (Collectable collection in manager)
@@ -185,9 +190,13 @@ namespace Binary
 
                 }
 
+                managenode.Expand();
+
                 _ = result.Nodes.Add(managenode);
 
             }
+
+            result.Expand();
 
             return result;
         }
@@ -208,6 +217,8 @@ namespace Binary
                     _ = expandnode.Nodes.Add(subnode);
 
                 }
+
+                expandnode.Expand();
 
                 _ = result.Nodes.Add(expandnode);
 

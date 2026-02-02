@@ -1,23 +1,29 @@
-﻿using System;
-using System.IO;
-using System.Drawing;
-using System.Collections;
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Binary.Tools;
+﻿using Binary.Interact;
 using Binary.Prompt;
-using Binary.Interact;
 using Binary.Properties;
-using Nikki.Utils;
-using Nikki.Utils.EA;
-using Nikki.Reflection.Enum;
-using Nikki.Support.Shared.Class;
-using ILWrapper.Enums;
-using Endscript.Enums;
+using Binary.Tools;
+
 using CoreExtensions.Management;
 using CoreExtensions.Text;
+
+using Endscript.Enums;
+
+using ILWrapper.Enums;
+
+using Nikki.Reflection.Enum;
+using Nikki.Support.Shared.Class;
+using Nikki.Utils;
+using Nikki.Utils.EA;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml.Linq;
 
 
 
@@ -247,7 +253,10 @@ namespace Binary.UI
 							}
 							else this.LoadListView();
 							this.GenerateAddTextureCommand(input.Value, this.AddTextureDialog.FileName);
-							break;
+
+                            this.TPK.FindTexture(input.Value.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
+                            this.GenerateUpdateTextureCommand(input.Value, "RenderingOrder", "0");
+                            break;
 
 						}
 						catch (Exception ex)
