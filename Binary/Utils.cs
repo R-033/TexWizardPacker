@@ -216,42 +216,6 @@ namespace Binary
             return result;
         }
 
-        public static void toggleEmptyManagersInSDB(SynchronizedDatabase sdb, TreeNode sdbNode)
-        {
-            foreach (var manager in sdb.Database.Managers)
-            {
-                if (manager.Count == 0)
-                {
-                    bool found = false;
-                    foreach (TreeNode node in sdbNode.Nodes)
-                    {
-                        if (node != null && node.GetType() == typeof(TreeNode) && node.FullPath.EndsWith(manager.Name))
-                        {
-                            if (Configurations.Default.HideEmptyManagers) sdbNode.Nodes.Remove(node);
-                            found = true;
-                            break;
-                        }
-
-                    }
-
-                    if (!found && !Configurations.Default.HideEmptyManagers)
-                    {
-                        var managenode = new TreeNode(manager.Name);
-
-                        foreach (Collectable collection in manager)
-                        {
-
-                            managenode.Nodes.Add(GetCollectionNodes(collection));
-
-                        }
-
-                        sdbNode.Nodes.Insert(sdb.Database.Managers.IndexOf(manager), managenode);
-
-                    }
-                }
-            }
-        }
-
         public static void MoveUp(TreeNode node)
         {
             TreeNode parent = node.Parent;
@@ -319,7 +283,7 @@ namespace Binary
             return splits.Length > 3 ? Path.Combine("..", splits[^3], splits[^2], splits[^1]) : path;
         }
 
-        public static string GetStatusString(int loadedFiles, long millisecondsToLoad, string path, string addon) => $"Files: {loadedFiles} | {addon} Time: {millisecondsToLoad}ms | Real Time: {DateTime.Now:HH:mm:ss} | Script: {GetTruncatedPath(path)}";
+        public static string GetStatusString(int loadedFiles, long millisecondsToLoad, string path, string addon) => $"Files: {loadedFiles} | {addon} Time: {millisecondsToLoad}ms | Real Time: {DateTime.Now:HH:mm:ss} | Texture Pack: {GetTruncatedPath(path)}";
 
         public static bool PathHasIllegalCharacters(string path)
         {

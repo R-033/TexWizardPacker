@@ -38,47 +38,6 @@ namespace Binary
             Console.WriteLine(print);
         }
 
-        public void LoadProfile(string path)
-        {
-            Launch.Deserialize(path, out var launch);
-            launch.ThisDir = Path.GetDirectoryName(path);
-
-            Editor.FixLaunchDirectory(launch, path);
-
-            if (launch.UsageID != eUsage.Modder)
-            {
-
-                throw new Exception($"Usage type of the endscript is stated to be {launch.Usage}, while should be Modder");
-
-            }
-
-            if (launch.GameID == GameINT.None)
-            {
-
-                throw new Exception($"Invalid stated game type named {launch.Game}");
-
-            }
-
-            if (!Directory.Exists(launch.Directory))
-            {
-
-                throw new DirectoryNotFoundException($"Directory named {launch.Directory} does not exist");
-
-            }
-
-            this.m_profile = BaseProfile.NewProfile(launch.GameID, launch.Directory);
-
-            var watch = new Stopwatch();
-            watch.Start();
-
-            string[] exceptions = this.m_profile.Load(launch);
-
-            watch.Stop();
-
-            this.PrintExceptions(exceptions);
-            Console.WriteLine($"Completed in {watch.Elapsed.TotalSeconds} seconds");
-        }
-
         public void ImportEndscript(string path)
         {
             var parser = new EndScriptParser(path);

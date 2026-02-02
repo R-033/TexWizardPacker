@@ -357,7 +357,7 @@ namespace Binary
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
 
-            using (var editor = new Editor() { StartPosition = start, WindowState = state })
+            using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, this.packList.Items[this.packList.SelectedIndex] as string) { StartPosition = start, WindowState = state })
             {
 
                 editor.ShowDialog();
@@ -579,6 +579,12 @@ namespace Binary
             this.packList.Enabled = true;
             this.createNewButton.Enabled = true;
             this.packList.SelectedIndex = 0;
+        }
+
+        private void openButton_Click(object sender, EventArgs e)
+        {
+            this.ModderInteract();
+            ForcedX.GCCollect();
         }
     }
 }

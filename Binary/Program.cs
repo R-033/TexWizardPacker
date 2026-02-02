@@ -61,40 +61,6 @@ namespace Binary
                 }
             }
 
-            if (args.Length > 0)
-            {
-                var usage = eUsage.Invalid;
-
-                usage = args[0].ToLowerInvariant() switch
-                {
-                    "modder" => eUsage.Modder,
-                    "user" => eUsage.User,
-                    _ => throw new ArgumentException("Invalid argument: {args[0]} - \"user\" or \"modder\" expected."),
-                };
-                if (args.Length < 2)
-                {
-                    throw new ArgumentException("Expected argument missing: VERSN1 path missing");
-                }
-
-                if (args.Length < 3)
-                {
-                    throw new ArgumentException("Expected argument missing: VERSN2 path missing");
-                }
-
-                if (!File.Exists("MainLog.txt")) { using var str = File.Create("MainLog.txt"); }
-                if (!File.Exists("EndError.log")) { using var str = File.Create("EndError.log"); }
-                string pp = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                SetDependencyPaths(pp);
-
-                var cli = new CLI();
-
-                cli.LoadProfile(args[1]);
-                cli.ImportEndscript(args[2]);
-                cli.Save();
-
-                return;
-            }
-
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

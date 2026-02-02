@@ -9,6 +9,7 @@ using CoreExtensions.Management;
 using Endscript.Commands;
 using Endscript.Core;
 using Endscript.Enums;
+using Endscript.Helpers;
 using Endscript.Profiles;
 
 using Nikki.Core;
@@ -33,6 +34,10 @@ namespace Binary
 {
     public partial class Editor : Form
     {
+        private GameINT GameType { get; set; }
+        private string GamePath { get; set; }
+        private string PackPath { get; set; }
+
         private BaseProfile Profile { get; set; }
         private readonly List<Form> _openforms;
         private const string empty = "\"\"";
@@ -43,14 +48,20 @@ namespace Binary
         private Color HighlightColor2 { get; set; }
         private Color HighlightColor3 { get; set; }
 
-        public Editor()
+        public Editor(GameINT gameType, string gamePath, string packPath)
         {
+            this.GameType = gameType;
+            this.GamePath = gamePath;
+            this.PackPath = packPath;
+
             this._openforms = new List<Form>();
             this.InitializeComponent();
             this.splitContainer2.FixedPanel = FixedPanel.Panel1;
             this.ToggleTheme();
             this.ManageExperimentalFeatures();
             this.Text = $"TexWizard Packer - v{this.ProductVersion}";
+
+            this.LoadPack();
         }
 
         #region Theme
@@ -487,67 +498,6 @@ namespace Binary
 
         #region Menu Strip Controls
 
-        private void EMSMainNewLauncher_Click(object sender, EventArgs e)
-        {
-            using var form = new LanMaker();
-            _ = form.ShowDialog();
-
-            if (form.WasCreated)
-            {
-
-                var result = MessageBox.Show("New launcher was created. Would you like to load it?", "Prompt",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-
-                    this.LoadProfile(form.NewLanPath, true);
-
-                }
-
-            }
-
-        }
-
-        static string m_loadFilesLastDir = null;
-
-        private void EMSMainLoadFiles_Click(object sender, EventArgs e)
-        {
-            if (this._edited)
-            {
-
-                var result = MessageBox.Show("You have unsaved changes. Are you sure you want to load " +
-                    "another database?", "Prompt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            using var browser = new OpenFileDialog()
-            {
-                AutoUpgradeEnabled = true,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Filter = "Binary/ius End Launcher Files|*.end;*.endlauncher|Binary End Launcher Files|*.end|Binarius End Launcher Files|*.endlauncher|All Files|*.*",
-                Multiselect = false,
-                Title = "Load End Launcher",
-            };
-
-            if (!String.IsNullOrEmpty(m_loadFilesLastDir))
-            {
-                browser.InitialDirectory = m_loadFilesLastDir;
-            }
-
-            if (browser.ShowDialog() == DialogResult.OK)
-            {
-                m_loadFilesLastDir = Path.GetDirectoryName(browser.FileName);
-                this.LoadProfile(browser.FileName, true);
-
-            }
-        }
-
         private void EMSMainReloadFiles_Click(object sender, EventArgs e)
         {
             string file = Configurations.Default.LaunchFile;
@@ -567,7 +517,7 @@ namespace Binary
                     }
                 }
 
-                this.LoadProfile(file, true);
+                this.LoadPack();
 
             }
             else
@@ -766,7 +716,7 @@ namespace Binary
 
                     }
 
-                    this.LoadProfile(Configurations.Default.LaunchFile, true);
+                    this.LoadPack();
 
                     _ = MessageBox.Show("All backups have been successfully restored.", "Success",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -847,19 +797,6 @@ namespace Binary
 
             if (settings.DialogResult == DialogResult.OK)
             {
-                // Refresh tree view if Hide Empty Managers option was changed
-                foreach (var sdb in this.Profile)
-                {
-                    foreach (TreeNode n in this.EditorTreeView.Nodes)
-                    {
-                        if (n.FullPath == sdb.Filename)
-                        {
-                            Utils.toggleEmptyManagersInSDB(sdb, n);
-                            break;
-                        }
-                    }
-                }
-
                 // Check experimental features
                 this.ManageExperimentalFeatures();
             }
@@ -1831,43 +1768,77 @@ namespace Binary
 
         #region Loading
 
-        private void LoadProfile(string filename, bool showerrors)
+        private void LoadPack()
         {
-#if !DEBUG
             try
             {
-#endif
-
                 this._edited = false;
-                Launch.Deserialize(filename, out var launch);
-                launch.ThisDir = Path.GetDirectoryName(filename);
 
-                FixLaunchDirectory(launch, filename);
-
-                if (launch.UsageID != eUsage.Modder)
+                if (GameType == GameINT.None)
                 {
 
-                    throw new Exception($"Usage type of the endscript is stated to be {launch.Usage}, while should be Modder");
+                    throw new Exception($"Invalid stated game type named {GameType}");
 
                 }
 
-                if (launch.GameID == GameINT.None)
+                if (!Directory.Exists(GamePath))
                 {
 
-                    throw new Exception($"Invalid stated game type named {launch.Game}");
+                    throw new DirectoryNotFoundException($"Directory named {GamePath} does not exist");
 
                 }
 
-                if (!Directory.Exists(launch.Directory))
+                if (!Directory.Exists(Path.Combine(GamePath, PackPath)))
                 {
 
-                    throw new DirectoryNotFoundException($"Directory named {launch.Directory} does not exist");
+                    throw new DirectoryNotFoundException($"Directory named {Path.Combine(GamePath, PackPath)} does not exist");
 
                 }
 
                 this.EditorPropertyGrid.SelectedObject = null;
-                this.Profile = BaseProfile.NewProfile(launch.GameID, launch.Directory);
+                this.Profile = BaseProfile.NewProfile(GameType, GamePath);
                 this.EditorStatusLabel.Text = "Loading... Please wait...";
+
+                var launch = new Launch();
+
+                launch.Usage = eUsage.Modder.ToString();
+                launch.Game = GameType.ToString();
+                launch.Directory = GamePath;
+
+                launch.Files = new List<string>() { Path.Combine(PackPath, "textures.bin") };
+
+                launch.Links = new List<SubLoader>()
+                {
+
+                    new()
+                    {
+                        File = @"GLOBAL\attributes.bin",
+                        LoadType = eLoaderType.Attributes.ToString(),
+                        PathType = ePathType.Absolute.ToString(),
+                    },
+
+                    new()
+                    {
+                        File = @"GLOBAL\fe_attrib.bin",
+                        LoadType = eLoaderType.FeAttrib.ToString(),
+                        PathType = ePathType.Absolute.ToString(),
+                    },
+
+                    new()
+                    {
+                        File = @"LANGUAGES\Labels_Global.bin",
+                        LoadType = eLoaderType.Labels.ToString(),
+                        PathType = ePathType.Absolute.ToString(),
+                    },
+
+                    new()
+                    {
+                        File = @"LANGUAGES\Labels.bin",
+                        LoadType = eLoaderType.Labels.ToString(),
+                        PathType = ePathType.Absolute.ToString(),
+                    },
+
+                };
 
                 var watch = new Stopwatch();
                 watch.Start();
@@ -1883,7 +1854,7 @@ namespace Binary
 
                 }
 
-                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, filename, "Loading");
+                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, PackPath, "Loading");
                 this.LoadTreeView();
                 this.ToggleControlsAfterLoad(true);
 
@@ -1892,49 +1863,17 @@ namespace Binary
                     this.CreateBackupsForFiles(false);
                 }
 
-                Configurations.Default.LaunchFile = filename;
                 Configurations.Default.CurrentGame = (int)this.Profile.GameINT;
                 Configurations.Default.Save();
                 this.Text = $"TexWizard Packer - v{this.ProductVersion} - {this.Profile.GameSTR}";
                 this.ToggleTheme();
-
-#if !DEBUG
             }
             catch (Exception e)
             {
-
-                if (showerrors)
-                {
-
-                    MessageBox.Show(e.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                }
+                MessageBox.Show(e.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 this.ToggleControlsAfterLoad(false);
-
             }
-#endif
-        }
-
-        public static void FixLaunchDirectory(Launch launch, string filename)
-        {
-            string directory = Path.GetDirectoryName(filename);
-
-            try
-            {
-                if (Path.IsPathRooted(launch.Directory))
-                {
-                    return;
-                }
-
-                string maybePath = Path.GetFullPath(Path.Combine(directory, launch.Directory));
-
-                if (Directory.Exists(maybePath))
-                {
-                    launch.Directory = maybePath;
-                }
-            }
-            catch { }
         }
 
         private void LoadTreeView(string selected = null)
@@ -1948,8 +1887,6 @@ namespace Binary
             {
                 var n = Utils.GetTreeNodesFromSDB(sdb);
                 this.EditorTreeView.Nodes.Add(n);
-                Utils.toggleEmptyManagersInSDB(sdb, n);
-                //_ = this.EditorTreeView.Nodes.Add(Utils.GetTreeNodesFromSDB(sdb));
 
             }
 
@@ -2224,15 +2161,7 @@ namespace Binary
 
         private void Editor_Load(object sender, EventArgs e)
         {
-            string file = Configurations.Default.LaunchFile;
-            if (!File.Exists(file))
-            {
-                return;
-            }
-            else
-            {
-                this.LoadProfile(file, false);
-            }
+
         }
 
         private void Editor_FormClosing(object sender, FormClosingEventArgs e)

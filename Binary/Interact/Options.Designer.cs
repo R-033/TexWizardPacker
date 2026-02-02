@@ -40,7 +40,6 @@
             this.OptionsTextWatermark = new System.Windows.Forms.TextBox();
             this.OptionsButtonCancel = new System.Windows.Forms.Button();
             this.OptionsToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.OptionsCheckHideEmptyManagers = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,7 +58,6 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.OptionsCheckHideEmptyManagers);
             this.panel1.Controls.Add(this.OptionsCheckDisableAdminWarning);
             this.panel1.Controls.Add(this.OptionsCheckSoonFeature);
             this.panel1.Controls.Add(this.OptionsCheckStartMaximized);
@@ -144,16 +142,6 @@
             this.OptionsButtonCancel.UseVisualStyleBackColor = false;
             this.OptionsButtonCancel.Click += this.OptionsButtonCancel_Click;
             // 
-            // OptionsCheckHideEmptyManagers
-            // 
-            this.OptionsCheckHideEmptyManagers.AutoSize = true;
-            this.OptionsCheckHideEmptyManagers.Location = new System.Drawing.Point(3, 142);
-            this.OptionsCheckHideEmptyManagers.Name = "OptionsCheckHideEmptyManagers";
-            this.OptionsCheckHideEmptyManagers.Size = new System.Drawing.Size(143, 19);
-            this.OptionsCheckHideEmptyManagers.TabIndex = 2;
-            this.OptionsCheckHideEmptyManagers.Text = "Hide empty managers";
-            this.OptionsCheckHideEmptyManagers.UseVisualStyleBackColor = true;
-            // 
             // Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -188,6 +176,5 @@
         private System.Windows.Forms.CheckBox OptionsCheckStartMaximized;
         private System.Windows.Forms.CheckBox OptionsCheckAutoBackups;
         private System.Windows.Forms.ToolTip OptionsToolTip;
-        private System.Windows.Forms.CheckBox OptionsCheckHideEmptyManagers;
     }
 }

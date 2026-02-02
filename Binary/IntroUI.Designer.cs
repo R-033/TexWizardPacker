@@ -180,6 +180,7 @@
             this.openButton.TabIndex = 6;
             this.openButton.Text = "Open Pack";
             this.openButton.UseVisualStyleBackColor = true;
+            this.openButton.Click += this.openButton_Click;
             // 
             // gameDirPath
             // 
