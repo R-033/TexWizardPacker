@@ -34,7 +34,37 @@ namespace Binary.Properties {
                 this["ThemeFile"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int GameType
+        {
+            get
+            {
+                return ((int)(this["GameType"]));
+            }
+            set
+            {
+                this["GameType"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GameDirectory
+        {
+            get
+            {
+                return ((string)(this["GameDirectory"]));
+            }
+            set
+            {
+                this["GameDirectory"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]

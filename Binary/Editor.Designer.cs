@@ -32,8 +32,6 @@ namespace Binary
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             this.EditorMenuStrip = new System.Windows.Forms.CustomMenuStrip();
             this.EditorMenuStripMain = new System.Windows.Forms.ToolStripMenuItem();
-            this.EMSMainNewLauncher = new System.Windows.Forms.ToolStripMenuItem();
-            this.EMSMainLoadFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.EMSMainReloadFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.EMSMainSaveFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.EMSMainImportEndscript = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,26 +131,10 @@ namespace Binary
             // 
             // EditorMenuStripMain
             // 
-            this.EditorMenuStripMain.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.EMSMainNewLauncher, this.EMSMainLoadFiles, this.EMSMainReloadFiles, this.EMSMainSaveFiles, this.EMSMainImportEndscript, this.EMSMainExit });
+            this.EditorMenuStripMain.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.EMSMainReloadFiles, this.EMSMainSaveFiles, this.EMSMainImportEndscript, this.EMSMainExit });
             this.EditorMenuStripMain.Name = "EditorMenuStripMain";
             this.EditorMenuStripMain.Size = new System.Drawing.Size(46, 20);
             this.EditorMenuStripMain.Text = "Main";
-            // 
-            // EMSMainNewLauncher
-            // 
-            this.EMSMainNewLauncher.Name = "EMSMainNewLauncher";
-            this.EMSMainNewLauncher.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N;
-            this.EMSMainNewLauncher.Size = new System.Drawing.Size(208, 22);
-            this.EMSMainNewLauncher.Text = "New Launcher...";
-            this.EMSMainNewLauncher.Click += this.EMSMainNewLauncher_Click;
-            // 
-            // EMSMainLoadFiles
-            // 
-            this.EMSMainLoadFiles.Name = "EMSMainLoadFiles";
-            this.EMSMainLoadFiles.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
-            this.EMSMainLoadFiles.Size = new System.Drawing.Size(208, 22);
-            this.EMSMainLoadFiles.Text = "Load Files...";
-            this.EMSMainLoadFiles.Click += this.EMSMainLoadFiles_Click;
             // 
             // EMSMainReloadFiles
             // 
@@ -200,7 +182,7 @@ namespace Binary
             // 
             this.EMSToolsHasher.Name = "EMSToolsHasher";
             this.EMSToolsHasher.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H;
-            this.EMSToolsHasher.Size = new System.Drawing.Size(158, 22);
+            this.EMSToolsHasher.Size = new System.Drawing.Size(180, 22);
             this.EMSToolsHasher.Text = "Hasher";
             this.EMSToolsHasher.Click += this.EMSToolsHasher_Click;
             // 
@@ -208,7 +190,7 @@ namespace Binary
             // 
             this.EMSToolsRaider.Name = "EMSToolsRaider";
             this.EMSToolsRaider.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R;
-            this.EMSToolsRaider.Size = new System.Drawing.Size(158, 22);
+            this.EMSToolsRaider.Size = new System.Drawing.Size(180, 22);
             this.EMSToolsRaider.Text = "Raider";
             this.EMSToolsRaider.Click += this.EMSToolsRaider_Click;
             // 
@@ -216,7 +198,7 @@ namespace Binary
             // 
             this.EMSToolsSwatcher.Name = "EMSToolsSwatcher";
             this.EMSToolsSwatcher.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S;
-            this.EMSToolsSwatcher.Size = new System.Drawing.Size(158, 22);
+            this.EMSToolsSwatcher.Size = new System.Drawing.Size(180, 22);
             this.EMSToolsSwatcher.Text = "Swatcher";
             this.EMSToolsSwatcher.Click += this.EMSToolsSwatcher_Click;
             // 
@@ -360,7 +342,7 @@ namespace Binary
             // 
             this.EMSHelpAbout.Name = "EMSHelpAbout";
             this.EMSHelpAbout.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.EMSHelpAbout.Size = new System.Drawing.Size(159, 22);
+            this.EMSHelpAbout.Size = new System.Drawing.Size(180, 22);
             this.EMSHelpAbout.Text = "About";
             this.EMSHelpAbout.Click += this.EMSHelpAbout_Click;
             // 
@@ -368,7 +350,7 @@ namespace Binary
             // 
             this.EMSHelpTutorials.Name = "EMSHelpTutorials";
             this.EMSHelpTutorials.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T;
-            this.EMSHelpTutorials.Size = new System.Drawing.Size(159, 22);
+            this.EMSHelpTutorials.Size = new System.Drawing.Size(180, 22);
             this.EMSHelpTutorials.Text = "Tutorials";
             this.EMSHelpTutorials.Click += this.EMSHelpTutorials_Click;
             // 
@@ -693,8 +675,6 @@ namespace Binary
 
         private System.Windows.Forms.CustomMenuStrip EditorMenuStrip;
 		private System.Windows.Forms.ToolStripMenuItem EditorMenuStripMain;
-		private System.Windows.Forms.ToolStripMenuItem EMSMainNewLauncher;
-		private System.Windows.Forms.ToolStripMenuItem EMSMainLoadFiles;
 		private System.Windows.Forms.ToolStripMenuItem EditorMenuStripTools;
 		private System.Windows.Forms.ToolStripMenuItem EMSToolsHasher;
 		private System.Windows.Forms.ToolStripMenuItem EMSToolsRaider;

@@ -100,10 +100,6 @@ namespace Binary
             this.EditorMenuStrip.ImageMarginGradientMiddle = theme.Colors.MenuItemPressedGradientMiddle;
             this.EditorMenuStrip.ImageMarginGradientEnd = theme.Colors.MenuItemPressedGradientEnd;
 
-            this.EMSMainNewLauncher.BackColor = theme.Colors.MenuItemBackColor;
-            this.EMSMainNewLauncher.ForeColor = theme.Colors.MenuItemForeColor;
-            this.EMSMainLoadFiles.BackColor = theme.Colors.MenuItemBackColor;
-            this.EMSMainLoadFiles.ForeColor = theme.Colors.MenuItemForeColor;
             this.EMSMainReloadFiles.BackColor = theme.Colors.MenuItemBackColor;
             this.EMSMainReloadFiles.ForeColor = theme.Colors.MenuItemForeColor;
             this.EMSMainSaveFiles.BackColor = theme.Colors.MenuItemBackColor;

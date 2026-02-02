@@ -17,22 +17,25 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
-
-using static System.Windows.Forms.AxHost;
-
-
 
 namespace Binary
 {
     public partial class IntroUI : Form
     {
+        public class PackList
+        {
+            public string[] packs { get; set; }
+        }
+
+        private PackList packs;
+
         public IntroUI()
         {
             this.InitializeComponent();
+            this.ToggleTheme();
 
-            this.IntroToolTip.SetToolTip(this.IntroPictureUser, "Launch TexWizard Packer for Users");
-            this.IntroToolTip.SetToolTip(this.IntroPictureModder, "Launch TexWizard Packer for Modders");
             this.IntroToolTip.SetToolTip(this.PictureBoxUpdates, "Check updates for TexWizard Packer");
             this.IntroToolTip.SetToolTip(this.PictureBoxTools, "Tools");
             this.IntroToolTip.SetToolTip(this.PictureBoxTheme, "Change theme");
@@ -49,14 +52,7 @@ namespace Binary
 
             this.BackColor = theme.Colors.MainBackColor;
             this.ForeColor = theme.Colors.MainForeColor;
-            this.IntroPanelModder.BackColor = theme.Colors.ButtonBackColor;
-            this.IntroPanelUser.BackColor = theme.Colors.ButtonBackColor;
             this.LabelBinary.ForeColor = theme.Colors.LabelTextColor;
-
-            this.LabelUserMode.ForeColor = theme.Colors.MainForeColor;
-            this.LabelUserModeDesc.ForeColor = theme.Colors.LabelTextColor;
-            this.LabelModderMode.ForeColor = theme.Colors.MainForeColor;
-            this.LabelModderModeDesc.ForeColor = theme.Colors.LabelTextColor;
 
             this.ToolsMenu.BackColor = theme.Colors.MainBackColor;
             this.ToolsMenu.ForeColor = theme.Colors.LabelTextColor;
@@ -75,16 +71,41 @@ namespace Binary
             this.PictureBoxTheme.Image = theme.DarkTheme
                 ? Resources.DarkTheme : Resources.LightTheme;
 
-            this.IntroPictureUser.Image = theme.DarkTheme
-                ? Resources.DarkUser : Resources.LightUser;
-
-            this.IntroPictureModder.Image = theme.DarkTheme
-                ? Resources.DarkModder : Resources.LightModder;
-
             this.PictureBoxTools.Image = theme.DarkTheme
                 ? Resources.DarkTools : Resources.LightTools;
 
             this.PictureBoxUpdates.Image = Resources.Update;
+
+            this.createNewButton.BackColor = theme.Colors.ButtonBackColor;
+            this.createNewButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.createNewButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
+            this.openButton.BackColor = theme.Colors.ButtonBackColor;
+            this.openButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.openButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
+            this.packList.BackColor = theme.Colors.TextBoxBackColor;
+            this.packList.ForeColor = theme.Colors.TextBoxForeColor;
+
+            this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
+            this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
+            this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
+
+            this.gameDirPath.BackColor = theme.Colors.TextBoxBackColor;
+            this.gameDirPath.ForeColor = theme.Colors.TextBoxForeColor;
+
+            this.gameDirOpenButton.BackColor = theme.Colors.ButtonBackColor;
+            this.gameDirOpenButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.gameDirOpenButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
+            this.gameTypePicker.BackColor = theme.Colors.TextBoxBackColor;
+            this.gameTypePicker.ForeColor = theme.Colors.TextBoxForeColor;
+
+            this.gameTypePicker.SelectedIndex = Configurations.Default.GameType;
+
+            this.gameDirPath.Text = Configurations.Default.GameDirectory;
+
+            this.LoadPackList();
         }
 
         #endregion
@@ -467,6 +488,97 @@ namespace Binary
         {
             var settings = new Interact.Options() { StartPosition = FormStartPosition.CenterScreen };
             settings.Show();
+        }
+
+        private void packList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string gamePath = this.gameDirPath.Text;
+
+            this.openButton.Enabled = this.packList.Enabled && this.packList.SelectedIndex >= 0 && Directory.Exists(Path.Combine(gamePath, this.packList.Items[this.packList.SelectedIndex] as string));
+        }
+
+        private void createNewButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void gameDirOpenButton_Click(object sender, EventArgs e)
+        {
+            using var browser = new FolderBrowserDialog()
+            {
+                InitialDirectory = this.gameDirPath.Text
+            };
+
+            if (browser.ShowDialog() == DialogResult.OK)
+            {
+                this.gameDirPath.Text = browser.SelectedPath;
+            }
+        }
+
+        private void GameDirPath_TextChanged(object sender, System.EventArgs e)
+        {
+            Configurations.Default.GameDirectory = this.gameDirPath.Text;
+            Configurations.Default.Save();
+            this.LoadPackList();
+        }
+
+        private void gameTypePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Configurations.Default.GameType = this.gameTypePicker.SelectedIndex;
+            Configurations.Default.Save();
+        }
+
+        private void LoadPackList()
+        {
+            this.packList.Enabled = false;
+            this.createNewButton.Enabled = false;
+            this.openButton.Enabled = false;
+
+            this.packList.Items.Clear();
+
+            string gamePath = this.gameDirPath.Text;
+
+            if (string.IsNullOrEmpty(gamePath))
+            {
+                this.packList.Items.Add("Input a path to your game directory above to begin.");
+                return;
+            }
+
+            if (!Directory.Exists(gamePath))
+            {
+                this.packList.Items.Add("Invalid directory. Please make sure it's correct.");
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(gamePath, "SCRIPTS", "TexWizard.asi")))
+            {
+                this.packList.Items.Add("SCRIPTS\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json")))
+            {
+                this.packList.Items.Add("SCRIPTS\\TexWizard.json doesn't exist. Please make sure TexWizard is installed correctly.");
+                return;
+            }
+
+            try
+            {
+                packs = JsonSerializer.Deserialize<PackList>(File.ReadAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json")));
+
+                for (int i = 0; i < packs.packs.Length; i++)
+                {
+                    this.packList.Items.Add(packs.packs[i]);
+                }
+            }
+            catch (Exception e)
+            {
+                this.packList.Items.Add("Error reading TexWizard.json: " + e.Message);
+            }
+
+            this.packList.Enabled = true;
+            this.createNewButton.Enabled = true;
+            this.packList.SelectedIndex = 0;
         }
     }
 }
