@@ -34,6 +34,11 @@ namespace Binary
 {
     public partial class Editor : Form
     {
+        public class TextureList
+        {
+            public string[][] textures { get; set; }
+        }
+
         private GameINT GameType { get; set; }
         private string GamePath { get; set; }
         private string PackPath { get; set; }

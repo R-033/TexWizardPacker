@@ -84,6 +84,18 @@ namespace Binary
             this.openButton.ForeColor = theme.Colors.ButtonForeColor;
             this.openButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
 
+            this.removeButton.BackColor = theme.Colors.ButtonBackColor;
+            this.removeButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.removeButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
+            this.upButton.BackColor = theme.Colors.ButtonBackColor;
+            this.upButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.upButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
+            this.downButton.BackColor = theme.Colors.ButtonBackColor;
+            this.downButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.downButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
             this.packList.BackColor = theme.Colors.TextBoxBackColor;
             this.packList.ForeColor = theme.Colors.TextBoxForeColor;
 
@@ -495,11 +507,58 @@ namespace Binary
             string gamePath = this.gameDirPath.Text;
 
             this.openButton.Enabled = this.packList.Enabled && this.packList.SelectedIndex >= 0 && Directory.Exists(Path.Combine(gamePath, this.packList.Items[this.packList.SelectedIndex] as string));
+            this.removeButton.Enabled = this.openButton.Enabled;
+
+            this.upButton.Enabled = this.packList.SelectedIndex > 0;
+            this.downButton.Enabled = this.packList.SelectedIndex < this.packList.Items.Count - 1;
         }
 
         private void createNewButton_Click(object sender, EventArgs e)
         {
+            using var browser = new FolderBrowserDialog()
+            {
+                InitialDirectory = this.gameDirPath.Text
+            };
 
+            if (browser.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string gamePath = this.gameDirPath.Text;
+
+                    var newPath = browser.SelectedPath;
+
+                    if (!newPath.StartsWith(gamePath))
+                    {
+                        MessageBox.Show("Provided directory is outside of the game directory. This is not allowed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (!File.Exists(Path.Combine(newPath, "textures.bin")))
+                    {
+                        File.WriteAllBytes(Path.Combine(newPath, "textures.bin"), new byte[0]);
+                    }
+
+                    if (!File.Exists(Path.Combine(newPath, "meta.json")))
+                    {
+                        var meta = new Editor.TextureList();
+                        meta.textures = new string[0][];
+                        File.WriteAllText(Path.Combine(newPath, "meta.json"), JsonSerializer.Serialize(meta, new JsonSerializerOptions() { WriteIndented = true }));
+                    }
+
+                    var l = packs.packs.ToList();
+                    l.Add(Path.GetRelativePath(gamePath, newPath));
+                    packs.packs = l.ToArray();
+
+                    File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+
+                    this.LoadPackList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void gameDirOpenButton_Click(object sender, EventArgs e)
@@ -578,13 +637,88 @@ namespace Binary
 
             this.packList.Enabled = true;
             this.createNewButton.Enabled = true;
-            this.packList.SelectedIndex = 0;
+
+            if (this.packList.Items.Count > 0)
+            {
+                this.packList.SelectedIndex = 0;
+            }
         }
 
         private void openButton_Click(object sender, EventArgs e)
         {
             this.ModderInteract();
             ForcedX.GCCollect();
+        }
+
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to remove this texture pack from the list?\n\nIt will be removed from TexWizard.json, but texture files will remain.", "Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    string gamePath = this.gameDirPath.Text;
+
+                    var l = packs.packs.ToList();
+                    l.RemoveAt(this.packList.SelectedIndex);
+                    packs.packs = l.ToArray();
+
+                    File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+
+                    this.LoadPackList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string gamePath = this.gameDirPath.Text;
+
+                int selected = this.packList.SelectedIndex;
+                var temp = packs.packs[selected];
+                packs.packs[selected] = packs.packs[selected - 1];
+                packs.packs[selected - 1] = temp;
+
+                File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+
+                this.LoadPackList();
+
+                this.packList.SelectedIndex = selected - 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void downButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string gamePath = this.gameDirPath.Text;
+
+                int selected = this.packList.SelectedIndex;
+                var temp = packs.packs[selected];
+                packs.packs[selected] = packs.packs[selected + 1];
+                packs.packs[selected + 1] = temp;
+
+                File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+
+                this.LoadPackList();
+
+                this.packList.SelectedIndex = selected + 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

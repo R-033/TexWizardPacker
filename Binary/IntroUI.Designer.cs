@@ -49,6 +49,9 @@
             this.gameDirLabel = new System.Windows.Forms.Label();
             this.gameDirOpenButton = new System.Windows.Forms.Button();
             this.gameTypePicker = new System.Windows.Forms.ComboBox();
+            this.removeButton = new System.Windows.Forms.Button();
+            this.upButton = new System.Windows.Forms.Button();
+            this.downButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxUpdates).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTools).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTheme).BeginInit();
@@ -167,7 +170,7 @@
             this.createNewButton.Name = "createNewButton";
             this.createNewButton.Size = new System.Drawing.Size(127, 27);
             this.createNewButton.TabIndex = 5;
-            this.createNewButton.Text = "Create New Pack...";
+            this.createNewButton.Text = "Add / Create New...";
             this.createNewButton.UseVisualStyleBackColor = true;
             this.createNewButton.Click += this.createNewButton_Click;
             // 
@@ -221,11 +224,44 @@
             this.gameTypePicker.TabIndex = 11;
             this.gameTypePicker.SelectedIndexChanged += this.gameTypePicker_SelectedIndexChanged;
             // 
+            // removeButton
+            // 
+            this.removeButton.Location = new System.Drawing.Point(273, 528);
+            this.removeButton.Name = "removeButton";
+            this.removeButton.Size = new System.Drawing.Size(75, 27);
+            this.removeButton.TabIndex = 12;
+            this.removeButton.Text = "Remove";
+            this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += this.removeButton_Click;
+            // 
+            // upButton
+            // 
+            this.upButton.Location = new System.Drawing.Point(159, 528);
+            this.upButton.Name = "upButton";
+            this.upButton.Size = new System.Drawing.Size(51, 27);
+            this.upButton.TabIndex = 13;
+            this.upButton.Text = "Up";
+            this.upButton.UseVisualStyleBackColor = true;
+            this.upButton.Click += this.upButton_Click;
+            // 
+            // downButton
+            // 
+            this.downButton.Location = new System.Drawing.Point(216, 528);
+            this.downButton.Name = "downButton";
+            this.downButton.Size = new System.Drawing.Size(51, 27);
+            this.downButton.TabIndex = 14;
+            this.downButton.Text = "Down";
+            this.downButton.UseVisualStyleBackColor = true;
+            this.downButton.Click += this.downButton_Click;
+            // 
             // IntroUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(638, 567);
+            this.Controls.Add(this.downButton);
+            this.Controls.Add(this.upButton);
+            this.Controls.Add(this.removeButton);
             this.Controls.Add(this.gameTypePicker);
             this.Controls.Add(this.gameDirOpenButton);
             this.Controls.Add(this.gameDirLabel);
@@ -273,5 +309,8 @@
         private System.Windows.Forms.Label gameDirLabel;
         private System.Windows.Forms.Button gameDirOpenButton;
         private System.Windows.Forms.ComboBox gameTypePicker;
+        private System.Windows.Forms.Button removeButton;
+        private System.Windows.Forms.Button upButton;
+        private System.Windows.Forms.Button downButton;
     }
 }
