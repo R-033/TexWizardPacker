@@ -25,7 +25,8 @@ namespace Binary.UI
         #endif
             this.labelCopyright.Text = "© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033.\r\nNo rights reserved.";
             this.textBoxDescription.Text = AssemblyDescription + "\r\n"
-                + "Powered with Endscript and Darius.";
+                + "Powered with Endscript and Darius." + "\r\n"
+                + "Contains extended BinKeys by Felipe379.";
         }
 
         #region Theme

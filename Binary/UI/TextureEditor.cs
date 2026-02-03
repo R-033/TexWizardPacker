@@ -159,7 +159,7 @@ namespace Binary.UI
 			foreach (var texture in list)
 			{
                 string originalName = "-----";
-                string newName = $"0x{texture.BinKey:X8}";
+                string newName = texture.BinKey != texture.CollectionName.BinHash() ? $"0x{texture.BinKey:X8}" : texture.CollectionName;
 
                 for (int i = 0; i < editor.Meta.textures.Length; i++)
                 {
@@ -176,7 +176,7 @@ namespace Binary.UI
                     Text = originalName
                 };
 
-                if (originalName == "-----")
+                if (originalName == "-----" || originalName == newName)
                 {
                     item.BackColor = HighlightColor;
                 }
@@ -564,7 +564,7 @@ namespace Binary.UI
 						texture.CollectionName = cname;
 
                         string originalName = "-----";
-                        string newName = $"0x{texture.BinKey:X8}";
+                        string newName = texture.CollectionName;
 
                         for (int j = 0; j < editor.Meta.textures.Length; j++)
                         {
@@ -763,7 +763,7 @@ namespace Binary.UI
 				var name = e.ChangedItem.Value.ToString();
 
                 string originalName = "-----";
-                string newName = $"0x{name.BinHash():X8}";
+                string newName = name;
 
                 for (int j = 0; j < editor.Meta.textures.Length; j++)
                 {

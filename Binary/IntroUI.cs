@@ -121,245 +121,6 @@ namespace Binary
 
         #endregion
 
-        private void IntroPictureUser_Click(object sender, EventArgs e)
-        {
-#if !DEBUG
-			try
-			{
-#endif
-
-            this.UserInteract();
-            ForcedX.GCCollect();
-
-#if !DEBUG
-			}
-			catch (Exception ex)
-			{
-
-				MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-			}
-#endif
-        }
-
-        private void IntroPictureModder_Click(object sender, EventArgs e)
-        {
-            // If password check was not done yet (deprecated)
-            /*
-			if (!Configurations.Default.PassPassed)
-			{
-				using var form = new ModderPass();
-				
-				if (form.ShowDialog() != DialogResult.OK)
-				{
-			
-					return;
-			
-				}
-			
-			}
-			*/
-
-            this.ModderInteract();
-            ForcedX.GCCollect();
-        }
-
-        private void UserInteract()
-        {
-            using var dialog = new OpenFileDialog()
-            {
-                CheckFileExists = true,
-                Filter = "Binary/ius End Launcher Files|*.end;*.endlauncher|Binary End Launcher Files|*.end|Binarius End Launcher Files|*.endlauncher|All Files|*.*",
-                Multiselect = false,
-                Title = "Select End Launcher",
-            };
-
-            if (dialog.ShowDialog() != DialogResult.OK) return;
-
-            Launch.Deserialize(dialog.FileName, out Launch launch);
-
-            if (launch.UsageID != eUsage.User)
-            {
-
-                throw new Exception($"Usage type of the endscript is stated to be {launch.Usage}, while should be User");
-
-            }
-
-            if (launch.GameID == GameINT.None)
-            {
-
-                throw new Exception($"Invalid stated game type named {launch.Game}");
-
-            }
-
-            using var browser = new FolderBrowserDialog()
-            {
-                Description = $"Select Need for Speed: {launch.Game} directory to modify.",
-                RootFolder = Environment.SpecialFolder.MyComputer,
-                UseDescriptionForTitle = true,
-                AutoUpgradeEnabled = false,
-            };
-
-            if (browser.ShowDialog() != DialogResult.OK) return;
-
-            launch.Directory = browser.SelectedPath;
-            launch.ThisDir = Path.GetDirectoryName(dialog.FileName);
-            launch.CheckEndscript();
-            launch.CheckFiles();
-            launch.LoadLinks();
-
-            var endscript = Path.Combine(launch.ThisDir, launch.Endscript);
-            var parser = new EndScriptParser(endscript);
-            BaseCommand[] commands;
-
-            try
-            {
-
-                commands = parser.Read();
-
-            }
-            catch (Exception ex)
-            {
-
-                var error = $"Error has occured -> File: {parser.CurrentFile}, Line: {parser.CurrentIndex}" +
-                    Environment.NewLine + $"Command: [{parser.CurrentLine}]" + Environment.NewLine +
-                    $"Error: {ex.GetLowestMessage()}";
-
-                MessageBox.Show(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-
-            }
-
-            var profile = BaseProfile.NewProfile(launch.GameID, launch.Directory);
-            var exceptions = profile.Load(launch);
-
-            if (exceptions.Length > 0)
-            {
-
-                foreach (var exception in exceptions)
-                {
-
-                    MessageBox.Show(exception, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                }
-
-                MessageBox.Show($"Unable to execute endscript because of the errors.", "Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-
-            }
-
-            this.EnsureBackups(profile);
-
-            var manager = new EndScriptManager(profile, commands, endscript);
-
-            try
-            {
-
-                manager.CommandChase();
-
-                while (!manager.ProcessScript())
-                {
-
-                    var command = manager.CurrentCommand;
-
-                    if (command is InfoboxCommand infobox)
-                    {
-
-                        using var input = new Info(infobox.Description);
-                        input.ShowDialog();
-
-#if DEBUG
-                        Console.WriteLine($"Infobox pending");
-#endif
-
-                    }
-                    else if (command is CheckboxCommand checkbox)
-                    {
-
-                        using var input = new Check(checkbox.Description, true);
-                        input.ShowDialog();
-                        checkbox.Choice = input.Value ? 1 : 0;
-
-#if DEBUG
-                        Console.WriteLine($"Checkbox pending : option {input.Value} was chosen by user");
-#endif
-
-                    }
-                    else if (command is ComboboxCommand combobox)
-                    {
-
-                        var options = new string[combobox.Options.Length];
-                        for (int i = 0; i < options.Length; ++i) options[i] = combobox.Options[i].Name;
-                        using var input = new Combo(options, combobox.Description, true);
-                        input.ShowDialog();
-                        combobox.Choice = input.Value < 0 ? 0 : input.Value;
-
-#if DEBUG
-                        Console.WriteLine($"Checkbox pending : option {input.Value} was chosen by user");
-#endif
-
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                MessageBox.Show("Execution has been interrupted", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-
-            }
-
-            var script = Path.GetFileName(dialog.FileName);
-
-            if (manager.Errors.Any())
-            {
-
-                Utils.WriteErrorsToLog(manager.Errors, dialog.FileName);
-                MessageBox.Show($"Script {script} has been applied, however, {manager.Errors.Count()} errors " +
-                    $"has been detected. Check EndError.log for more information", "Information",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            }
-            else
-            {
-
-                MessageBox.Show($"Script {script} has been successfully applied",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            }
-
-            var save = MessageBox.Show("Would you like to save files?", "Prompt",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (save == DialogResult.Yes)
-            {
-
-                var errors = profile.Save();
-
-                if (errors.Length > 0)
-                {
-
-                    foreach (var error in errors)
-                    {
-
-                        MessageBox.Show(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    }
-
-                }
-                else
-                {
-
-                    this.AskForGameRun(profile);
-
-                }
-
-            }
-        }
-
         private void ModderInteract()
         {
             this.Hide();
@@ -626,25 +387,41 @@ namespace Binary
 
             if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.asi")))
             {
-                string dir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                string twfrom = Path.Combine(dir, "TexWizard.asi");
-
-                if (!File.Exists(twfrom))
+                try
                 {
-                    this.packList.Items.Add("scripts\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
+                    string dir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                    string twfrom = Path.Combine(dir, "TexWizard.asi");
+
+                    if (!File.Exists(twfrom))
+                    {
+                        this.packList.Items.Add("scripts\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
+                        return;
+                    }
+
+                    string twto = Path.Combine(gamePath, "scripts", "TexWizard.asi");
+                    Directory.CreateDirectory(Path.Combine(gamePath, "scripts"));
+                    File.Copy(twfrom, twto, true);
+                }
+                catch (Exception ex)
+                {
+                    this.packList.Items.Add(ex.GetLowestMessage());
                     return;
                 }
-
-                string twto = Path.Combine(gamePath, "scripts", "TexWizard.asi");
-                Directory.CreateDirectory(Path.Combine(gamePath, "scripts"));
-                File.Copy(twfrom, twto, true);
             }
 
             if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.json")))
             {
-                var config = new TWConfig();
-                config.packs = new string[0];
-                File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
+                try
+                {
+                    var config = new TWConfig();
+                    config.packs = new string[0];
+                    File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
+                }
+                catch (Exception ex)
+                {
+                    this.packList.Items.Add(ex.GetLowestMessage());
+                    return;
+                }
             }
 
             try

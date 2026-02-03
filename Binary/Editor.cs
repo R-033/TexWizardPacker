@@ -507,33 +507,19 @@ namespace Binary
 
         private void EMSMainReloadFiles_Click(object sender, EventArgs e)
         {
-            string file = Configurations.Default.LaunchFile;
-
-            if (File.Exists(file))
+            if (this._edited)
             {
 
-                if (this._edited)
+                var result = MessageBox.Show("You have unsaved changes. Are you sure you reload " +
+                    "database?", "Prompt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
                 {
-
-                    var result = MessageBox.Show("You have unsaved changes. Are you sure you reload " +
-                        "database?", "Prompt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                    if (result == DialogResult.No)
-                    {
-                        return;
-                    }
+                    return;
                 }
-
-                this.LoadPack();
-
             }
-            else
-            {
 
-                _ = MessageBox.Show($"Launch file {file} does not exist or was moved.", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            }
+            this.LoadPack();
         }
 
         private void EMSMainSaveFiles_Click(object sender, EventArgs e) => this.SaveProfile();
@@ -1957,6 +1943,8 @@ namespace Binary
 
                 string[] exceptions = this.Profile.Save();
 
+                File.WriteAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json"), JsonConvert.SerializeObject(this.Meta, Formatting.Indented));
+
                 watch.Stop();
 
                 foreach (string exception in exceptions)
@@ -1966,8 +1954,7 @@ namespace Binary
 
                 }
 
-                string filename = Configurations.Default.LaunchFile;
-                this.EditorStatusLabel.Text = Utils.GetStatusString(this.Profile.Count, watch.ElapsedMilliseconds, filename, "Saving");
+                this.EditorStatusLabel.Text = Utils.GetStatusString(this.Profile.Count, watch.ElapsedMilliseconds, this.PackPath, "Saving");
                 this._edited = false;
 
 #if !DEBUG

@@ -49,18 +49,6 @@ namespace Binary.Properties {
                 this["GameDirectory"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LaunchFile {
-            get {
-                return ((string)(this["LaunchFile"]));
-            }
-            set {
-                this["LaunchFile"] = value;
-            }
-        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
