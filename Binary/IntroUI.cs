@@ -17,31 +17,36 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Windows.Forms;
 
 namespace Binary
 {
     public partial class IntroUI : Form
     {
-        public class PackList
+        [Serializable]
+        public class TWConfig
         {
-            public string[] packs { get; set; }
+            public string[] packs;
         }
 
-        private PackList packs;
+        private TWConfig Config;
 
         public IntroUI()
         {
             this.InitializeComponent();
-            this.ToggleTheme();
 
             this.IntroToolTip.SetToolTip(this.PictureBoxUpdates, "Check updates for TexWizard Packer");
             this.IntroToolTip.SetToolTip(this.PictureBoxTools, "Tools");
             this.IntroToolTip.SetToolTip(this.PictureBoxTheme, "Change theme");
 
-            this.ToggleTheme();
             this.Text = $"TexWizard Packer - v{this.ProductVersion}";
+
+            this.gameTypePicker.SelectedIndex = Math.Max(0, Configurations.Default.CurrentGame - 1);
+
+            this.gameDirPath.Text = Configurations.Default.GameDirectory;
+
+            this.LoadPackList();
         }
 
         #region Theme
@@ -112,12 +117,6 @@ namespace Binary
 
             this.gameTypePicker.BackColor = theme.Colors.TextBoxBackColor;
             this.gameTypePicker.ForeColor = theme.Colors.TextBoxForeColor;
-
-            this.gameTypePicker.SelectedIndex = Configurations.Default.GameType;
-
-            this.gameDirPath.Text = Configurations.Default.GameDirectory;
-
-            this.LoadPackList();
         }
 
         #endregion
@@ -513,6 +512,17 @@ namespace Binary
             this.downButton.Enabled = this.packList.SelectedIndex < this.packList.Items.Count - 1;
         }
 
+        private void packList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int index = this.packList.IndexFromPoint(e.Location);
+
+            if (index != System.Windows.Forms.ListBox.NoMatches)
+            {
+                this.ModderInteract();
+                ForcedX.GCCollect();
+            }
+        }
+
         private void createNewButton_Click(object sender, EventArgs e)
         {
             using var browser = new FolderBrowserDialog()
@@ -541,16 +551,16 @@ namespace Binary
 
                     if (!File.Exists(Path.Combine(newPath, "meta.json")))
                     {
-                        var meta = new Editor.TextureList();
+                        var meta = new Editor.MetaFile();
                         meta.textures = new string[0][];
-                        File.WriteAllText(Path.Combine(newPath, "meta.json"), JsonSerializer.Serialize(meta, new JsonSerializerOptions() { WriteIndented = true }));
+                        File.WriteAllText(Path.Combine(newPath, "meta.json"), JsonConvert.SerializeObject(meta, Formatting.Indented));
                     }
 
-                    var l = packs.packs.ToList();
+                    var l = Config.packs.ToList();
                     l.Add(Path.GetRelativePath(gamePath, newPath));
-                    packs.packs = l.ToArray();
+                    Config.packs = l.ToArray();
 
-                    File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+                    File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 
                     this.LoadPackList();
                 }
@@ -583,8 +593,13 @@ namespace Binary
 
         private void gameTypePicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Configurations.Default.GameType = this.gameTypePicker.SelectedIndex;
+            Configurations.Default.CurrentGame = this.gameTypePicker.SelectedIndex + 1;
             Configurations.Default.Save();
+
+            // if the game is different we need to forget where the textures were
+            TextureEditor.OrigTextureLookupMap.Clear();
+
+            this.ToggleTheme();
         }
 
         private void LoadPackList()
@@ -609,25 +624,36 @@ namespace Binary
                 return;
             }
 
-            if (!File.Exists(Path.Combine(gamePath, "SCRIPTS", "TexWizard.asi")))
+            if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.asi")))
             {
-                this.packList.Items.Add("SCRIPTS\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
-                return;
+                string dir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                string twfrom = Path.Combine(dir, "TexWizard.asi");
+
+                if (!File.Exists(twfrom))
+                {
+                    this.packList.Items.Add("scripts\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
+                    return;
+                }
+
+                string twto = Path.Combine(gamePath, "scripts", "TexWizard.asi");
+                Directory.CreateDirectory(Path.Combine(gamePath, "scripts"));
+                File.Copy(twfrom, twto, true);
             }
 
-            if (!File.Exists(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json")))
+            if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.json")))
             {
-                this.packList.Items.Add("SCRIPTS\\TexWizard.json doesn't exist. Please make sure TexWizard is installed correctly.");
-                return;
+                var config = new TWConfig();
+                config.packs = new string[0];
+                File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
             }
 
             try
             {
-                packs = JsonSerializer.Deserialize<PackList>(File.ReadAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json")));
+                Config = (TWConfig)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(gamePath, "scripts", "TexWizard.json")), typeof(TWConfig));
 
-                for (int i = 0; i < packs.packs.Length; i++)
+                for (int i = 0; i < Config.packs.Length; i++)
                 {
-                    this.packList.Items.Add(packs.packs[i]);
+                    this.packList.Items.Add(Config.packs[i]);
                 }
             }
             catch (Exception e)
@@ -660,11 +686,11 @@ namespace Binary
                 {
                     string gamePath = this.gameDirPath.Text;
 
-                    var l = packs.packs.ToList();
+                    var l = Config.packs.ToList();
                     l.RemoveAt(this.packList.SelectedIndex);
-                    packs.packs = l.ToArray();
+                    Config.packs = l.ToArray();
 
-                    File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+                    File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 
                     this.LoadPackList();
                 }
@@ -682,11 +708,11 @@ namespace Binary
                 string gamePath = this.gameDirPath.Text;
 
                 int selected = this.packList.SelectedIndex;
-                var temp = packs.packs[selected];
-                packs.packs[selected] = packs.packs[selected - 1];
-                packs.packs[selected - 1] = temp;
+                var temp = Config.packs[selected];
+                Config.packs[selected] = Config.packs[selected - 1];
+                Config.packs[selected - 1] = temp;
 
-                File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+                File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 
                 this.LoadPackList();
 
@@ -705,11 +731,11 @@ namespace Binary
                 string gamePath = this.gameDirPath.Text;
 
                 int selected = this.packList.SelectedIndex;
-                var temp = packs.packs[selected];
-                packs.packs[selected] = packs.packs[selected + 1];
-                packs.packs[selected + 1] = temp;
+                var temp = Config.packs[selected];
+                Config.packs[selected] = Config.packs[selected + 1];
+                Config.packs[selected + 1] = temp;
 
-                File.WriteAllText(Path.Combine(gamePath, "SCRIPTS", "TexWizard.json"), JsonSerializer.Serialize(packs, new JsonSerializerOptions() { WriteIndented = true }));
+                File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 
                 this.LoadPackList();
 

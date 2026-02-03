@@ -106,24 +106,9 @@ namespace Binary
             // 
             // EditorMenuStrip
             // 
-            this.EditorMenuStrip.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.EditorMenuStrip.ImageMarginGradientBegin = System.Drawing.Color.WhiteSmoke;
-            this.EditorMenuStrip.ImageMarginGradientEnd = System.Drawing.Color.WhiteSmoke;
-            this.EditorMenuStrip.ImageMarginGradientMiddle = System.Drawing.Color.WhiteSmoke;
             this.EditorMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.EditorMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.EditorMenuStripMain, this.EditorMenuStripTools, this.EditorMenuStripOptions, this.EditorMenuStripScripting, this.EditorMenuStripWindows, this.EditorMenuStripHelp });
             this.EditorMenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.EditorMenuStrip.MenuBorder = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuItemBorder = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuItemPressedGradientBegin = System.Drawing.Color.DimGray;
-            this.EditorMenuStrip.MenuItemPressedGradientEnd = System.Drawing.Color.DimGray;
-            this.EditorMenuStrip.MenuItemPressedGradientMiddle = System.Drawing.Color.DimGray;
-            this.EditorMenuStrip.MenuItemSelected = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuItemSelectedGradientBegin = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuItemSelectedGradientEnd = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuStripForeColor = System.Drawing.Color.WhiteSmoke;
-            this.EditorMenuStrip.MenuStripGradientBegin = System.Drawing.Color.Black;
-            this.EditorMenuStrip.MenuStripGradientEnd = System.Drawing.Color.DimGray;
             this.EditorMenuStrip.Name = "EditorMenuStrip";
             this.EditorMenuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.EditorMenuStrip.Size = new System.Drawing.Size(904, 24);
@@ -646,7 +631,7 @@ namespace Binary
             this.Name = "Editor";
             this.Text = "TexWizard Packer";
             this.FormClosing += this.Editor_FormClosing;
-            this.Load += this.Editor_Load;
+            this.Shown += this.Editor_Shown;
             this.EditorMenuStrip.ResumeLayout(false);
             this.EditorMenuStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

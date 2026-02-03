@@ -46,10 +46,8 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.TexEditorListView = new System.Windows.Forms.ListView();
-            this.ColumnIndex = new System.Windows.Forms.ColumnHeader();
-            this.ColumnKey = new System.Windows.Forms.ColumnHeader();
-            this.ColumnCollectionName = new System.Windows.Forms.ColumnHeader();
-            this.ColumnCompression = new System.Windows.Forms.ColumnHeader();
+            this.ColumnOriginalName = new System.Windows.Forms.ColumnHeader();
+            this.ColumnNewName = new System.Windows.Forms.ColumnHeader();
             this.TexEditorPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.panel1 = new System.Windows.Forms.Panel();
             this.TexEditorImage = new System.Windows.Forms.PictureBox();
@@ -71,8 +69,23 @@
             // 
             // TexEditorMenuStrip
             // 
+            this.TexEditorMenuStrip.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.TexEditorMenuStrip.ImageMarginGradientBegin = System.Drawing.Color.Maroon;
+            this.TexEditorMenuStrip.ImageMarginGradientEnd = System.Drawing.Color.WhiteSmoke;
+            this.TexEditorMenuStrip.ImageMarginGradientMiddle = System.Drawing.Color.WhiteSmoke;
             this.TexEditorMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorTexturesStrip, this.TexEditorOptionsStrip, this.TexEditorToolsStrip });
             this.TexEditorMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.TexEditorMenuStrip.MenuBorder = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuItemBorder = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuItemPressedGradientBegin = System.Drawing.Color.DimGray;
+            this.TexEditorMenuStrip.MenuItemPressedGradientEnd = System.Drawing.Color.DimGray;
+            this.TexEditorMenuStrip.MenuItemPressedGradientMiddle = System.Drawing.Color.DimGray;
+            this.TexEditorMenuStrip.MenuItemSelected = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuItemSelectedGradientBegin = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuItemSelectedGradientEnd = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuStripForeColor = System.Drawing.Color.WhiteSmoke;
+            this.TexEditorMenuStrip.MenuStripGradientBegin = System.Drawing.Color.Black;
+            this.TexEditorMenuStrip.MenuStripGradientEnd = System.Drawing.Color.DimGray;
             this.TexEditorMenuStrip.Name = "TexEditorMenuStrip";
             this.TexEditorMenuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.TexEditorMenuStrip.Size = new System.Drawing.Size(1148, 24);
@@ -229,7 +242,7 @@
             // 
             this.TexEditorListView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.TexEditorListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.TexEditorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.ColumnIndex, this.ColumnKey, this.ColumnCollectionName, this.ColumnCompression });
+            this.TexEditorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.ColumnOriginalName, this.ColumnNewName });
             this.TexEditorListView.FullRowSelect = true;
             this.TexEditorListView.Location = new System.Drawing.Point(12, 3);
             this.TexEditorListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -246,24 +259,15 @@
             this.TexEditorListView.DrawItem += this.TexEditorListView_DrawItem;
             this.TexEditorListView.SelectedIndexChanged += this.TexEditorListView_SelectedIndexChanged;
             // 
-            // ColumnIndex
+            // ColumnOriginalName
             // 
-            this.ColumnIndex.Text = "Index";
+            this.ColumnOriginalName.Text = "Original Name";
+            this.ColumnOriginalName.Width = 245;
             // 
-            // ColumnKey
+            // ColumnNewName
             // 
-            this.ColumnKey.Text = "BinKey";
-            this.ColumnKey.Width = 100;
-            // 
-            // ColumnCollectionName
-            // 
-            this.ColumnCollectionName.Text = "CollectionName";
-            this.ColumnCollectionName.Width = 260;
-            // 
-            // ColumnCompression
-            // 
-            this.ColumnCompression.Text = "Format";
-            this.ColumnCompression.Width = 70;
+            this.ColumnNewName.Text = "New Name";
+            this.ColumnNewName.Width = 245;
             // 
             // TexEditorPropertyGrid
             // 
@@ -272,7 +276,7 @@
             this.TexEditorPropertyGrid.Location = new System.Drawing.Point(14, 3);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 286);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 284);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
             // 
@@ -283,7 +287,7 @@
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(564, 570);
+            this.panel1.Size = new System.Drawing.Size(562, 570);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -362,13 +366,11 @@
 		private System.Windows.Forms.ToolStripMenuItem TexEditorToolsStrip;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorHasherItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorRaiderItem;
-		private System.Windows.Forms.ColumnHeader ColumnIndex;
-		private System.Windows.Forms.ColumnHeader ColumnKey;
-		private System.Windows.Forms.ColumnHeader ColumnCollectionName;
-		private System.Windows.Forms.ColumnHeader ColumnCompression;
+		private System.Windows.Forms.ColumnHeader ColumnNewName;
 		private System.Windows.Forms.OpenFileDialog AddTextureDialog;
 		private System.Windows.Forms.OpenFileDialog ReplaceTextureDialog;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.SaveFileDialog ExportTextureDialog;
-	}
+        private System.Windows.Forms.ColumnHeader ColumnOriginalName;
+    }
 }

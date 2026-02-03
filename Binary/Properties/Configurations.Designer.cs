@@ -37,21 +37,6 @@ namespace Binary.Properties {
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int GameType
-        {
-            get
-            {
-                return ((int)(this["GameType"]));
-            }
-            set
-            {
-                this["GameType"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string GameDirectory
         {
@@ -127,7 +112,7 @@ namespace Binary.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public int CurrentGame {
             get {
                 return ((int)(this["CurrentGame"]));

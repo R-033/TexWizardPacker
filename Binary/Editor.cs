@@ -28,16 +28,20 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using System.Windows.Forms;
 
 namespace Binary
 {
     public partial class Editor : Form
     {
-        public class TextureList
+        [Serializable]
+        public class MetaFile
         {
-            public string[][] textures { get; set; }
+            public string[][] textures;
         }
+
+        public MetaFile Meta;
 
         private GameINT GameType { get; set; }
         private string GamePath { get; set; }
@@ -65,8 +69,6 @@ namespace Binary
             this.ToggleTheme();
             this.ManageExperimentalFeatures();
             this.Text = $"TexWizard Packer - v{this.ProductVersion}";
-
-            this.LoadPack();
         }
 
         #region Theme
@@ -1264,7 +1266,7 @@ namespace Binary
             else if (collection is TPKBlock tpk)
             {
 
-                using var editor = new TextureEditor(tpk, path)
+                using var editor = new TextureEditor(this, tpk, path)
                 {
                     WindowState = this.WindowState
                 };
@@ -1779,38 +1781,40 @@ namespace Binary
             {
                 this._edited = false;
 
-                if (GameType == GameINT.None)
+                if (this.GameType == GameINT.None)
                 {
 
-                    throw new Exception($"Invalid stated game type named {GameType}");
+                    throw new Exception($"Invalid stated game type named {this.GameType}");
 
                 }
 
-                if (!Directory.Exists(GamePath))
+                if (!Directory.Exists(this.GamePath))
                 {
 
-                    throw new DirectoryNotFoundException($"Directory named {GamePath} does not exist");
+                    throw new DirectoryNotFoundException($"Directory named {this.GamePath} does not exist");
 
                 }
 
-                if (!Directory.Exists(Path.Combine(GamePath, PackPath)))
+                if (!Directory.Exists(Path.Combine(this.GamePath, this.PackPath)))
                 {
 
-                    throw new DirectoryNotFoundException($"Directory named {Path.Combine(GamePath, PackPath)} does not exist");
+                    throw new DirectoryNotFoundException($"Directory named {Path.Combine(this.GamePath, this.PackPath)} does not exist");
 
                 }
 
                 this.EditorPropertyGrid.SelectedObject = null;
-                this.Profile = BaseProfile.NewProfile(GameType, GamePath);
+                this.Profile = BaseProfile.NewProfile(this.GameType, this.GamePath);
                 this.EditorStatusLabel.Text = "Loading... Please wait...";
+
+                this.Refresh();
 
                 var launch = new Launch();
 
                 launch.Usage = eUsage.Modder.ToString();
-                launch.Game = GameType.ToString();
-                launch.Directory = GamePath;
+                launch.Game = this.GameType.ToString();
+                launch.Directory = this.GamePath;
 
-                launch.Files = new List<string>() { Path.Combine(PackPath, "textures.bin") };
+                launch.Files = new List<string>() { Path.Combine(this.PackPath, "textures.bin") };
 
                 launch.Links = new List<SubLoader>()
                 {
@@ -1848,6 +1852,22 @@ namespace Binary
                 var watch = new Stopwatch();
                 watch.Start();
 
+                this.Meta = (MetaFile)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json")), typeof(MetaFile));
+
+                for (int i = 0; i < this.Meta.textures.Length; i++)
+                {
+                    if (!this.Meta.textures[i][0].StartsWith("0x"))
+                    {
+                        this.Meta.textures[i][0].BinHash();
+                        this.Meta.textures[i][0].VltHash();
+                    }
+                    if (!this.Meta.textures[i][1].StartsWith("0x"))
+                    {
+                        this.Meta.textures[i][1].BinHash();
+                        this.Meta.textures[i][1].VltHash();
+                    }
+                }
+
                 string[] exceptions = this.Profile.Load(launch);
 
                 watch.Stop();
@@ -1859,7 +1879,7 @@ namespace Binary
 
                 }
 
-                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, PackPath, "Loading");
+                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, this.PackPath, "Loading");
                 this.LoadTreeView();
                 this.ToggleControlsAfterLoad(true);
 
@@ -2164,9 +2184,9 @@ namespace Binary
 
         #region Editor Main
 
-        private void Editor_Load(object sender, EventArgs e)
+        private void Editor_Shown(object sender, EventArgs e)
         {
-
+            this.LoadPack();
         }
 
         private void Editor_FormClosing(object sender, FormClosingEventArgs e)

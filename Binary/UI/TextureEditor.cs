@@ -31,7 +31,15 @@ namespace Binary.UI
 {
 	public partial class TextureEditor : Form
 	{
-		private TPKBlock TPK { get; }
+        public class OrigTextureLookup
+        {
+            public string FilePath;
+            public uint[] Textures;
+        }
+
+        public static List<OrigTextureLookup> OrigTextureLookupMap = new List<OrigTextureLookup>();
+
+        private TPKBlock TPK { get; }
 		private readonly List<Form> _openforms;
 		private readonly string _tpkpath;
 		public List<string> Commands { get; }
@@ -39,8 +47,11 @@ namespace Binary.UI
 
         private Color HighlightColor { get; set; }
 
-        public TextureEditor(TPKBlock tpk, string path)
+        private Editor editor;
+
+        public TextureEditor(Editor parent, TPKBlock tpk, string path)
 		{
+            this.editor = parent;
 			this.InitializeComponent();
 			this.TPK = tpk;
 			this._tpkpath = path;
@@ -76,8 +87,8 @@ namespace Binary.UI
 			this.TexEditorListView.BackColor = theme.Colors.PrimBackColor;
 			this.TexEditorListView.ForeColor = theme.Colors.PrimForeColor;
 
-			// Property grid
-			this.TexEditorPropertyGrid.BackColor = theme.Colors.PrimBackColor;
+            // Property grid
+            this.TexEditorPropertyGrid.BackColor = theme.Colors.PrimBackColor;
 			this.TexEditorPropertyGrid.CategorySplitterColor = theme.Colors.ButtonBackColor;
 			this.TexEditorPropertyGrid.CategoryForeColor = theme.Colors.TextBoxForeColor;
 			this.TexEditorPropertyGrid.CommandsBackColor = theme.Colors.PrimBackColor;
@@ -147,25 +158,30 @@ namespace Binary.UI
 
 			foreach (var texture in list)
 			{
+                string originalName = "-----";
+                string newName = $"0x{texture.BinKey:X8}";
 
-				var item = new ListViewItem
-				{
-					Text = (count++).ToString()
-				};
+                for (int i = 0; i < editor.Meta.textures.Length; i++)
+                {
+                    if (editor.Meta.textures[i][1].BinHash() == texture.BinKey)
+                    {
+                        originalName = editor.Meta.textures[i][0];
+                        newName = editor.Meta.textures[i][1];
+                        break;
+                    }
+                }
 
-				var asString = texture.Compression.ToString();
+                var item = new ListViewItem
+                {
+                    Text = originalName
+                };
 
-				var compression = asString.Length > 8 ? asString.Substring(8) : asString;
-				item.SubItems.Add($"0x{texture.BinKey:X8}");
-				item.SubItems.Add(texture.CollectionName);
-				item.SubItems.Add(compression);
+                if (originalName == "-----")
+                {
+                    item.BackColor = HighlightColor;
+                }
 
-				if (texture.BinKey != texture.CollectionName.BinHash())
-				{
-
-					item.BackColor = HighlightColor;
-
-				}
+                item.SubItems.Add(newName);
 
 				this.TexEditorListView.Items.Add(item);
 
@@ -207,7 +223,7 @@ namespace Binary.UI
 		{
 			return this.TexEditorListView.SelectedItems.Count == 0
 				? UInt32.MaxValue
-				: (this.TexEditorListView.SelectedItems[0].SubItems[1].Text.TryHexStringToUInt32(out uint result) ? result : 0);
+				: (this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash());
 		}
 
 		private void DisposeImage()
@@ -287,9 +303,10 @@ namespace Binary.UI
 				var index = this.TexEditorListView.SelectedIndices[0];
 				var key = this.GetSelectedKey();
 				this.TPK.RemoveTexture(key, KeyType.BINKEY);
-				this.GenerateRemoveTextureCommand(this.TexEditorListView.Items[index].SubItems[1].Text);
+				this.GenerateRemoveTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}");
 
-				if (this.TPK.TextureCount == 0)
+
+                if (this.TPK.TextureCount == 0)
 				{
 
 					this.LoadListView();
@@ -328,7 +345,7 @@ namespace Binary.UI
 						var index = this.TexEditorListView.SelectedIndices[0];
 						var key = this.GetSelectedKey();
 						this.TPK.CloneTexture(input.Value, key, KeyType.BINKEY);
-						this.GenerateCopyTextureCommand(this.TexEditorListView.Items[index].SubItems[1].Text, input.Value);
+						this.GenerateCopyTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}", input.Value);
 						this.LoadListView(index);
 						break;
 
@@ -545,8 +562,22 @@ namespace Binary.UI
 						if (cname == texture.CollectionName) continue;
 
 						texture.CollectionName = cname;
-						this.TexEditorListView.Items[i].SubItems[1].Text = $"0x{texture.BinKey:X8}";
-						this.TexEditorListView.Items[i].SubItems[2].Text = texture.CollectionName;
+
+                        string originalName = "-----";
+                        string newName = $"0x{texture.BinKey:X8}";
+
+                        for (int j = 0; j < editor.Meta.textures.Length; j++)
+                        {
+                            if (editor.Meta.textures[j][1].BinHash() == texture.BinKey)
+                            {
+                                originalName = editor.Meta.textures[j][0];
+                                newName = editor.Meta.textures[j][1];
+                                break;
+                            }
+                        }
+
+                        this.TexEditorListView.Items[i].SubItems[0].Text = originalName;
+						this.TexEditorListView.Items[i].SubItems[1].Text = newName;
 
 						this.GenerateUpdateTextureCommand(oname, "CollectionName", cname);
 
@@ -594,9 +625,9 @@ namespace Binary.UI
 			}
 
 			var item = this.TexEditorListView.SelectedItems[0];
-			var key = Convert.ToUInt32(item.SubItems[1].Text, 16);
+            var key = item.SubItems[1].Text.BinHash();
 
-			var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
+            var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
 
 			if (texture == null) return;
 
@@ -715,9 +746,9 @@ namespace Binary.UI
 
 		private void TexEditorPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			var key = this.TexEditorListView.SelectedItems[0].SubItems[1].Text;
+            var key = $"0x{this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash():X8}";
 
-			if (e.ChangedItem.Label == nameof(Texture.ClassName) ||
+            if (e.ChangedItem.Label == nameof(Texture.ClassName) ||
 				e.ChangedItem.Label == nameof(Texture.ClassKey) ||
 				e.ChangedItem.Label == nameof(Texture.MipmapBiasInt) ||
 				e.ChangedItem.Label == nameof(Texture.MipmapBiasType))
@@ -730,8 +761,22 @@ namespace Binary.UI
 			{
 
 				var name = e.ChangedItem.Value.ToString();
-				this.TexEditorListView.SelectedItems[0].SubItems[1].Text = name.BinHash().FastToHexString(false);
-				this.TexEditorListView.SelectedItems[0].SubItems[2].Text = name;
+
+                string originalName = "-----";
+                string newName = $"0x{name.BinHash():X8}";
+
+                for (int j = 0; j < editor.Meta.textures.Length; j++)
+                {
+                    if (editor.Meta.textures[j][1].BinHash() == name.BinHash())
+                    {
+                        originalName = editor.Meta.textures[j][0];
+                        newName = editor.Meta.textures[j][1];
+                        break;
+                    }
+                }
+
+                this.TexEditorListView.SelectedItems[0].SubItems[0].Text = originalName;
+                this.TexEditorListView.SelectedItems[0].SubItems[1].Text = newName;
 				this.TexEditorPropertyGrid.Refresh();
 
 			}
@@ -763,8 +808,8 @@ namespace Binary.UI
 
 		private void ReplaceTextureDialog_FileOk(object sender, CancelEventArgs e)
 		{
-			var hash = this.TexEditorListView.SelectedItems[0].SubItems[1].Text;
-			var key = Convert.ToUInt32(hash, 16);
+			var hash = $"0x{this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash():X8}";
+            var key = Convert.ToUInt32(hash, 16);
 
 			try
 			{

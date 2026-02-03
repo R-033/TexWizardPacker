@@ -162,6 +162,7 @@
             this.packList.Size = new System.Drawing.Size(610, 394);
             this.packList.TabIndex = 4;
             this.packList.SelectedIndexChanged += this.packList_SelectedIndexChanged;
+            this.packList.MouseDoubleClick += this.packList_MouseDoubleClick;
             // 
             // createNewButton
             // 
