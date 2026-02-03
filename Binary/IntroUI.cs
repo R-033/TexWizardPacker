@@ -355,9 +355,6 @@ namespace Binary
             Configurations.Default.CurrentGame = this.gameTypePicker.SelectedIndex + 1;
             Configurations.Default.Save();
 
-            // if the game is different we need to forget where the textures were
-            TextureEditor.OrigTextureLookupMap.Clear();
-
             this.ToggleTheme();
         }
 

@@ -35,10 +35,8 @@
             this.TexEditorRemoveTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorCopyTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorReplaceTextureItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TexEditorExportTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorOptionsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorExportAllItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TexEditorImportFromItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorFindReplaceItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorToolsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorHasherItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +92,7 @@
             // 
             // TexEditorTexturesStrip
             // 
-            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem, this.TexEditorReplaceTextureItem, this.TexEditorExportTextureItem });
+            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem, this.TexEditorReplaceTextureItem });
             this.TexEditorTexturesStrip.Name = "TexEditorTexturesStrip";
             this.TexEditorTexturesStrip.Size = new System.Drawing.Size(62, 20);
             this.TexEditorTexturesStrip.Text = "Textures";
@@ -104,7 +102,7 @@
             this.TexEditorAddTextureItem.Name = "TexEditorAddTextureItem";
             this.TexEditorAddTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A;
             this.TexEditorAddTextureItem.Size = new System.Drawing.Size(200, 22);
-            this.TexEditorAddTextureItem.Text = "Add Texture";
+            this.TexEditorAddTextureItem.Text = "Add Texture(s)";
             this.TexEditorAddTextureItem.Click += this.TexEditorAddTextureItem_Click;
             // 
             // TexEditorRemoveTextureItem
@@ -112,7 +110,7 @@
             this.TexEditorRemoveTextureItem.Name = "TexEditorRemoveTextureItem";
             this.TexEditorRemoveTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D;
             this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(200, 22);
-            this.TexEditorRemoveTextureItem.Text = "Remove Texture";
+            this.TexEditorRemoveTextureItem.Text = "Remove Texture(s)";
             this.TexEditorRemoveTextureItem.Click += this.TexEditorRemoveTextureItem_Click;
             // 
             // TexEditorCopyTextureItem
@@ -131,17 +129,9 @@
             this.TexEditorReplaceTextureItem.Text = "Replace Texture";
             this.TexEditorReplaceTextureItem.Click += this.TexEditorReplaceTextureItem_Click;
             // 
-            // TexEditorExportTextureItem
-            // 
-            this.TexEditorExportTextureItem.Name = "TexEditorExportTextureItem";
-            this.TexEditorExportTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E;
-            this.TexEditorExportTextureItem.Size = new System.Drawing.Size(200, 22);
-            this.TexEditorExportTextureItem.Text = "Export Texture";
-            this.TexEditorExportTextureItem.Click += this.TexEditorExportTextureItem_Click;
-            // 
             // TexEditorOptionsStrip
             // 
-            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorImportFromItem, this.TexEditorFindReplaceItem });
+            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorFindReplaceItem });
             this.TexEditorOptionsStrip.Name = "TexEditorOptionsStrip";
             this.TexEditorOptionsStrip.Size = new System.Drawing.Size(61, 20);
             this.TexEditorOptionsStrip.Text = "Options";
@@ -151,16 +141,8 @@
             this.TexEditorExportAllItem.Name = "TexEditorExportAllItem";
             this.TexEditorExportAllItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.E;
             this.TexEditorExportAllItem.Size = new System.Drawing.Size(246, 22);
-            this.TexEditorExportAllItem.Text = "Export All";
+            this.TexEditorExportAllItem.Text = "Export Selected";
             this.TexEditorExportAllItem.Click += this.TexEditorExportAllItem_Click;
-            // 
-            // TexEditorImportFromItem
-            // 
-            this.TexEditorImportFromItem.Name = "TexEditorImportFromItem";
-            this.TexEditorImportFromItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.I;
-            this.TexEditorImportFromItem.Size = new System.Drawing.Size(246, 22);
-            this.TexEditorImportFromItem.Text = "Import From Folder";
-            this.TexEditorImportFromItem.Click += this.TexEditorImportFromItem_Click;
             // 
             // TexEditorFindReplaceItem
             // 
@@ -258,6 +240,7 @@
             this.TexEditorListView.DrawColumnHeader += this.TexEditorListView_DrawColumnHeader;
             this.TexEditorListView.DrawItem += this.TexEditorListView_DrawItem;
             this.TexEditorListView.SelectedIndexChanged += this.TexEditorListView_SelectedIndexChanged;
+            this.TexEditorListView.MultiSelect = true;
             // 
             // ColumnOriginalName
             // 
@@ -305,6 +288,7 @@
             // 
             this.AddTextureDialog.Filter = "Direct Draw Surface Files|*.dds";
             this.AddTextureDialog.FileOk += this.AddTextureDialog_FileOk;
+            this.AddTextureDialog.Multiselect = true;
             // 
             // ReplaceTextureDialog
             // 
@@ -358,10 +342,8 @@
 		private System.Windows.Forms.ToolStripMenuItem TexEditorRemoveTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorCopyTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorReplaceTextureItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorExportTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorOptionsStrip;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorExportAllItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorImportFromItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorFindReplaceItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorToolsStrip;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorHasherItem;

@@ -43,9 +43,9 @@ namespace Binary
 
         public MetaFile Meta;
 
-        private GameINT GameType { get; set; }
-        private string GamePath { get; set; }
-        private string PackPath { get; set; }
+        public GameINT GameType { get; set; }
+        public string GamePath { get; set; }
+        public string PackPath { get; set; }
 
         private BaseProfile Profile { get; set; }
         private readonly List<Form> _openforms;
