@@ -6,7 +6,10 @@ using Binary.Tools;
 using CoreExtensions.Management;
 using CoreExtensions.Text;
 
+using Endscript.Core;
 using Endscript.Enums;
+using Endscript.Helpers;
+using Endscript.Profiles;
 
 using ILWrapper.Enums;
 
@@ -21,11 +24,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
-using System.Linq;
 
 namespace Binary.UI
 {
@@ -147,7 +149,7 @@ namespace Binary.UI
                 string originalName = "-----";
                 string newName = texture.BinKey != texture.CollectionName.BinHash() ? $"0x{texture.BinKey:X8}" : texture.CollectionName;
 
-                for (int i = 0; i < editor.Meta.textures.Length; i++)
+                for (int i = 0; i < editor.Meta.textures.Count; i++)
                 {
                     if (editor.Meta.textures[i][1].BinHash() == texture.BinKey)
                     {
@@ -212,11 +214,16 @@ namespace Binary.UI
 
         #endregion
 
+        private static string loadedAuxFile;
+        private static BaseProfile auxProfile;
+
         private void ImportTexture(string textureName, string filePath, string sourceFile, bool copyParams)
         {
             try
             {
-                this.TPK.AddTexture(textureName, filePath);
+                var newName = "_" + textureName; // todo
+
+                this.TPK.AddTexture(newName, filePath);
 
                 if (this.TexEditorListView.SelectedIndices.Count > 0)
                 {
@@ -225,10 +232,63 @@ namespace Binary.UI
 
                 }
                 else this.LoadListView();
-                this.GenerateAddTextureCommand(textureName, this.AddTextureDialog.FileName);
+                this.GenerateAddTextureCommand(newName, this.AddTextureDialog.FileName);
 
-                this.TPK.FindTexture(textureName.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
-                this.GenerateUpdateTextureCommand(textureName, "RenderingOrder", "0");
+                if (copyParams)
+                {
+                    if (loadedAuxFile != sourceFile)
+                    {
+                        loadedAuxFile = sourceFile;
+
+                        try
+                        {
+                            if (File.Exists(Path.Combine(editor.GamePath, sourceFile)))
+                            {
+                                auxProfile = BaseProfile.NewProfile(editor.GameType, editor.GamePath);
+
+                                var launch = new Launch();
+
+                                launch.Usage = eUsage.Modder.ToString();
+                                launch.Game = editor.GameType.ToString();
+                                launch.Directory = editor.GamePath;
+
+                                launch.Files = new List<string>() { sourceFile };
+
+                                auxProfile.Load(launch);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            auxProfile = null;
+                        }
+                    }
+
+                    if (auxProfile != null)
+                    {
+                        // todo
+                    }
+                }
+
+                bool found = false;
+
+                for (int j = 0; j < editor.Meta.textures.Count; j++)
+                {
+                    if (editor.Meta.textures[j][0].BinHash() == textureName.BinHash())
+                    {
+                        editor.Meta.textures[j][1] = newName;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    editor.Meta.textures.Add(new string[] { textureName, newName });
+                }
+
+                this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
+                this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0");
             }
             catch (Exception ex)
             {
@@ -373,7 +433,7 @@ namespace Binary.UI
                     var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
                     var name = texture.BinKey == texture.CollectionName.BinHash() ? texture.CollectionName : $"0x{texture.BinKey:X8}";
 
-                    for (int j = 0; j < editor.Meta.textures.Length; j++)
+                    for (int j = 0; j < editor.Meta.textures.Count; j++)
                     {
                         if (editor.Meta.textures[j][1].BinHash() == texture.BinKey)
                         {
@@ -433,7 +493,7 @@ namespace Binary.UI
                         string originalName = "-----";
                         string newName = texture.CollectionName;
 
-                        for (int j = 0; j < editor.Meta.textures.Length; j++)
+                        for (int j = 0; j < editor.Meta.textures.Count; j++)
                         {
                             if (editor.Meta.textures[j][1].BinHash() == texture.BinKey)
                             {
@@ -642,7 +702,7 @@ namespace Binary.UI
                 string originalName = "-----";
                 string newName = name;
 
-                for (int j = 0; j < editor.Meta.textures.Length; j++)
+                for (int j = 0; j < editor.Meta.textures.Count; j++)
                 {
                     if (editor.Meta.textures[j][1].BinHash() == name.BinHash())
                     {

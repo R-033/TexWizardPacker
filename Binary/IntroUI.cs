@@ -14,6 +14,7 @@ using Endscript.Profiles;
 using Nikki.Core;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Binary
         [Serializable]
         public class TWConfig
         {
-            public string[] packs;
+            public List<string> packs = new List<string>();
         }
 
         private TWConfig Config;
@@ -311,13 +312,10 @@ namespace Binary
                     if (!File.Exists(Path.Combine(newPath, "meta.json")))
                     {
                         var meta = new Editor.MetaFile();
-                        meta.textures = new string[0][];
                         File.WriteAllText(Path.Combine(newPath, "meta.json"), JsonConvert.SerializeObject(meta, Formatting.Indented));
                     }
 
-                    var l = Config.packs.ToList();
-                    l.Add(Path.GetRelativePath(gamePath, newPath));
-                    Config.packs = l.ToArray();
+                    Config.packs.Add(Path.GetRelativePath(gamePath, newPath));
 
                     File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 
@@ -409,7 +407,6 @@ namespace Binary
                 try
                 {
                     var config = new TWConfig();
-                    config.packs = new string[0];
                     File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
                 }
                 catch (Exception ex)
@@ -423,7 +420,7 @@ namespace Binary
             {
                 Config = (TWConfig)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(gamePath, "scripts", "TexWizard.json")), typeof(TWConfig));
 
-                for (int i = 0; i < Config.packs.Length; i++)
+                for (int i = 0; i < Config.packs.Count; i++)
                 {
                     this.packList.Items.Add(Config.packs[i]);
                 }
@@ -458,9 +455,7 @@ namespace Binary
                 {
                     string gamePath = this.gameDirPath.Text;
 
-                    var l = Config.packs.ToList();
-                    l.RemoveAt(this.packList.SelectedIndex);
-                    Config.packs = l.ToArray();
+                    Config.packs.RemoveAt(this.packList.SelectedIndex);
 
                     File.WriteAllText(Path.Combine(gamePath, "scripts", "TexWizard.json"), JsonConvert.SerializeObject(Config, Formatting.Indented));
 

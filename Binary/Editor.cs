@@ -38,7 +38,7 @@ namespace Binary
         [Serializable]
         public class MetaFile
         {
-            public string[][] textures;
+            public List<string[]> textures = new List<string[]>();
         }
 
         public MetaFile Meta;
@@ -1840,7 +1840,7 @@ namespace Binary
 
                 this.Meta = (MetaFile)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json")), typeof(MetaFile));
 
-                for (int i = 0; i < this.Meta.textures.Length; i++)
+                for (int i = 0; i < this.Meta.textures.Count; i++)
                 {
                     if (!this.Meta.textures[i][0].StartsWith("0x"))
                     {
