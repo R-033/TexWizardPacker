@@ -221,19 +221,6 @@ namespace Binary.UI
         {
             try
             {
-                var newName = "_" + textureName; // todo
-
-                this.TPK.AddTexture(newName, filePath);
-
-                if (this.TexEditorListView.SelectedIndices.Count > 0)
-                {
-
-                    this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-
-                }
-                else this.LoadListView();
-                this.GenerateAddTextureCommand(newName, this.AddTextureDialog.FileName);
-
                 if (copyParams)
                 {
                     if (loadedAuxFile != sourceFile)
@@ -263,7 +250,23 @@ namespace Binary.UI
                             auxProfile = null;
                         }
                     }
+                }
 
+                var newName = "_" + textureName; // todo
+
+                this.TPK.AddTexture(newName, filePath);
+
+                if (this.TexEditorListView.SelectedIndices.Count > 0)
+                {
+
+                    this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+
+                }
+                else this.LoadListView();
+                this.GenerateAddTextureCommand(newName, this.AddTextureDialog.FileName);
+
+                if (copyParams)
+                {
                     if (auxProfile != null)
                     {
                         // todo
