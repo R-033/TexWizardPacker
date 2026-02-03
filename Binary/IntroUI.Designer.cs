@@ -36,7 +36,6 @@
             this.PictureBoxTools = new System.Windows.Forms.PictureBox();
             this.PictureBoxTheme = new System.Windows.Forms.PictureBox();
             this.ToolsMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.newLauncherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hasherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.raiderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.swatcherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,19 +105,10 @@
             // 
             // ToolsMenu
             // 
-            this.ToolsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.newLauncherToolStripMenuItem, this.hasherToolStripMenuItem, this.raiderToolStripMenuItem, this.swatcherToolStripMenuItem, this.settingsToolStripMenuItem });
+            this.ToolsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.hasherToolStripMenuItem, this.raiderToolStripMenuItem, this.swatcherToolStripMenuItem, this.settingsToolStripMenuItem });
             this.ToolsMenu.Name = "ToolsMenu";
             this.ToolsMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.ToolsMenu.Size = new System.Drawing.Size(203, 114);
-            // 
-            // newLauncherToolStripMenuItem
-            // 
-            this.newLauncherToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.newLauncherToolStripMenuItem.Name = "newLauncherToolStripMenuItem";
-            this.newLauncherToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N;
-            this.newLauncherToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.newLauncherToolStripMenuItem.Text = "New Launcher...";
-            this.newLauncherToolStripMenuItem.Click += this.newLauncherToolStripMenuItem_Click;
             // 
             // hasherToolStripMenuItem
             // 
@@ -297,7 +287,6 @@
 		private System.Windows.Forms.PictureBox PictureBoxTools;
 		private System.Windows.Forms.PictureBox PictureBoxTheme;
         private System.Windows.Forms.ContextMenuStrip ToolsMenu;
-        private System.Windows.Forms.ToolStripMenuItem newLauncherToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hasherToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem raiderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem swatcherToolStripMenuItem;

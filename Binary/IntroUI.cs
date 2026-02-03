@@ -61,8 +61,6 @@ namespace Binary
 
             this.ToolsMenu.BackColor = theme.Colors.MainBackColor;
             this.ToolsMenu.ForeColor = theme.Colors.LabelTextColor;
-            this.newLauncherToolStripMenuItem.ForeColor = theme.Colors.MenuItemForeColor;
-            this.newLauncherToolStripMenuItem.BackColor = theme.Colors.MenuItemBackColor;
             this.hasherToolStripMenuItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.hasherToolStripMenuItem.BackColor = theme.Colors.MenuItemBackColor;
             this.raiderToolStripMenuItem.ForeColor = theme.Colors.MenuItemForeColor;
