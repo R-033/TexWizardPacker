@@ -34,7 +34,6 @@
             this.TexEditorAddTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorRemoveTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorCopyTextureItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TexEditorReplaceTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorOptionsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorExportAllItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorFindReplaceItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +49,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.TexEditorImage = new System.Windows.Forms.PictureBox();
             this.AddTextureDialog = new System.Windows.Forms.OpenFileDialog();
-            this.ReplaceTextureDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportTextureDialog = new System.Windows.Forms.SaveFileDialog();
             this.TexEditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
@@ -92,7 +90,7 @@
             // 
             // TexEditorTexturesStrip
             // 
-            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem, this.TexEditorReplaceTextureItem });
+            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem });
             this.TexEditorTexturesStrip.Name = "TexEditorTexturesStrip";
             this.TexEditorTexturesStrip.Size = new System.Drawing.Size(62, 20);
             this.TexEditorTexturesStrip.Text = "Textures";
@@ -101,15 +99,15 @@
             // 
             this.TexEditorAddTextureItem.Name = "TexEditorAddTextureItem";
             this.TexEditorAddTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A;
-            this.TexEditorAddTextureItem.Size = new System.Drawing.Size(200, 22);
-            this.TexEditorAddTextureItem.Text = "Add Texture(s)";
+            this.TexEditorAddTextureItem.Size = new System.Drawing.Size(235, 22);
+            this.TexEditorAddTextureItem.Text = "Add/Update Texture(s)";
             this.TexEditorAddTextureItem.Click += this.TexEditorAddTextureItem_Click;
             // 
             // TexEditorRemoveTextureItem
             // 
             this.TexEditorRemoveTextureItem.Name = "TexEditorRemoveTextureItem";
             this.TexEditorRemoveTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D;
-            this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(200, 22);
+            this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(235, 22);
             this.TexEditorRemoveTextureItem.Text = "Remove Texture(s)";
             this.TexEditorRemoveTextureItem.Click += this.TexEditorRemoveTextureItem_Click;
             // 
@@ -117,17 +115,9 @@
             // 
             this.TexEditorCopyTextureItem.Name = "TexEditorCopyTextureItem";
             this.TexEditorCopyTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C;
-            this.TexEditorCopyTextureItem.Size = new System.Drawing.Size(200, 22);
+            this.TexEditorCopyTextureItem.Size = new System.Drawing.Size(235, 22);
             this.TexEditorCopyTextureItem.Text = "Copy Texture";
             this.TexEditorCopyTextureItem.Click += this.TexEditorCopyTextureItem_Click;
-            // 
-            // TexEditorReplaceTextureItem
-            // 
-            this.TexEditorReplaceTextureItem.Name = "TexEditorReplaceTextureItem";
-            this.TexEditorReplaceTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R;
-            this.TexEditorReplaceTextureItem.Size = new System.Drawing.Size(200, 22);
-            this.TexEditorReplaceTextureItem.Text = "Replace Texture";
-            this.TexEditorReplaceTextureItem.Click += this.TexEditorReplaceTextureItem_Click;
             // 
             // TexEditorOptionsStrip
             // 
@@ -140,7 +130,7 @@
             // 
             this.TexEditorExportAllItem.Name = "TexEditorExportAllItem";
             this.TexEditorExportAllItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.E;
-            this.TexEditorExportAllItem.Size = new System.Drawing.Size(246, 22);
+            this.TexEditorExportAllItem.Size = new System.Drawing.Size(239, 22);
             this.TexEditorExportAllItem.Text = "Export Selected";
             this.TexEditorExportAllItem.Click += this.TexEditorExportAllItem_Click;
             // 
@@ -148,7 +138,7 @@
             // 
             this.TexEditorFindReplaceItem.Name = "TexEditorFindReplaceItem";
             this.TexEditorFindReplaceItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.R;
-            this.TexEditorFindReplaceItem.Size = new System.Drawing.Size(246, 22);
+            this.TexEditorFindReplaceItem.Size = new System.Drawing.Size(239, 22);
             this.TexEditorFindReplaceItem.Text = "Find And Replace";
             this.TexEditorFindReplaceItem.Click += this.TexEditorFindReplaceItem_Click;
             // 
@@ -228,7 +218,6 @@
             this.TexEditorListView.FullRowSelect = true;
             this.TexEditorListView.Location = new System.Drawing.Point(12, 3);
             this.TexEditorListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.TexEditorListView.MultiSelect = false;
             this.TexEditorListView.Name = "TexEditorListView";
             this.TexEditorListView.OwnerDraw = true;
             this.TexEditorListView.Size = new System.Drawing.Size(514, 261);
@@ -240,17 +229,16 @@
             this.TexEditorListView.DrawColumnHeader += this.TexEditorListView_DrawColumnHeader;
             this.TexEditorListView.DrawItem += this.TexEditorListView_DrawItem;
             this.TexEditorListView.SelectedIndexChanged += this.TexEditorListView_SelectedIndexChanged;
-            this.TexEditorListView.MultiSelect = true;
             // 
             // ColumnOriginalName
             // 
             this.ColumnOriginalName.Text = "Original Name";
-            this.ColumnOriginalName.Width = 245;
+            this.ColumnOriginalName.Width = 240;
             // 
             // ColumnNewName
             // 
             this.ColumnNewName.Text = "New Name";
-            this.ColumnNewName.Width = 245;
+            this.ColumnNewName.Width = 240;
             // 
             // TexEditorPropertyGrid
             // 
@@ -259,7 +247,7 @@
             this.TexEditorPropertyGrid.Location = new System.Drawing.Point(14, 3);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 284);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 282);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
             // 
@@ -270,7 +258,7 @@
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(562, 570);
+            this.panel1.Size = new System.Drawing.Size(560, 570);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -287,13 +275,7 @@
             // AddTextureDialog
             // 
             this.AddTextureDialog.Filter = "Direct Draw Surface Files|*.dds";
-            this.AddTextureDialog.FileOk += this.AddTextureDialog_FileOk;
             this.AddTextureDialog.Multiselect = true;
-            // 
-            // ReplaceTextureDialog
-            // 
-            this.ReplaceTextureDialog.Filter = "Direct Draw Surface Files|*.dds";
-            this.ReplaceTextureDialog.FileOk += this.ReplaceTextureDialog_FileOk;
             // 
             // TextureEditor
             // 
@@ -341,7 +323,6 @@
 		private System.Windows.Forms.ToolStripMenuItem TexEditorAddTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorRemoveTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorCopyTextureItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorReplaceTextureItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorOptionsStrip;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorExportAllItem;
 		private System.Windows.Forms.ToolStripMenuItem TexEditorFindReplaceItem;
@@ -350,7 +331,6 @@
 		private System.Windows.Forms.ToolStripMenuItem TexEditorRaiderItem;
 		private System.Windows.Forms.ColumnHeader ColumnNewName;
 		private System.Windows.Forms.OpenFileDialog AddTextureDialog;
-		private System.Windows.Forms.OpenFileDialog ReplaceTextureDialog;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.SaveFileDialog ExportTextureDialog;
         private System.Windows.Forms.ColumnHeader ColumnOriginalName;

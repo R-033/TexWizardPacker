@@ -116,6 +116,11 @@ namespace Binary
 
             this.gameTypePicker.BackColor = theme.Colors.TextBoxBackColor;
             this.gameTypePicker.ForeColor = theme.Colors.TextBoxForeColor;
+
+            this.tabPage1.BackColor = theme.Colors.ButtonBackColor;
+            this.tabPage1.ForeColor = theme.Colors.ButtonForeColor;
+            this.tabPage2.BackColor = theme.Colors.ButtonBackColor;
+            this.tabPage2.ForeColor = theme.Colors.ButtonForeColor;
         }
 
         #endregion
@@ -128,7 +133,7 @@ namespace Binary
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
 
-            using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, this.packList.Items[this.packList.SelectedIndex] as string) { StartPosition = start, WindowState = state })
+            using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, this.packList.Items[this.packList.SelectedIndex] as string, true) { StartPosition = start, WindowState = state })
             {
 
                 editor.ShowDialog();

@@ -170,13 +170,13 @@ namespace Binary
             return launch;
         }
 
-        public static TreeNode GetTreeNodesFromSDB(SynchronizedDatabase sdb)
+        public static TreeNode GetTreeNodesFromSDB(SynchronizedDatabase sdb, bool tpkBlocksOnly)
         {
             var result = new TreeNode(sdb.Filename);
 
             foreach (var manager in sdb.Database.Managers)
             {
-                if (manager.Name != "TPKBlocks")
+                if (tpkBlocksOnly && manager.Name != "TPKBlocks")
                 {
                     continue;
                 }

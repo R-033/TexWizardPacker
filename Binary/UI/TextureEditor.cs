@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -125,8 +126,6 @@ namespace Binary.UI
 			this.TexEditorRaiderItem.ForeColor = theme.Colors.MenuItemForeColor;
 			this.TexEditorRemoveTextureItem.BackColor = theme.Colors.MenuItemBackColor;
 			this.TexEditorRemoveTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorReplaceTextureItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorReplaceTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
 
             // Highlight color
             this.HighlightColor = theme.DarkTheme
@@ -164,7 +163,7 @@ namespace Binary.UI
                     Text = originalName
                 };
 
-                if (originalName == "-----" || originalName == newName)
+                if (editor.IsTexturePack && (originalName == "-----" || originalName == newName))
                 {
                     item.BackColor = HighlightColor;
                 }
@@ -189,7 +188,6 @@ namespace Binary.UI
 		{
             this.TexEditorRemoveTextureItem.Enabled = this.TexEditorListView.SelectedItems.Count > 0;
             this.TexEditorCopyTextureItem.Enabled = this.TexEditorListView.SelectedItems.Count == 1;
-            this.TexEditorReplaceTextureItem.Enabled = this.TexEditorListView.SelectedItems.Count == 1;
             this.TexEditorExportAllItem.Enabled = this.TexEditorListView.SelectedItems.Count > 0;
         }
 
@@ -217,10 +215,39 @@ namespace Binary.UI
         private static string loadedAuxFile;
         private static BaseProfile auxProfile;
 
-        private void ImportTexture(string textureName, string filePath, string sourceFile, bool copyParams)
+        private static Texture FindAuxTexture(string textureName)
+        {
+            foreach (var sdb in auxProfile)
+            {
+                foreach (var manager in sdb.Database.Managers)
+                {
+                    foreach (var collection in manager)
+                    {
+                        if (collection is TPKBlock tpk)
+                        {
+                            var result = tpk.FindTexture(textureName.BinHash(), KeyType.BINKEY);
+                            
+                            if (result != null)
+                            {
+                                return result;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private void ImportTexture(string textureName, string filePath, string sourceFile, bool copyParams, List<string> couldntFindThese)
         {
             try
             {
+                if (!Comp.IsDDSTexture(filePath, out string error))
+                {
+                    throw new Exception(error);
+                }
+
                 if (copyParams)
                 {
                     if (loadedAuxFile != sourceFile)
@@ -254,44 +281,91 @@ namespace Binary.UI
 
                 var newName = "_" + textureName; // todo
 
-                this.TPK.AddTexture(newName, filePath);
-
-                if (this.TexEditorListView.SelectedIndices.Count > 0)
+                if (!editor.IsTexturePack)
                 {
-
-                    this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-
+                    newName = textureName;
                 }
-                else this.LoadListView();
-                this.GenerateAddTextureCommand(newName, this.AddTextureDialog.FileName);
+
+                var prevTexture = this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY);
+
+                if (prevTexture != null)
+                {
+                    prevTexture.Reload(filePath);
+                    this.GenerateReplaceTextureCommand(newName, filePath);
+                }
+                else
+                {
+                    this.TPK.AddTexture(newName, filePath);
+                    this.GenerateAddTextureCommand(newName, filePath);
+                }
+
+                bool copied = false;
 
                 if (copyParams)
                 {
                     if (auxProfile != null)
                     {
-                        // todo
+                        Texture origTex = FindAuxTexture(textureName);
+
+                        if (origTex != null)
+                        {
+                            var newTex = this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY);
+
+                            newTex.ClassKey = origTex.ClassKey;
+                            newTex.MipmapBiasType = origTex.MipmapBiasType;
+                            newTex.BiasLevel = origTex.BiasLevel;
+                            newTex.AlphaUsageType = origTex.AlphaUsageType;
+                            newTex.AlphaBlendType = origTex.AlphaBlendType;
+                            newTex.ApplyAlphaSort = origTex.ApplyAlphaSort;
+                            newTex.ScrollType = origTex.ScrollType;
+                            newTex.RenderingOrder = origTex.RenderingOrder;
+                            newTex.TileableUV = origTex.TileableUV;
+                            newTex.OffsetS = origTex.OffsetS;
+                            newTex.OffsetT = origTex.OffsetT;
+                            newTex.ScaleS = origTex.ScaleS;
+                            newTex.ScaleT = origTex.ScaleT;
+                            newTex.ScrollTimestep = origTex.ScrollTimestep;
+                            newTex.ScrollSpeedS = origTex.ScrollSpeedS;
+                            newTex.ScrollSpeedT = origTex.ScrollSpeedT;
+                            newTex.Flags = origTex.Flags;
+
+                            // todo gen commands?
+
+                            copied = true;
+                        }
                     }
                 }
 
-                bool found = false;
-
-                for (int j = 0; j < editor.Meta.textures.Count; j++)
+                if (!copied)
                 {
-                    if (editor.Meta.textures[j][0].BinHash() == textureName.BinHash())
+                    if (copyParams && auxProfile != null)
                     {
-                        editor.Meta.textures[j][1] = newName;
-                        found = true;
-                        break;
+                        couldntFindThese.Add(textureName);
+                    }
+
+                    this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
+                    this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0");
+                }
+
+                if (editor.IsTexturePack)
+                {
+                    bool found = false;
+
+                    for (int j = 0; j < editor.Meta.textures.Count; j++)
+                    {
+                        if (editor.Meta.textures[j][0].BinHash() == textureName.BinHash())
+                        {
+                            editor.Meta.textures[j][1] = newName;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        editor.Meta.textures.Add(new string[] { textureName, newName });
                     }
                 }
-
-                if (!found)
-                {
-                    editor.Meta.textures.Add(new string[] { textureName, newName });
-                }
-
-                this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
-                this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0");
             }
             catch (Exception ex)
             {
@@ -313,9 +387,41 @@ namespace Binary.UI
 
                     if (input.ShowDialog() == DialogResult.OK)
                     {
+                        var couldntFindThese = new List<string>();
+
                         foreach (var fileName in this.AddTextureDialog.FileNames)
                         {
-                            this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, input.SourceFile, input.CopyParams);
+                            this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, input.SourceFile, input.CopyParams, couldntFindThese);
+                        }
+
+                        if (this.TexEditorListView.SelectedIndices.Count > 0)
+                        {
+                            this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+                        }
+                        else
+                        {
+                            this.LoadListView();
+                        }
+
+                        if (couldntFindThese.Count > 0)
+                        {
+                            if (couldntFindThese.Count > 10)
+                            {
+                                MessageBox.Show("Couldn't find " + couldntFindThese.Count + " original textures in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                string message = "Couldn't find these textures in " + loadedAuxFile + ":\n\n";
+
+                                foreach (var tex in couldntFindThese)
+                                {
+                                    message += tex + "\n";
+                                }
+
+                                message += "\nUsed default parameters.";
+
+                                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
@@ -326,7 +432,23 @@ namespace Binary.UI
 
                     if (input.ShowDialog() == DialogResult.OK)
                     {
-                        this.ImportTexture(input.Value, this.AddTextureDialog.FileName, input.SourceFile, input.CopyParams);
+                        var couldntFindThese = new List<string>();
+
+                        this.ImportTexture(input.Value, this.AddTextureDialog.FileName, input.SourceFile, input.CopyParams, couldntFindThese);
+
+                        if (this.TexEditorListView.SelectedIndices.Count > 0)
+                        {
+                            this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+                        }
+                        else
+                        {
+                            this.LoadListView();
+                        }
+
+                        if (couldntFindThese.Count > 0)
+                        {
+                            MessageBox.Show("Couldn't find the original texture in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
 			}
@@ -411,11 +533,6 @@ namespace Binary.UI
 				}
 
 			}
-		}
-
-		private void TexEditorReplaceTextureItem_Click(object sender, EventArgs e)
-		{
-			this.ReplaceTextureDialog.ShowDialog();
 		}
 
 		private void TexEditorExportAllItem_Click(object sender, EventArgs e)
@@ -722,58 +839,6 @@ namespace Binary.UI
 			}
 
 			this.GenerateUpdateTextureCommand(key, e.ChangedItem.Label, e.ChangedItem.Value.ToString());
-		}
-
-		private void AddTextureDialog_FileOk(object sender, CancelEventArgs e)
-		{
-			try
-			{
-
-				if (!Comp.IsDDSTexture(this.AddTextureDialog.FileName, out string error))
-				{
-
-					throw new Exception(error);
-
-				}
-
-			}
-			catch (Exception ex)
-			{
-
-				MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				e.Cancel = true;
-
-			}
-		}
-
-		private void ReplaceTextureDialog_FileOk(object sender, CancelEventArgs e)
-		{
-			var hash = $"0x{this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash():X8}";
-            var key = Convert.ToUInt32(hash, 16);
-
-			try
-			{
-
-				if (!Comp.IsDDSTexture(this.ReplaceTextureDialog.FileName, out string error))
-				{
-
-					throw new Exception(error);
-
-				}
-
-				var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
-				texture.Reload(this.ReplaceTextureDialog.FileName);
-				this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-				this.GenerateReplaceTextureCommand(hash, this.ReplaceTextureDialog.FileName);
-
-			}
-			catch (Exception ex)
-			{
-
-				MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				e.Cancel = true;
-
-			}
 		}
 
 		private void TextureEditor_FormClosing(object sender, FormClosingEventArgs e)

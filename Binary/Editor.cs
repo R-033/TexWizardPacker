@@ -46,6 +46,7 @@ namespace Binary
         public GameINT GameType { get; set; }
         public string GamePath { get; set; }
         public string PackPath { get; set; }
+        public bool IsTexturePack { get; set; }
 
         private BaseProfile Profile { get; set; }
         private readonly List<Form> _openforms;
@@ -57,11 +58,12 @@ namespace Binary
         private Color HighlightColor2 { get; set; }
         private Color HighlightColor3 { get; set; }
 
-        public Editor(GameINT gameType, string gamePath, string packPath)
+        public Editor(GameINT gameType, string gamePath, string packPath, bool isTexturePack)
         {
             this.GameType = gameType;
             this.GamePath = gamePath;
             this.PackPath = packPath;
+            this.IsTexturePack = isTexturePack;
 
             this._openforms = new List<Form>();
             this.InitializeComponent();
@@ -1106,7 +1108,10 @@ namespace Binary
                         string str = this.GenerateEndCommand(eCommandType.add_collection, path, input.Value);
                         this.WriteLineToEndCommandPrompt(str);
                         var collection = manager[manager.IndexOf(input.Value)] as Collectable;
-                        _ = this.EditorTreeView.SelectedNode.Nodes.Add(Utils.GetCollectionNodes(collection));
+                        var newNode = Utils.GetCollectionNodes(collection);
+                        this.EditorTreeView.SelectedNode.Nodes.Add(newNode);
+                        this.EditorTreeView.SelectedNode.Expand();
+                        newNode.Expand();
                         this._edited = true;
                         break;
 
@@ -1838,19 +1843,38 @@ namespace Binary
                 var watch = new Stopwatch();
                 watch.Start();
 
-                this.Meta = (MetaFile)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json")), typeof(MetaFile));
-
-                for (int i = 0; i < this.Meta.textures.Count; i++)
+                if (this.IsTexturePack)
                 {
-                    if (!this.Meta.textures[i][0].StartsWith("0x"))
+                    this.Meta = (MetaFile)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json")), typeof(MetaFile));
+
+                    for (int i = 0; i < this.Meta.textures.Count; i++)
                     {
-                        this.Meta.textures[i][0].BinHash();
-                        this.Meta.textures[i][0].VltHash();
+                        if (!this.Meta.textures[i][0].StartsWith("0x"))
+                        {
+                            this.Meta.textures[i][0].BinHash();
+                            this.Meta.textures[i][0].VltHash();
+                        }
+                        if (!this.Meta.textures[i][1].StartsWith("0x"))
+                        {
+                            this.Meta.textures[i][1].BinHash();
+                            this.Meta.textures[i][1].VltHash();
+                        }
                     }
-                    if (!this.Meta.textures[i][1].StartsWith("0x"))
+                }
+
+                if (File.Exists(Program.MainHashListVLT))
+                {
+                    foreach (var line in File.ReadLines(Program.MainHashListVLT))
                     {
-                        this.Meta.textures[i][1].BinHash();
-                        this.Meta.textures[i][1].VltHash();
+                        line.VltHash();
+                    }
+                }
+
+                if (File.Exists(Program.CustomHashListVLT))
+                {
+                    foreach (var line in File.ReadLines(Program.CustomHashListVLT))
+                    {
+                        line.VltHash();
                     }
                 }
 
@@ -1896,7 +1920,7 @@ namespace Binary
 
             foreach (var sdb in this.Profile)
             {
-                var n = Utils.GetTreeNodesFromSDB(sdb);
+                var n = Utils.GetTreeNodesFromSDB(sdb, IsTexturePack);
                 this.EditorTreeView.Nodes.Add(n);
 
             }
@@ -1943,7 +1967,10 @@ namespace Binary
 
                 string[] exceptions = this.Profile.Save();
 
-                File.WriteAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json"), JsonConvert.SerializeObject(this.Meta, Formatting.Indented));
+                if (this.IsTexturePack)
+                {
+                    File.WriteAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json"), JsonConvert.SerializeObject(this.Meta, Formatting.Indented));
+                }
 
                 watch.Stop();
 

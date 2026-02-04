@@ -23,6 +23,9 @@ namespace Binary
 {
     static class Program
     {
+        public static string MainHashListVLT { get; set; }
+        public static string CustomHashListVLT { get; set; }
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -103,6 +106,8 @@ namespace Binary
             string userug1 = Path.Combine(thispath, @"userkeys\underground1.txt");
             string mainug2 = Path.Combine(thispath, @"mainkeys\underground2.txt");
             string userug2 = Path.Combine(thispath, @"userkeys\underground2.txt");
+            string mainvlt = Path.Combine(thispath, @"mainkeys\vltkeys.txt");
+            string uservlt = Path.Combine(thispath, @"userkeys\vltkeys.txt");
             string usercustattr = Path.Combine(thispath, @"userkeys\CustomAttributes.txt");
 
             CarbonProfile.MainHashList = mainc;
@@ -117,6 +122,8 @@ namespace Binary
             Underground1Profile.CustomHashList = userug1;
             Underground2Profile.MainHashList = mainug2;
             Underground2Profile.CustomHashList = userug2;
+            MainHashListVLT = mainvlt;
+            CustomHashListVLT = uservlt;
             Nikki.Core.Map.CustomAttribFile = usercustattr;
 
             if (!Directory.Exists(userdir))
@@ -130,6 +137,7 @@ namespace Binary
             if (!File.Exists(useruc)) { _ = File.Create(useruc); }
             if (!File.Exists(userug1)) { _ = File.Create(userug1); }
             if (!File.Exists(userug2)) { _ = File.Create(userug2); }
+            if (!File.Exists(uservlt)) { _ = File.Create(uservlt); }
             if (!File.Exists(usercustattr)) { _ = File.Create(usercustattr); }
         }
 

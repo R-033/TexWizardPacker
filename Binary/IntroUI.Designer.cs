@@ -51,10 +51,15 @@
             this.removeButton = new System.Windows.Forms.Button();
             this.upButton = new System.Windows.Forms.Button();
             this.downButton = new System.Windows.Forms.Button();
+            this.tabs = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxUpdates).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTools).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTheme).BeginInit();
             this.ToolsMenu.SuspendLayout();
+            this.tabs.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // LabelBinary
@@ -108,13 +113,13 @@
             this.ToolsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.hasherToolStripMenuItem, this.raiderToolStripMenuItem, this.swatcherToolStripMenuItem, this.settingsToolStripMenuItem });
             this.ToolsMenu.Name = "ToolsMenu";
             this.ToolsMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ToolsMenu.Size = new System.Drawing.Size(203, 114);
+            this.ToolsMenu.Size = new System.Drawing.Size(168, 92);
             // 
             // hasherToolStripMenuItem
             // 
             this.hasherToolStripMenuItem.Name = "hasherToolStripMenuItem";
             this.hasherToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H;
-            this.hasherToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.hasherToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.hasherToolStripMenuItem.Text = "Hasher...";
             this.hasherToolStripMenuItem.Click += this.hasherToolStripMenuItem_Click;
             // 
@@ -122,7 +127,7 @@
             // 
             this.raiderToolStripMenuItem.Name = "raiderToolStripMenuItem";
             this.raiderToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R;
-            this.raiderToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.raiderToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.raiderToolStripMenuItem.Text = "Raider...";
             this.raiderToolStripMenuItem.Click += this.raiderToolStripMenuItem_Click;
             // 
@@ -130,7 +135,7 @@
             // 
             this.swatcherToolStripMenuItem.Name = "swatcherToolStripMenuItem";
             this.swatcherToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S;
-            this.swatcherToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.swatcherToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.swatcherToolStripMenuItem.Text = "Swatcher...";
             this.swatcherToolStripMenuItem.Click += this.swatcherToolStripMenuItem_Click;
             // 
@@ -138,7 +143,7 @@
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.O;
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.settingsToolStripMenuItem.Text = "Settings...";
             this.settingsToolStripMenuItem.Click += this.settingsToolStripMenuItem_Click;
             // 
@@ -147,9 +152,9 @@
             this.packList.Enabled = false;
             this.packList.FormattingEnabled = true;
             this.packList.ItemHeight = 15;
-            this.packList.Location = new System.Drawing.Point(16, 126);
+            this.packList.Location = new System.Drawing.Point(0, 0);
             this.packList.Name = "packList";
-            this.packList.Size = new System.Drawing.Size(610, 394);
+            this.packList.Size = new System.Drawing.Size(602, 364);
             this.packList.TabIndex = 4;
             this.packList.SelectedIndexChanged += this.packList_SelectedIndexChanged;
             this.packList.MouseDoubleClick += this.packList_MouseDoubleClick;
@@ -157,7 +162,7 @@
             // createNewButton
             // 
             this.createNewButton.Enabled = false;
-            this.createNewButton.Location = new System.Drawing.Point(16, 528);
+            this.createNewButton.Location = new System.Drawing.Point(6, 368);
             this.createNewButton.Name = "createNewButton";
             this.createNewButton.Size = new System.Drawing.Size(127, 27);
             this.createNewButton.TabIndex = 5;
@@ -168,7 +173,7 @@
             // openButton
             // 
             this.openButton.Enabled = false;
-            this.openButton.Location = new System.Drawing.Point(492, 528);
+            this.openButton.Location = new System.Drawing.Point(462, 368);
             this.openButton.Name = "openButton";
             this.openButton.Size = new System.Drawing.Size(134, 27);
             this.openButton.TabIndex = 6;
@@ -217,7 +222,7 @@
             // 
             // removeButton
             // 
-            this.removeButton.Location = new System.Drawing.Point(273, 528);
+            this.removeButton.Location = new System.Drawing.Point(265, 368);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(75, 27);
             this.removeButton.TabIndex = 12;
@@ -227,7 +232,7 @@
             // 
             // upButton
             // 
-            this.upButton.Location = new System.Drawing.Point(159, 528);
+            this.upButton.Location = new System.Drawing.Point(151, 368);
             this.upButton.Name = "upButton";
             this.upButton.Size = new System.Drawing.Size(51, 27);
             this.upButton.TabIndex = 13;
@@ -237,7 +242,7 @@
             // 
             // downButton
             // 
-            this.downButton.Location = new System.Drawing.Point(216, 528);
+            this.downButton.Location = new System.Drawing.Point(208, 368);
             this.downButton.Name = "downButton";
             this.downButton.Size = new System.Drawing.Size(51, 27);
             this.downButton.TabIndex = 14;
@@ -245,21 +250,52 @@
             this.downButton.UseVisualStyleBackColor = true;
             this.downButton.Click += this.downButton_Click;
             // 
+            // tabs
+            // 
+            this.tabs.Controls.Add(this.tabPage1);
+            this.tabs.Controls.Add(this.tabPage2);
+            this.tabs.Location = new System.Drawing.Point(16, 126);
+            this.tabs.Name = "tabs";
+            this.tabs.SelectedIndex = 0;
+            this.tabs.Size = new System.Drawing.Size(610, 429);
+            this.tabs.TabIndex = 15;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.packList);
+            this.tabPage1.Controls.Add(this.createNewButton);
+            this.tabPage1.Controls.Add(this.removeButton);
+            this.tabPage1.Controls.Add(this.downButton);
+            this.tabPage1.Controls.Add(this.upButton);
+            this.tabPage1.Controls.Add(this.openButton);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(602, 401);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Texture Packs";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(192, 72);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Files";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // IntroUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(638, 567);
-            this.Controls.Add(this.downButton);
-            this.Controls.Add(this.upButton);
-            this.Controls.Add(this.removeButton);
+            this.Controls.Add(this.tabs);
             this.Controls.Add(this.gameTypePicker);
             this.Controls.Add(this.gameDirOpenButton);
             this.Controls.Add(this.gameDirLabel);
             this.Controls.Add(this.gameDirPath);
-            this.Controls.Add(this.openButton);
-            this.Controls.Add(this.createNewButton);
-            this.Controls.Add(this.packList);
             this.Controls.Add(this.PictureBoxTools);
             this.Controls.Add(this.PictureBoxTheme);
             this.Controls.Add(this.PictureBoxUpdates);
@@ -275,6 +311,8 @@
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTools).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTheme).EndInit();
             this.ToolsMenu.ResumeLayout(false);
+            this.tabs.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -302,5 +340,8 @@
         private System.Windows.Forms.Button removeButton;
         private System.Windows.Forms.Button upButton;
         private System.Windows.Forms.Button downButton;
+        private System.Windows.Forms.TabControl tabs;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 }
