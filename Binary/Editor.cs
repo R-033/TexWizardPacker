@@ -41,12 +41,13 @@ namespace Binary
             public List<string[]> textures = new List<string[]>();
         }
 
-        public MetaFile Meta;
+        public MetaFile Meta = new MetaFile();
 
         public GameINT GameType { get; set; }
         public string GamePath { get; set; }
         public string PackPath { get; set; }
         public bool IsTexturePack { get; set; }
+        public string FilePath { get; set; }
 
         private BaseProfile Profile { get; set; }
         private readonly List<Form> _openforms;
@@ -62,7 +63,14 @@ namespace Binary
         {
             this.GameType = gameType;
             this.GamePath = gamePath;
-            this.PackPath = packPath;
+            if (isTexturePack)
+            {
+                this.PackPath = packPath;
+            }
+            else
+            {
+                this.FilePath = packPath;
+            }
             this.IsTexturePack = isTexturePack;
 
             this._openforms = new List<Form>();
@@ -1786,7 +1794,7 @@ namespace Binary
 
                 }
 
-                if (!Directory.Exists(Path.Combine(this.GamePath, this.PackPath)))
+                if (this.IsTexturePack && !Directory.Exists(Path.Combine(this.GamePath, this.PackPath)))
                 {
 
                     throw new DirectoryNotFoundException($"Directory named {Path.Combine(this.GamePath, this.PackPath)} does not exist");
@@ -1805,7 +1813,7 @@ namespace Binary
                 launch.Game = this.GameType.ToString();
                 launch.Directory = this.GamePath;
 
-                launch.Files = new List<string>() { Path.Combine(this.PackPath, "textures.bin") };
+                launch.Files = new List<string>() { (this.IsTexturePack ? Path.Combine(this.PackPath, "textures.bin") : this.FilePath) };
 
                 launch.Links = new List<SubLoader>()
                 {
@@ -1889,7 +1897,7 @@ namespace Binary
 
                 }
 
-                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, this.PackPath, "Loading");
+                this.EditorStatusLabel.Text = Utils.GetStatusString(launch.Files.Count, watch.ElapsedMilliseconds, this.IsTexturePack ? this.PackPath : this.FilePath, "Loading", this.IsTexturePack);
                 this.LoadTreeView();
                 this.ToggleControlsAfterLoad(true);
 
@@ -1981,7 +1989,7 @@ namespace Binary
 
                 }
 
-                this.EditorStatusLabel.Text = Utils.GetStatusString(this.Profile.Count, watch.ElapsedMilliseconds, this.PackPath, "Saving");
+                this.EditorStatusLabel.Text = Utils.GetStatusString(this.Profile.Count, watch.ElapsedMilliseconds, this.IsTexturePack ? this.PackPath : this.FilePath, "Saving", this.IsTexturePack);
                 this._edited = false;
 
 #if !DEBUG

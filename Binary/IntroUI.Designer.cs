@@ -54,12 +54,15 @@
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.openFileButton = new System.Windows.Forms.Button();
+            this.fileTreeView = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxUpdates).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTools).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTheme).BeginInit();
             this.ToolsMenu.SuspendLayout();
             this.tabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // LabelBinary
@@ -278,13 +281,35 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.fileTreeView);
+            this.tabPage2.Controls.Add(this.openFileButton);
             this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(192, 72);
+            this.tabPage2.Size = new System.Drawing.Size(602, 401);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Files";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // openFileButton
+            // 
+            this.openFileButton.Enabled = false;
+            this.openFileButton.Location = new System.Drawing.Point(462, 368);
+            this.openFileButton.Name = "openFileButton";
+            this.openFileButton.Size = new System.Drawing.Size(134, 27);
+            this.openFileButton.TabIndex = 7;
+            this.openFileButton.Text = "Open File";
+            this.openFileButton.UseVisualStyleBackColor = true;
+            this.openFileButton.Click += this.openFileButton_Click;
+            // 
+            // fileTreeView
+            // 
+            this.fileTreeView.Location = new System.Drawing.Point(0, 0);
+            this.fileTreeView.Name = "fileTreeView";
+            this.fileTreeView.Size = new System.Drawing.Size(602, 362);
+            this.fileTreeView.TabIndex = 8;
+            this.fileTreeView.AfterSelect += fileTreeView_AfterSelect;
+            this.fileTreeView.NodeMouseDoubleClick += fileTreeView_NodeMouseDoubleClick;
             // 
             // IntroUI
             // 
@@ -313,6 +338,7 @@
             this.ToolsMenu.ResumeLayout(false);
             this.tabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -343,5 +369,7 @@
         private System.Windows.Forms.TabControl tabs;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button openFileButton;
+        private System.Windows.Forms.TreeView fileTreeView;
     }
 }

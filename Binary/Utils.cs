@@ -294,7 +294,7 @@ namespace Binary
             return splits.Length > 3 ? Path.Combine("..", splits[^3], splits[^2], splits[^1]) : path;
         }
 
-        public static string GetStatusString(int loadedFiles, long millisecondsToLoad, string path, string addon) => $"Files: {loadedFiles} | {addon} Time: {millisecondsToLoad}ms | Real Time: {DateTime.Now:HH:mm:ss} | Texture Pack: {GetTruncatedPath(path)}";
+        public static string GetStatusString(int loadedFiles, long millisecondsToLoad, string path, string addon, bool isTexturePack) => $"Files: {loadedFiles} | {addon} Time: {millisecondsToLoad}ms | Real Time: {DateTime.Now:HH:mm:ss} | " + (isTexturePack ? "Texture Pack" : "File") + $": {GetTruncatedPath(path)}";
 
         public static bool PathHasIllegalCharacters(string path)
         {

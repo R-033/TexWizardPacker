@@ -100,7 +100,7 @@ namespace Binary.Prompt
                 AutoUpgradeEnabled = true,
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Filter = "Bundle File|*.bun;*.bin|All Files|*.*",
+                Filter = "Bundle File|*.bun;*.bin;*.lzc|All Files|*.*",
                 Multiselect = false,
                 Title = "Pick source file",
                 InitialDirectory = gamePath

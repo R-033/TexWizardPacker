@@ -11,6 +11,8 @@ using Endscript.Core;
 using Endscript.Enums;
 using Endscript.Profiles;
 
+using Newtonsoft.Json;
+
 using Nikki.Core;
 
 using System;
@@ -18,8 +20,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Binary
 {
@@ -32,6 +34,8 @@ namespace Binary
         }
 
         private TWConfig Config;
+
+        private string selectedFile;
 
         public IntroUI()
         {
@@ -88,6 +92,10 @@ namespace Binary
             this.openButton.ForeColor = theme.Colors.ButtonForeColor;
             this.openButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
 
+            this.openFileButton.BackColor = theme.Colors.ButtonBackColor;
+            this.openFileButton.ForeColor = theme.Colors.ButtonForeColor;
+            this.openFileButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
+
             this.removeButton.BackColor = theme.Colors.ButtonBackColor;
             this.removeButton.ForeColor = theme.Colors.ButtonForeColor;
             this.removeButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
@@ -100,8 +108,11 @@ namespace Binary
             this.downButton.ForeColor = theme.Colors.ButtonForeColor;
             this.downButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
 
-            this.packList.BackColor = theme.Colors.TextBoxBackColor;
-            this.packList.ForeColor = theme.Colors.TextBoxForeColor;
+            this.packList.BackColor = theme.Colors.PrimBackColor;
+            this.packList.ForeColor = theme.Colors.PrimForeColor;
+
+            this.fileTreeView.BackColor = theme.Colors.PrimBackColor;
+            this.fileTreeView.ForeColor = theme.Colors.PrimForeColor;
 
             this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
             this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
@@ -125,7 +136,7 @@ namespace Binary
 
         #endregion
 
-        private void ModderInteract()
+        private void ModderInteract(bool file)
         {
             this.Hide();
             var start = FormStartPosition.CenterScreen;
@@ -133,66 +144,23 @@ namespace Binary
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
 
-            using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, this.packList.Items[this.packList.SelectedIndex] as string, true) { StartPosition = start, WindowState = state })
+            if (file)
             {
-
-                editor.ShowDialog();
-
+                using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, selectedFile, false) { StartPosition = start, WindowState = state })
+                {
+                    editor.ShowDialog();
+                }
+            }
+            else
+            {
+                using (var editor = new Editor((GameINT)(this.gameTypePicker.SelectedIndex + 1), this.gameDirPath.Text, this.packList.Items[this.packList.SelectedIndex] as string, true) { StartPosition = start, WindowState = state })
+                {
+                    editor.ShowDialog();
+                }
             }
 
             this.Show();
             this.ToggleTheme();
-        }
-
-        private void EnsureBackups(BaseProfile profile)
-        {
-            foreach (var sdb in profile)
-            {
-
-                var orig = sdb.FullPath;
-                var back = $"{orig}.bacc";
-                if (!File.Exists(back)) File.Copy(orig, back, true);
-
-            }
-        }
-
-        private void AskForGameRun(BaseProfile profile)
-        {
-            var result = MessageBox.Show("Do you wish to run the game?", "Prompt",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-
-                try
-                {
-
-                    var path = profile.Directory;
-                    var game = profile.GameINT;
-                    var exe = path;
-
-                    exe += game switch
-                    {
-                        GameINT.Carbon => @"\NFSC.EXE",
-                        GameINT.MostWanted => @"\SPEED.EXE",
-                        GameINT.Prostreet => @"\NFS.EXE",
-                        GameINT.Undercover => @"\NFS.EXE",
-                        GameINT.Underground1 => @"\SPEED.EXE",
-                        GameINT.Underground2 => @"\SPEED2.EXE",
-                        _ => throw new Exception($"Game {game} is an invalid game type")
-                    };
-
-                    Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = path });
-
-                }
-                catch (Exception e)
-                {
-
-                    MessageBox.Show(e.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                }
-
-            }
         }
 
         private void PictureBoxTools_Click(object sender, EventArgs e)
@@ -203,20 +171,6 @@ namespace Binary
         private void PictureBoxUpdates_Click(object sender, EventArgs e)
         {
             Utils.OpenBrowser("https://github.com/r033/TexWizardPacker/releases");
-        }
-
-        private void PictureBoxAutoBackups_Click(object sender, EventArgs e)
-        {
-            Configurations.Default.AutoBackups = !Configurations.Default.AutoBackups;
-            Configurations.Default.Save();
-            this.ToggleTheme();
-        }
-
-        private void PictureBoxMaximized_Click(object sender, EventArgs e)
-        {
-            Configurations.Default.StartMaximized = !Configurations.Default.StartMaximized;
-            Configurations.Default.Save();
-            this.ToggleTheme();
         }
 
         private void PictureBoxTheme_Click(object sender, EventArgs e)
@@ -234,12 +188,6 @@ namespace Binary
         {
             var about = new About() { StartPosition = FormStartPosition.CenterScreen };
             about.Show();
-        }
-
-        private void newLauncherToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var form = new LanMaker() { StartPosition = FormStartPosition.CenterScreen };
-            form.Show();
         }
 
         private void hasherToolStripMenuItem_Click(object sender, EventArgs e)
@@ -283,9 +231,37 @@ namespace Binary
 
             if (index != System.Windows.Forms.ListBox.NoMatches)
             {
-                this.ModderInteract();
+                this.ModderInteract(false);
                 ForcedX.GCCollect();
             }
+        }
+
+        private void fileTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node?.Tag is not string path)
+                return;
+
+            this.openFileButton.Enabled = File.Exists(path);
+            selectedFile = path;
+        }
+
+        private void fileTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node?.Tag is not string path)
+                return;
+
+            if (File.Exists(path))
+            {
+                selectedFile = path;
+                this.ModderInteract(true);
+                ForcedX.GCCollect();
+            }
+        }
+
+        private void openFileButton_Click(object sender, EventArgs e)
+        {
+            this.ModderInteract(true);
+            ForcedX.GCCollect();
         }
 
         private void createNewButton_Click(object sender, EventArgs e)
@@ -366,6 +342,10 @@ namespace Binary
             this.packList.Enabled = false;
             this.createNewButton.Enabled = false;
             this.openButton.Enabled = false;
+            this.upButton.Enabled = false;
+            this.downButton.Enabled = false;
+            this.removeButton.Enabled = false;
+            this.openFileButton.Enabled = false;
 
             this.packList.Items.Clear();
 
@@ -442,11 +422,68 @@ namespace Binary
             {
                 this.packList.SelectedIndex = 0;
             }
+
+            this.FillTreeView(gamePath, new string[] { ".bun", ".bin", ".lzc" });
+        }
+
+        private void FillTreeView(string rootPath, string[] extensions)
+        {
+            this.fileTreeView.BeginUpdate();
+            this.fileTreeView.Nodes.Clear();
+
+            var rootNode = new TreeNode(Path.GetFileName(rootPath))
+            {
+                Tag = rootPath
+            };
+
+            this.fileTreeView.Nodes.Add(rootNode);
+            this.AddDirectoryNodes(rootNode, rootPath, extensions);
+
+            rootNode.Expand();
+            this.fileTreeView.EndUpdate();
+        }
+
+        private void AddDirectoryNodes(TreeNode parentNode, string directoryPath, string[] extensions)
+        {
+            try
+            {
+                foreach (var dir in Directory.GetDirectories(directoryPath))
+                {
+                    var dirNode = new TreeNode(Path.GetFileName(dir))
+                    {
+                        Tag = dir
+                    };
+
+                    parentNode.Nodes.Add(dirNode);
+                    this.AddDirectoryNodes(dirNode, dir, extensions);
+                }
+
+                foreach (var file in Directory.GetFiles(directoryPath))
+                {
+                    string ext = Path.GetExtension(file);
+
+                    foreach (var targetExt in extensions)
+                    {
+                        if (ext.Equals(targetExt, StringComparison.OrdinalIgnoreCase))
+                        {
+                            parentNode.Nodes.Add(new TreeNode(Path.GetFileName(file))
+                            {
+                                Tag = file
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+
+            }
         }
 
         private void openButton_Click(object sender, EventArgs e)
         {
-            this.ModderInteract();
+            this.ModderInteract(false);
             ForcedX.GCCollect();
         }
 
