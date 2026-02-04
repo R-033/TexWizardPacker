@@ -186,11 +186,14 @@ namespace Binary
                 foreach (Collectable collection in manager)
                 {
 
-                    _ = managenode.Nodes.Add(GetCollectionNodes(collection));
+                    _ = managenode.Nodes.Add(GetCollectionNodes(collection, tpkBlocksOnly));
 
                 }
 
-                managenode.Expand();
+                if (tpkBlocksOnly)
+                {
+                    managenode.Expand();
+                }
 
                 _ = result.Nodes.Add(managenode);
 
@@ -201,7 +204,7 @@ namespace Binary
             return result;
         }
 
-        public static TreeNode GetCollectionNodes(Collectable collection)
+        public static TreeNode GetCollectionNodes(Collectable collection, bool autoExpand)
         {
             var result = new TreeNode(collection.CollectionName);
 
@@ -218,7 +221,10 @@ namespace Binary
 
                 }
 
-                expandnode.Expand();
+                if (autoExpand)
+                {
+                    expandnode.Expand();
+                }
 
                 _ = result.Nodes.Add(expandnode);
 

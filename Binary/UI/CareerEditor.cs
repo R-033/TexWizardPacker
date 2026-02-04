@@ -173,7 +173,7 @@ namespace Binary.UI
 				foreach (Collectable collection in root)
 				{
 
-					node.Nodes.Add(Utils.GetCollectionNodes(collection));
+					node.Nodes.Add(Utils.GetCollectionNodes(collection, false));
 
 				}
 
@@ -326,7 +326,7 @@ namespace Binary.UI
 						this.Career.AddCollection(input.Value, text);
 						var path = this.CareerTreeView.SelectedNode.FullPath;
 						var collection = this.Career.GetCollection(input.Value, text);
-						this.CareerTreeView.SelectedNode.Nodes.Add(Utils.GetCollectionNodes(collection));
+						this.CareerTreeView.SelectedNode.Nodes.Add(Utils.GetCollectionNodes(collection, false));
 						this.GenerateAddInCareerCommand(text, input.Value);
 						break;
 
@@ -390,7 +390,7 @@ namespace Binary.UI
 						this.Career.CloneCollection(input.Value, node.Text, node.Parent.Text);
 						var path = node.FullPath;
 						var collection = this.Career.GetCollection(input.Value, node.Parent.Text);
-						node.Parent.Nodes.Add(Utils.GetCollectionNodes(collection));
+						node.Parent.Nodes.Add(Utils.GetCollectionNodes(collection, false));
 						this.GenerateCopyInCareerCommand(node.Parent.Text, node.Text, input.Value);
 						break;
 

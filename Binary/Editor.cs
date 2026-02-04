@@ -1116,7 +1116,7 @@ namespace Binary
                         string str = this.GenerateEndCommand(eCommandType.add_collection, path, input.Value);
                         this.WriteLineToEndCommandPrompt(str);
                         var collection = manager[manager.IndexOf(input.Value)] as Collectable;
-                        var newNode = Utils.GetCollectionNodes(collection);
+                        var newNode = Utils.GetCollectionNodes(collection, this.IsTexturePack);
                         this.EditorTreeView.SelectedNode.Nodes.Add(newNode);
                         this.EditorTreeView.SelectedNode.Expand();
                         newNode.Expand();
@@ -1201,7 +1201,7 @@ namespace Binary
                         string str = this.GenerateEndCommand(eCommandType.copy_collection, path, input.Value);
                         this.WriteLineToEndCommandPrompt(str);
                         var collection = manager[manager.IndexOf(input.Value)] as Collectable;
-                        _ = this.EditorTreeView.SelectedNode.Parent.Nodes.Add(Utils.GetCollectionNodes(collection));
+                        _ = this.EditorTreeView.SelectedNode.Parent.Nodes.Add(Utils.GetCollectionNodes(collection, this.IsTexturePack));
                         this._edited = true;
                         break;
 
