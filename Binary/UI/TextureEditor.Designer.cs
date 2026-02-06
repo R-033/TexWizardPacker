@@ -32,6 +32,7 @@
             this.TexEditorMenuStrip = new System.Windows.Forms.CustomMenuStrip();
             this.TexEditorTexturesStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorAddTextureItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TexEditorAddTextureFolderItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorRemoveTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorCopyTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorOptionsStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +51,7 @@
             this.TexEditorImage = new System.Windows.Forms.PictureBox();
             this.AddTextureDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportTextureDialog = new System.Windows.Forms.SaveFileDialog();
+            this.AddTextureFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TexEditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -90,7 +92,7 @@
             // 
             // TexEditorTexturesStrip
             // 
-            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem });
+            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorAddTextureFolderItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem });
             this.TexEditorTexturesStrip.Name = "TexEditorTexturesStrip";
             this.TexEditorTexturesStrip.Size = new System.Drawing.Size(62, 20);
             this.TexEditorTexturesStrip.Text = "Textures";
@@ -102,6 +104,13 @@
             this.TexEditorAddTextureItem.Size = new System.Drawing.Size(235, 22);
             this.TexEditorAddTextureItem.Text = "Add/Update Texture(s)";
             this.TexEditorAddTextureItem.Click += this.TexEditorAddTextureItem_Click;
+            // 
+            // TexEditorAddTextureFolderItem
+            // 
+            this.TexEditorAddTextureFolderItem.Name = "TexEditorAddTextureFolderItem";
+            this.TexEditorAddTextureFolderItem.Size = new System.Drawing.Size(235, 22);
+            this.TexEditorAddTextureFolderItem.Text = "Add/Update From Folder";
+            this.TexEditorAddTextureFolderItem.Click += this.TexEditorAddTextureFolderItem_Click;
             // 
             // TexEditorRemoveTextureItem
             // 
@@ -247,7 +256,7 @@
             this.TexEditorPropertyGrid.Location = new System.Drawing.Point(14, 3);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 282);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 280);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
             // 
@@ -258,7 +267,7 @@
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(560, 570);
+            this.panel1.Size = new System.Drawing.Size(558, 570);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -331,8 +340,10 @@
 		private System.Windows.Forms.ToolStripMenuItem TexEditorRaiderItem;
 		private System.Windows.Forms.ColumnHeader ColumnNewName;
 		private System.Windows.Forms.OpenFileDialog AddTextureDialog;
-		private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.FolderBrowserDialog AddTextureFolderDialog;
+        private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.SaveFileDialog ExportTextureDialog;
         private System.Windows.Forms.ColumnHeader ColumnOriginalName;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorAddTextureFolderItem;
     }
 }

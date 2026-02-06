@@ -32,37 +32,37 @@ using System.Xml.Linq;
 
 namespace Binary.UI
 {
-	public partial class TextureEditor : Form
-	{
+    public partial class TextureEditor : Form
+    {
         private TPKBlock TPK { get; }
-		private readonly List<Form> _openforms;
-		private readonly string _tpkpath;
-		public List<string> Commands { get; }
-		private int _last_column_clicked = -1;
+        private readonly List<Form> _openforms;
+        private readonly string _tpkpath;
+        public List<string> Commands { get; }
+        private int _last_column_clicked = -1;
 
         private Color HighlightColor { get; set; }
 
         private Editor editor;
 
         public TextureEditor(Editor parent, TPKBlock tpk, string path)
-		{
+        {
             this.editor = parent;
-			this.InitializeComponent();
-			this.TPK = tpk;
-			this._tpkpath = path;
-			this._openforms = new List<Form>();
-			this.Commands = new List<string>();
-			this.Text = $"Texture Editor : {this.TPK.CollectionName}";
-			this.TexEditorImage.BackColor = Color.FromArgb(0, 0, 0, 0);
-			this.TexEditorImage.BorderStyle = BorderStyle.FixedSingle;
-			this.TexEditorImage.Width = this.panel1.Width;
-			this.TexEditorImage.Height = this.panel1.Height;
-			this.TexEditorListView.Columns[^1].Width = -2;
+            this.InitializeComponent();
+            this.TPK = tpk;
+            this._tpkpath = path;
+            this._openforms = new List<Form>();
+            this.Commands = new List<string>();
+            this.Text = $"Texture Editor : {this.TPK.CollectionName}";
+            this.TexEditorImage.BackColor = Color.FromArgb(0, 0, 0, 0);
+            this.TexEditorImage.BorderStyle = BorderStyle.FixedSingle;
+            this.TexEditorImage.Width = this.panel1.Width;
+            this.TexEditorImage.Height = this.panel1.Height;
+            this.TexEditorListView.Columns[^1].Width = -2;
             this.ToggleTheme();
-			this.LoadListView();
-			this.ToggleMenuStripControls();
-			
-		}
+            this.LoadListView();
+            this.ToggleMenuStripControls();
+
+        }
 
         #region Theme
 
@@ -70,34 +70,34 @@ namespace Binary.UI
         {
             Theme.Deserialize(Theme.GetThemeFile(), out var theme);
 
-			// Primary colors and controls
-			this.BackColor = theme.Colors.MainBackColor;
-			this.ForeColor = theme.Colors.MainForeColor;
+            // Primary colors and controls
+            this.BackColor = theme.Colors.MainBackColor;
+            this.ForeColor = theme.Colors.MainForeColor;
 
-			// Image
-			this.panel1.BackgroundImage = theme.DarkTheme
-				? Resources.DarkTransparent : Resources.LightTransparent;
+            // Image
+            this.panel1.BackgroundImage = theme.DarkTheme
+                ? Resources.DarkTransparent : Resources.LightTransparent;
 
-			// List view
-			this.TexEditorListView.BackColor = theme.Colors.PrimBackColor;
-			this.TexEditorListView.ForeColor = theme.Colors.PrimForeColor;
+            // List view
+            this.TexEditorListView.BackColor = theme.Colors.PrimBackColor;
+            this.TexEditorListView.ForeColor = theme.Colors.PrimForeColor;
 
             // Property grid
             this.TexEditorPropertyGrid.BackColor = theme.Colors.PrimBackColor;
-			this.TexEditorPropertyGrid.CategorySplitterColor = theme.Colors.ButtonBackColor;
-			this.TexEditorPropertyGrid.CategoryForeColor = theme.Colors.TextBoxForeColor;
-			this.TexEditorPropertyGrid.CommandsBackColor = theme.Colors.PrimBackColor;
-			this.TexEditorPropertyGrid.CommandsForeColor = theme.Colors.PrimForeColor;
-			this.TexEditorPropertyGrid.CommandsBorderColor = theme.Colors.PrimBackColor;
-			this.TexEditorPropertyGrid.DisabledItemForeColor = theme.Colors.LabelTextColor;
-			this.TexEditorPropertyGrid.LineColor = theme.Colors.ButtonBackColor;
-			this.TexEditorPropertyGrid.SelectedItemWithFocusBackColor = theme.Colors.FocusedBackColor;
-			this.TexEditorPropertyGrid.SelectedItemWithFocusForeColor = theme.Colors.FocusedForeColor;
-			this.TexEditorPropertyGrid.ViewBorderColor = theme.Colors.RegBorderColor;
-			this.TexEditorPropertyGrid.ViewBackColor = theme.Colors.PrimBackColor;
-			this.TexEditorPropertyGrid.ViewForeColor = theme.Colors.PrimForeColor;
+            this.TexEditorPropertyGrid.CategorySplitterColor = theme.Colors.ButtonBackColor;
+            this.TexEditorPropertyGrid.CategoryForeColor = theme.Colors.TextBoxForeColor;
+            this.TexEditorPropertyGrid.CommandsBackColor = theme.Colors.PrimBackColor;
+            this.TexEditorPropertyGrid.CommandsForeColor = theme.Colors.PrimForeColor;
+            this.TexEditorPropertyGrid.CommandsBorderColor = theme.Colors.PrimBackColor;
+            this.TexEditorPropertyGrid.DisabledItemForeColor = theme.Colors.LabelTextColor;
+            this.TexEditorPropertyGrid.LineColor = theme.Colors.ButtonBackColor;
+            this.TexEditorPropertyGrid.SelectedItemWithFocusBackColor = theme.Colors.FocusedBackColor;
+            this.TexEditorPropertyGrid.SelectedItemWithFocusForeColor = theme.Colors.FocusedForeColor;
+            this.TexEditorPropertyGrid.ViewBorderColor = theme.Colors.RegBorderColor;
+            this.TexEditorPropertyGrid.ViewBackColor = theme.Colors.PrimBackColor;
+            this.TexEditorPropertyGrid.ViewForeColor = theme.Colors.PrimForeColor;
 
-			// Menu strip and menu items
+            // Menu strip and menu items
             this.TexEditorMenuStrip.MenuStripGradientBegin = theme.Colors.MenuStripGradientBegin;
             this.TexEditorMenuStrip.MenuStripGradientEnd = theme.Colors.MenuStripGradientEnd;
             this.TexEditorMenuStrip.MenuStripForeColor = theme.Colors.LabelTextColor;
@@ -113,23 +113,25 @@ namespace Binary.UI
             this.TexEditorMenuStrip.ImageMarginGradientMiddle = theme.Colors.MenuItemPressedGradientMiddle;
             this.TexEditorMenuStrip.ImageMarginGradientEnd = theme.Colors.MenuItemPressedGradientEnd;
             this.TexEditorAddTextureItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorAddTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorCopyTextureItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorCopyTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorExportAllItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorExportAllItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorFindReplaceItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorFindReplaceItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorHasherItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorHasherItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorRaiderItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorRaiderItem.ForeColor = theme.Colors.MenuItemForeColor;
-			this.TexEditorRemoveTextureItem.BackColor = theme.Colors.MenuItemBackColor;
-			this.TexEditorRemoveTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorAddTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorAddTextureFolderItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorAddTextureFolderItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorCopyTextureItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorCopyTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorExportAllItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorExportAllItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorFindReplaceItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorFindReplaceItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorHasherItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorHasherItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorRaiderItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorRaiderItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorRemoveTextureItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorRemoveTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
 
             // Highlight color
             this.HighlightColor = theme.DarkTheme
-                ? Color.FromArgb(70, 0, 20) 
+                ? Color.FromArgb(70, 0, 20)
                 : Color.FromArgb(255, 100, 100);
         }
 
@@ -138,13 +140,13 @@ namespace Binary.UI
         #region Methods
 
         private void LoadListView(int index = -1)
-		{
-			this.TexEditorListView.Items.Clear();
-			var list = this.TPK.GetTextures();
-			this.TexEditorListView.BeginUpdate();
+        {
+            this.TexEditorListView.Items.Clear();
+            var list = this.TPK.GetTextures();
+            this.TexEditorListView.BeginUpdate();
 
-			foreach (var texture in list)
-			{
+            foreach (var texture in list)
+            {
                 string originalName = "-----";
                 string newName = texture.BinKey != texture.CollectionName.BinHash() ? $"0x{texture.BinKey:X8}" : texture.CollectionName;
 
@@ -170,45 +172,45 @@ namespace Binary.UI
 
                 item.SubItems.Add(newName);
 
-				this.TexEditorListView.Items.Add(item);
+                this.TexEditorListView.Items.Add(item);
 
-			}
+            }
 
-			this.TexEditorListView.EndUpdate();
+            this.TexEditorListView.EndUpdate();
 
-			if (index < 0 || index >= this.TexEditorListView.Items.Count) return;
+            if (index < 0 || index >= this.TexEditorListView.Items.Count) return;
 
-			this.TexEditorListView.Items[index].Selected = true;
-			this.TexEditorListView.Select();
-			this.TexEditorListView.HideSelection = false;
-			this.TexEditorListView.Items[index].EnsureVisible();
-		}
+            this.TexEditorListView.Items[index].Selected = true;
+            this.TexEditorListView.Select();
+            this.TexEditorListView.HideSelection = false;
+            this.TexEditorListView.Items[index].EnsureVisible();
+        }
 
-		private void ToggleMenuStripControls()
-		{
+        private void ToggleMenuStripControls()
+        {
             this.TexEditorRemoveTextureItem.Enabled = this.TexEditorListView.SelectedItems.Count > 0;
             this.TexEditorCopyTextureItem.Enabled = this.TexEditorListView.SelectedItems.Count == 1;
             this.TexEditorExportAllItem.Enabled = this.TexEditorListView.SelectedItems.Count > 0;
         }
 
-		private uint GetSelectedKey()
-		{
-			return this.TexEditorListView.SelectedItems.Count == 0
-				? UInt32.MaxValue
-				: (this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash());
-		}
+        private uint GetSelectedKey()
+        {
+            return this.TexEditorListView.SelectedItems.Count == 0
+                ? UInt32.MaxValue
+                : (this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash());
+        }
 
-		private void DisposeImage()
-		{
-			if (this.TexEditorImage.Image != null)
-			{
+        private void DisposeImage()
+        {
+            if (this.TexEditorImage.Image != null)
+            {
 
-				var disposer = this.TexEditorImage.Image;
-				this.TexEditorImage.Image = null;
-				disposer.Dispose();
+                var disposer = this.TexEditorImage.Image;
+                this.TexEditorImage.Image = null;
+                disposer.Dispose();
 
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -226,7 +228,7 @@ namespace Binary.UI
                         if (collection is TPKBlock tpk)
                         {
                             var result = tpk.FindTexture(textureName.BinHash(), KeyType.BINKEY);
-                            
+
                             if (result != null)
                             {
                                 return result;
@@ -253,6 +255,8 @@ namespace Binary.UI
                     if (loadedAuxFile != sourceFile)
                     {
                         loadedAuxFile = sourceFile;
+                        auxProfile = null;
+                        ForcedX.GCCollect();
 
                         try
                         {
@@ -275,6 +279,7 @@ namespace Binary.UI
                         {
                             MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             auxProfile = null;
+                            ForcedX.GCCollect();
                         }
                     }
                 }
@@ -377,87 +382,184 @@ namespace Binary.UI
 
         #region Menu Strip
 
-        private void TexEditorAddTextureItem_Click(object sender, EventArgs e)
-		{
-			if (this.AddTextureDialog.ShowDialog() == DialogResult.OK)
-			{
-                if (this.AddTextureDialog.FileNames.Length > 1)
+        private void ImportMultipleTextures(string[] textures)
+        {
+            if (textures.Length > 1)
+            {
+                using var input = new TextureImport($"({textures.Length} textures)", editor.GamePath, editor.GameType, true);
+
+                if (input.ShowDialog() == DialogResult.OK)
                 {
-                    using var input = new TextureImport($"({this.AddTextureDialog.FileNames.Length} textures)", editor.GamePath, editor.GameType, true);
+                    var couldntFindThese = new List<string>();
 
-                    if (input.ShowDialog() == DialogResult.OK)
+                    foreach (var fileName in textures)
                     {
-                        var couldntFindThese = new List<string>();
+                        this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, input.SourceFile, input.CopyParams, couldntFindThese);
+                    }
 
-                        foreach (var fileName in this.AddTextureDialog.FileNames)
-                        {
-                            this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, input.SourceFile, input.CopyParams, couldntFindThese);
-                        }
+                    if (this.TexEditorListView.SelectedIndices.Count > 0)
+                    {
+                        this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+                    }
+                    else
+                    {
+                        this.LoadListView();
+                    }
 
-                        if (this.TexEditorListView.SelectedIndices.Count > 0)
+                    if (couldntFindThese.Count > 0)
+                    {
+                        if (couldntFindThese.Count > 10)
                         {
-                            this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+                            MessageBox.Show("Couldn't find " + couldntFindThese.Count + " original textures in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
-                            this.LoadListView();
-                        }
+                            string message = "Couldn't find these textures in " + loadedAuxFile + ":\n\n";
 
-                        if (couldntFindThese.Count > 0)
+                            foreach (var tex in couldntFindThese)
+                            {
+                                message += tex + "\n";
+                            }
+
+                            message += "\nUsed default parameters.";
+
+                            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var initial = Path.GetFileNameWithoutExtension(textures[0]);
+                using var input = new TextureImport(initial, editor.GamePath, editor.GameType, false);
+
+                if (input.ShowDialog() == DialogResult.OK)
+                {
+                    var couldntFindThese = new List<string>();
+
+                    this.ImportTexture(input.Value, textures[0], input.SourceFile, input.CopyParams, couldntFindThese);
+
+                    if (this.TexEditorListView.SelectedIndices.Count > 0)
+                    {
+                        this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
+                    }
+                    else
+                    {
+                        this.LoadListView();
+                    }
+
+                    if (couldntFindThese.Count > 0)
+                    {
+                        MessageBox.Show("Couldn't find the original texture in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+
+            ForcedX.GCCollect();
+        }
+
+        private void TexEditorAddTextureItem_Click(object sender, EventArgs e)
+        {
+            if (this.AddTextureDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.ImportMultipleTextures(this.AddTextureDialog.FileNames);
+            }
+        }
+
+        private void TexEditorAddTextureFolderItem_Click(object sender, EventArgs e)
+        {
+            if (this.AddTextureFolderDialog.ShowDialog() == DialogResult.OK)
+            {
+                var folderPath = this.AddTextureFolderDialog.SelectedPath;
+
+                var textures = new List<string>();
+
+                this.LookForTextures(folderPath, textures);
+
+                List<string> duplicates = new List<string>();
+
+                foreach (var texture in textures)
+                {
+                    var filename = Path.GetFileName(texture);
+
+                    if (duplicates.Contains(filename))
+                    {
+                        continue;
+                    }
+
+                    foreach (var texture2 in textures)
+                    {
+                        if (texture == texture2)
                         {
-                            if (couldntFindThese.Count > 10)
-                            {
-                                MessageBox.Show("Couldn't find " + couldntFindThese.Count + " original textures in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            else
-                            {
-                                string message = "Couldn't find these textures in " + loadedAuxFile + ":\n\n";
-
-                                foreach (var tex in couldntFindThese)
-                                {
-                                    message += tex + "\n";
-                                }
-
-                                message += "\nUsed default parameters.";
-
-                                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            continue;
                         }
+
+                        var filename2 = Path.GetFileName(texture2);
+
+                        if (filename == filename2)
+                        {
+                            duplicates.Add(filename);
+                            break;
+                        }
+                    }
+                }
+
+                if (duplicates.Count > 0)
+                {
+                    if (duplicates.Count > 10)
+                    {
+                        MessageBox.Show("Found " + duplicates.Count + " duplicates in subfolders. Please remove them when importing a folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        string message = "These textures have duplicates:\n\n";
+
+                        foreach (var tex in duplicates)
+                        {
+                            message += tex + "\n";
+                        }
+
+                        message += "\nPlease remove duplicates from subfolders when importing the folder.";
+
+                        MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    var initial = Path.GetFileNameWithoutExtension(this.AddTextureDialog.FileName);
-                    using var input = new TextureImport(initial, editor.GamePath, editor.GameType, false);
+                    this.ImportMultipleTextures(textures.ToArray());
+                }
+            }
+        }
 
-                    if (input.ShowDialog() == DialogResult.OK)
+        private void LookForTextures(string directoryPath, List<string> textures)
+        {
+            try
+            {
+                foreach (var dir in Directory.GetDirectories(directoryPath))
+                {
+                    this.LookForTextures(dir, textures);
+                }
+
+                foreach (var file in Directory.GetFiles(directoryPath))
+                {
+                    string ext = Path.GetExtension(file);
+
+                    if (ext.Equals(".dds", StringComparison.OrdinalIgnoreCase))
                     {
-                        var couldntFindThese = new List<string>();
-
-                        this.ImportTexture(input.Value, this.AddTextureDialog.FileName, input.SourceFile, input.CopyParams, couldntFindThese);
-
-                        if (this.TexEditorListView.SelectedIndices.Count > 0)
-                        {
-                            this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-                        }
-                        else
-                        {
-                            this.LoadListView();
-                        }
-
-                        if (couldntFindThese.Count > 0)
-                        {
-                            MessageBox.Show("Couldn't find the original texture in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        textures.Add(file);
                     }
                 }
-			}
-		}
+            }
+            catch (UnauthorizedAccessException)
+            {
 
-		private void TexEditorRemoveTextureItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
+            }
+        }
+
+        private void TexEditorRemoveTextureItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 var arr = new int[this.TexEditorListView.SelectedIndices.Count];
 
                 for (int i = 0; i < this.TexEditorListView.SelectedIndices.Count; i++)
@@ -469,84 +571,84 @@ namespace Binary.UI
 
                 foreach (int index in arr)
                 {
-				    var key = this.TexEditorListView.Items[index].SubItems[1].Text.BinHash();
-				    this.TPK.RemoveTexture(key, KeyType.BINKEY);
-				    this.GenerateRemoveTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}");
+                    var key = this.TexEditorListView.Items[index].SubItems[1].Text.BinHash();
+                    this.TPK.RemoveTexture(key, KeyType.BINKEY);
+                    this.GenerateRemoveTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}");
 
                     if (this.TPK.TextureCount == 0)
-				    {
+                    {
 
-					    this.LoadListView();
-					    this.TexEditorPropertyGrid.SelectedObject = null;
-					    this.DisposeImage();
-					    this.ToggleMenuStripControls();
-					    return;
-				    }
+                        this.LoadListView();
+                        this.TexEditorPropertyGrid.SelectedObject = null;
+                        this.DisposeImage();
+                        this.ToggleMenuStripControls();
+                        return;
+                    }
                 }
 
-				if (this.TexEditorListView.SelectedIndices[0] == 0) this.LoadListView(0);
-				else this.LoadListView(this.TexEditorListView.SelectedIndices[0] - 1);
+                if (this.TexEditorListView.SelectedIndices[0] == 0) this.LoadListView(0);
+                else this.LoadListView(this.TexEditorListView.SelectedIndices[0] - 1);
 
-			}
-			catch (Exception ex)
-			{
+            }
+            catch (Exception ex)
+            {
 
-				MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-			}
-		}
+            }
+        }
 
-		private void TexEditorCopyTextureItem_Click(object sender, EventArgs e)
-		{
-			using var input = new Input("Enter name of the new texture");
+        private void TexEditorCopyTextureItem_Click(object sender, EventArgs e)
+        {
+            using var input = new Input("Enter name of the new texture");
 
-			while (true) // use loop instead of recursion to prevent stack overflow
-			{
+            while (true) // use loop instead of recursion to prevent stack overflow
+            {
 
-				if (input.ShowDialog() == DialogResult.OK)
-				{
+                if (input.ShowDialog() == DialogResult.OK)
+                {
 
-					try
-					{
+                    try
+                    {
 
-						var index = this.TexEditorListView.SelectedIndices[0];
-						var key = this.GetSelectedKey();
-						this.TPK.CloneTexture(input.Value, key, KeyType.BINKEY);
-						this.GenerateCopyTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}", input.Value);
-						this.LoadListView(index);
-						break;
+                        var index = this.TexEditorListView.SelectedIndices[0];
+                        var key = this.GetSelectedKey();
+                        this.TPK.CloneTexture(input.Value, key, KeyType.BINKEY);
+                        this.GenerateCopyTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}", input.Value);
+                        this.LoadListView(index);
+                        break;
 
-					}
-					catch (Exception ex)
-					{
+                    }
+                    catch (Exception ex)
+                    {
 
-						MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(ex.GetLowestMessage(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-					}
+                    }
 
-				}
-				else
-				{
+                }
+                else
+                {
 
-					break;
+                    break;
 
-				}
+                }
 
-			}
-		}
+            }
+        }
 
-		private void TexEditorExportAllItem_Click(object sender, EventArgs e)
-		{
-			using var browser = new FolderBrowserDialog()
-			{
-				AutoUpgradeEnabled = false,
-				Description = "Select directory where selected textures should be exported.",
-				RootFolder = Environment.SpecialFolder.MyComputer,
-				ShowNewFolderButton = true,
-			};
+        private void TexEditorExportAllItem_Click(object sender, EventArgs e)
+        {
+            using var browser = new FolderBrowserDialog()
+            {
+                AutoUpgradeEnabled = false,
+                Description = "Select directory where selected textures should be exported.",
+                RootFolder = Environment.SpecialFolder.MyComputer,
+                ShowNewFolderButton = true,
+            };
 
-			if (browser.ShowDialog() == DialogResult.OK)
-			{
+            if (browser.ShowDialog() == DialogResult.OK)
+            {
                 foreach (int index in this.TexEditorListView.SelectedIndices)
                 {
                     var key = this.TexEditorListView.Items[index].SubItems[1].Text.BinHash();
@@ -563,52 +665,52 @@ namespace Binary.UI
                     }
 
                     var path = Path.Combine(browser.SelectedPath, name) + ".dds";
-					var data = texture.GetDDSArray(false);
-					using var bw = new BinaryWriter(File.Open(path, FileMode.Create));
-					bw.Write(data);
+                    var data = texture.GetDDSArray(false);
+                    using var bw = new BinaryWriter(File.Open(path, FileMode.Create));
+                    bw.Write(data);
                 }
 
-				MessageBox.Show($"Selected textures have been exported", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Selected textures have been exported", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-			}
-		}
+            }
+        }
 
-		private void TexEditorFindReplaceItem_Click(object sender, EventArgs e)
-		{
-			if (this.TexEditorListView.Items.Count == 0) return;
+        private void TexEditorFindReplaceItem_Click(object sender, EventArgs e)
+        {
+            if (this.TexEditorListView.Items.Count == 0) return;
 
-			using var with = new Input("Enter string to replace with");
-			using var input = new Input("Enter string to search for",
-										new Predicate<string>(_ => !String.IsNullOrEmpty(_)),
-										"Input string cannot be null or empty");
+            using var with = new Input("Enter string to replace with");
+            using var input = new Input("Enter string to search for",
+                                        new Predicate<string>(_ => !String.IsNullOrEmpty(_)),
+                                        "Input string cannot be null or empty");
 
-			if (input.ShowDialog() == DialogResult.OK && with.ShowDialog() == DialogResult.OK)
-			{
+            if (input.ShowDialog() == DialogResult.OK && with.ShowDialog() == DialogResult.OK)
+            {
 
-				using var check = new Check("Make case-sensitive replace?", false);
+                using var check = new Check("Make case-sensitive replace?", false);
 
-				if (check.ShowDialog() == DialogResult.OK)
-				{
+                if (check.ShowDialog() == DialogResult.OK)
+                {
 
-					var options = check.Value
-						? RegexOptions.Multiline | RegexOptions.CultureInvariant
-						: RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
+                    var options = check.Value
+                        ? RegexOptions.Multiline | RegexOptions.CultureInvariant
+                        : RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
 
-					this.TexEditorListView.BeginUpdate();
+                    this.TexEditorListView.BeginUpdate();
 
-					for (int i = 0; i < this.TPK.TextureCount; ++i)
-					{
+                    for (int i = 0; i < this.TPK.TextureCount; ++i)
+                    {
 
-						var texture = this.TPK.Textures[i];
-						var key = $"0x{texture.BinKey:X8}";
-						var oname = texture.CollectionName;
-						if (oname.Contains(' ')) oname = $"\"{oname}\"";
+                        var texture = this.TPK.Textures[i];
+                        var key = $"0x{texture.BinKey:X8}";
+                        var oname = texture.CollectionName;
+                        if (oname.Contains(' ')) oname = $"\"{oname}\"";
 
-						if (texture.BinKey != texture.CollectionName.BinHash()) continue;
-						var cname = Regex.Replace(texture.CollectionName, input.Value, with.Value, options);
-						if (cname == texture.CollectionName) continue;
+                        if (texture.BinKey != texture.CollectionName.BinHash()) continue;
+                        var cname = Regex.Replace(texture.CollectionName, input.Value, with.Value, options);
+                        if (cname == texture.CollectionName) continue;
 
-						texture.CollectionName = cname;
+                        texture.CollectionName = cname;
 
                         string originalName = "-----";
                         string newName = texture.CollectionName;
@@ -624,33 +726,33 @@ namespace Binary.UI
                         }
 
                         this.TexEditorListView.Items[i].SubItems[0].Text = originalName;
-						this.TexEditorListView.Items[i].SubItems[1].Text = newName;
+                        this.TexEditorListView.Items[i].SubItems[1].Text = newName;
 
-						this.GenerateUpdateTextureCommand(oname, "CollectionName", cname);
+                        this.GenerateUpdateTextureCommand(oname, "CollectionName", cname);
 
-					}
+                    }
 
-					this.TexEditorListView.EndUpdate();
-					this.TexEditorPropertyGrid.Refresh();
+                    this.TexEditorListView.EndUpdate();
+                    this.TexEditorPropertyGrid.Refresh();
 
-				}
+                }
 
-			}
-		}
+            }
+        }
 
-		private void TexEditorHasherItem_Click(object sender, EventArgs e)
-		{
-			var hasher = new Hasher() { StartPosition = FormStartPosition.CenterScreen };
-			this._openforms.Add(hasher);
-			hasher.Show();
-		}
+        private void TexEditorHasherItem_Click(object sender, EventArgs e)
+        {
+            var hasher = new Hasher() { StartPosition = FormStartPosition.CenterScreen };
+            this._openforms.Add(hasher);
+            hasher.Show();
+        }
 
-		private void TexEditorRaiderItem_Click(object sender, EventArgs e)
-		{
-			var raider = new Raider() { StartPosition = FormStartPosition.CenterScreen };
-			this._openforms.Add(raider);
-			raider.Show();
-		}
+        private void TexEditorRaiderItem_Click(object sender, EventArgs e)
+        {
+            var raider = new Raider() { StartPosition = FormStartPosition.CenterScreen };
+            this._openforms.Add(raider);
+            raider.Show();
+        }
 
         #endregion
 
@@ -658,22 +760,22 @@ namespace Binary.UI
 
         ListViewItem previewItem;
 
-		private void TexEditorListView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (this.TexEditorListView.SelectedItems.Count == 0)
-			{
+        private void TexEditorListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.TexEditorListView.SelectedItems.Count == 0)
+            {
                 previewItem = null;
                 this.TexEditorPropertyGrid.SelectedObject = null;
-				this.DisposeImage();
-				this.panel1.AutoScroll = false;
-				this.TexEditorImage.Width = this.panel1.Width;
-				this.TexEditorImage.Height = this.panel1.Height;
-				this.ToggleMenuStripControls();
-				return;
+                this.DisposeImage();
+                this.panel1.AutoScroll = false;
+                this.TexEditorImage.Width = this.panel1.Width;
+                this.TexEditorImage.Height = this.panel1.Height;
+                this.ToggleMenuStripControls();
+                return;
 
-			}
+            }
 
-			var item = this.TexEditorListView.SelectedItems[0];
+            var item = this.TexEditorListView.SelectedItems[0];
 
             if (previewItem == item)
             {
@@ -686,138 +788,138 @@ namespace Binary.UI
 
             var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
 
-			if (texture == null) return;
+            if (texture == null) return;
 
-			this.TexEditorPropertyGrid.SelectedObject = texture;
+            this.TexEditorPropertyGrid.SelectedObject = texture;
 
-			try
-			{
+            try
+            {
 
-				var data = texture.GetDDSArray(true);
-				var image = new ILWrapper.Image(data);
+                var data = texture.GetDDSArray(true);
+                var image = new ILWrapper.Image(data);
 
-				using var ms = new MemoryStream();
-				image.Save(ms, ImageType.PNG);
+                using var ms = new MemoryStream();
+                image.Save(ms, ImageType.PNG);
 
-				this.DisposeImage();
+                this.DisposeImage();
 
-				this.TexEditorImage.BorderStyle = BorderStyle.None;
-				this.TexEditorImage.Image = Image.FromStream(ms);
-				this.TexEditorImage.BorderStyle = BorderStyle.FixedSingle;
-				this.panel1.AutoScroll = true;
+                this.TexEditorImage.BorderStyle = BorderStyle.None;
+                this.TexEditorImage.Image = Image.FromStream(ms);
+                this.TexEditorImage.BorderStyle = BorderStyle.FixedSingle;
+                this.panel1.AutoScroll = true;
 
-			}
-			catch (Exception ex)
-			{
+            }
+            catch (Exception ex)
+            {
 
-				MessageBox.Show($"Unable to preview texture: {ex.GetLowestMessage()}", "Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Unable to preview texture: {ex.GetLowestMessage()}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-			}
+            }
 
-			this.ToggleMenuStripControls();
-		}
+            this.ToggleMenuStripControls();
+        }
 
-		private void TexEditorListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-		{
-			e.NewWidth = this.TexEditorListView.Columns[e.ColumnIndex].Width;
-			e.Cancel = true;
-		}
+        private void TexEditorListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            e.NewWidth = this.TexEditorListView.Columns[e.ColumnIndex].Width;
+            e.Cancel = true;
+        }
 
-		private void TexEditorListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-		{
+        private void TexEditorListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
             Theme.Deserialize(Path.Combine("Themes", Configurations.Default.ThemeFile), out var theme);
             var brush = new SolidBrush(theme.Colors.TextBoxBackColor);
             e.Graphics.FillRectangle(brush, e.Bounds);
-			e.DrawText();
-		}
+            e.DrawText();
+        }
 
-		private void TexEditorListView_DrawItem(object sender, DrawListViewItemEventArgs e)
-		{
-			e.DrawDefault = true;
-		}
+        private void TexEditorListView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            e.DrawDefault = true;
+        }
 
-		private void TexEditorListView_ColumnClick(object sender, ColumnClickEventArgs e)
-		{
-			uint key;
-			int index;
+        private void TexEditorListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            uint key;
+            int index;
 
-			if (this.TexEditorPropertyGrid.SelectedObject is null)
-			{
+            if (this.TexEditorPropertyGrid.SelectedObject is null)
+            {
 
-				key = 0xFFFFFFFF;
-				index = -1;
+                key = 0xFFFFFFFF;
+                index = -1;
 
-			}
-			else
-			{
+            }
+            else
+            {
 
-				key = ((Texture)this.TexEditorPropertyGrid.SelectedObject).BinKey;
-				index = 0;
+                key = ((Texture)this.TexEditorPropertyGrid.SelectedObject).BinKey;
+                index = 0;
 
-			}
+            }
 
-			switch (e.Column)
-			{
-				case 1: // BinKey
-					this.TPK.SortTexturesByType(false);
+            switch (e.Column)
+            {
+                case 1: // BinKey
+                    this.TPK.SortTexturesByType(false);
 
-					if (this._last_column_clicked == 1)
-					{
+                    if (this._last_column_clicked == 1)
+                    {
 
-						this.TPK.Textures.Reverse();
-						this._last_column_clicked = -1;
+                        this.TPK.Textures.Reverse();
+                        this._last_column_clicked = -1;
 
-					}
-					else this._last_column_clicked = 1;
-						
-					if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
-					this.LoadListView(index);
-					break;
+                    }
+                    else this._last_column_clicked = 1;
 
-				case 2: // CollectionName
-					this.TPK.SortTexturesByType(true);
-					
-					if (this._last_column_clicked == 2)
-					{
+                    if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
+                    this.LoadListView(index);
+                    break;
 
-						this.TPK.Textures.Reverse();
-						this._last_column_clicked = -1;
+                case 2: // CollectionName
+                    this.TPK.SortTexturesByType(true);
 
-					}
-					else this._last_column_clicked = 2;
+                    if (this._last_column_clicked == 2)
+                    {
 
-					if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
-					this.LoadListView(index);
-					break;
+                        this.TPK.Textures.Reverse();
+                        this._last_column_clicked = -1;
 
-				default:
-					break;
+                    }
+                    else this._last_column_clicked = 2;
 
-			}
-		}
+                    if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
+                    this.LoadListView(index);
+                    break;
 
-		#endregion
+                default:
+                    break;
 
-		#region Events
+            }
+        }
 
-		private void TexEditorPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
+        #endregion
+
+        #region Events
+
+        private void TexEditorPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
             var key = $"0x{this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash():X8}";
 
             if (e.ChangedItem.Label == nameof(Texture.ClassName) ||
-				e.ChangedItem.Label == nameof(Texture.ClassKey) ||
-				e.ChangedItem.Label == nameof(Texture.MipmapBiasInt) ||
-				e.ChangedItem.Label == nameof(Texture.MipmapBiasType))
-			{
+                e.ChangedItem.Label == nameof(Texture.ClassKey) ||
+                e.ChangedItem.Label == nameof(Texture.MipmapBiasInt) ||
+                e.ChangedItem.Label == nameof(Texture.MipmapBiasType))
+            {
 
-				this.TexEditorPropertyGrid.Refresh();
+                this.TexEditorPropertyGrid.Refresh();
 
-			}
-			else if (e.ChangedItem.Label == nameof(Texture.CollectionName))
-			{
+            }
+            else if (e.ChangedItem.Label == nameof(Texture.CollectionName))
+            {
 
-				var name = e.ChangedItem.Value.ToString();
+                var name = e.ChangedItem.Value.ToString();
 
                 string originalName = "-----";
                 string newName = name;
@@ -834,73 +936,73 @@ namespace Binary.UI
 
                 this.TexEditorListView.SelectedItems[0].SubItems[0].Text = originalName;
                 this.TexEditorListView.SelectedItems[0].SubItems[1].Text = newName;
-				this.TexEditorPropertyGrid.Refresh();
+                this.TexEditorPropertyGrid.Refresh();
 
-			}
+            }
 
-			this.GenerateUpdateTextureCommand(key, e.ChangedItem.Label, e.ChangedItem.Value.ToString());
-		}
+            this.GenerateUpdateTextureCommand(key, e.ChangedItem.Label, e.ChangedItem.Value.ToString());
+        }
 
-		private void TextureEditor_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			this.DisposeImage();
+        private void TextureEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.DisposeImage();
 
-			foreach (var form in this._openforms)
-			{
+            foreach (var form in this._openforms)
+            {
 
-				try { form.Close(); }
-				catch { }
+                try { form.Close(); }
+                catch { }
 
-			}
-		}
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Commands
+        #region Commands
 
-		private void GenerateUpdateTextureCommand(string key, string property, string value)
-		{
-			if (property.Contains(' ')) property = $"\"{property}\"";
-			if (value.Contains(' ')) property = $"\"{value}\"";
-			var command = $"{eCommandType.update_texture} {this._tpkpath} {key} {property} {value}";
-			this.Commands.Add(command);
-		}
+        private void GenerateUpdateTextureCommand(string key, string property, string value)
+        {
+            if (property.Contains(' ')) property = $"\"{property}\"";
+            if (value.Contains(' ')) property = $"\"{value}\"";
+            var command = $"{eCommandType.update_texture} {this._tpkpath} {key} {property} {value}";
+            this.Commands.Add(command);
+        }
 
-		private void GenerateAddTextureCommand(string name, string file)
-		{
-			if (name.Contains(' ')) name = $"\"{name}\"";
-			if (file.Contains(' ')) file = $"\"{file}\"";
-			var command = $"{eCommandType.add_texture} {this._tpkpath} {name} {file}";
-			this.Commands.Add(command);
-		}
+        private void GenerateAddTextureCommand(string name, string file)
+        {
+            if (name.Contains(' ')) name = $"\"{name}\"";
+            if (file.Contains(' ')) file = $"\"{file}\"";
+            var command = $"{eCommandType.add_texture} {this._tpkpath} {name} {file}";
+            this.Commands.Add(command);
+        }
 
-		private void GenerateRemoveTextureCommand(string key)
-		{
-			var command = $"{eCommandType.remove_texture} {this._tpkpath} {key}";
-			this.Commands.Add(command);
-		}
+        private void GenerateRemoveTextureCommand(string key)
+        {
+            var command = $"{eCommandType.remove_texture} {this._tpkpath} {key}";
+            this.Commands.Add(command);
+        }
 
-		private void GenerateCopyTextureCommand(string key, string name)
-		{
-			var command = $"{eCommandType.copy_texture} {this._tpkpath} {key} {name}";
-			this.Commands.Add(command);
-		}
+        private void GenerateCopyTextureCommand(string key, string name)
+        {
+            var command = $"{eCommandType.copy_texture} {this._tpkpath} {key} {name}";
+            this.Commands.Add(command);
+        }
 
-		private void GenerateReplaceTextureCommand(string key, string file)
-		{
-			if (file.Contains(' ')) file = $"\"{file}\"";
-			var command = $"{eCommandType.replace_texture} {this._tpkpath} {key} {file}";
-			this.Commands.Add(command);
-		}
+        private void GenerateReplaceTextureCommand(string key, string file)
+        {
+            if (file.Contains(' ')) file = $"\"{file}\"";
+            var command = $"{eCommandType.replace_texture} {this._tpkpath} {key} {file}";
+            this.Commands.Add(command);
+        }
 
-		private void GenerateBindTexturesCommand(SerializeType type, string directory)
-		{
-			string import = type.ToString().ToLowerInvariant();
-			if (directory.Contains(' ')) directory = $"\"{directory}\"";
-			var command = $"{eCommandType.bind_textures} {import} {this._tpkpath} {directory}";
-			this.Commands.Add(command);
-		}
+        private void GenerateBindTexturesCommand(SerializeType type, string directory)
+        {
+            string import = type.ToString().ToLowerInvariant();
+            if (directory.Contains(' ')) directory = $"\"{directory}\"";
+            var command = $"{eCommandType.bind_textures} {import} {this._tpkpath} {directory}";
+            this.Commands.Add(command);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

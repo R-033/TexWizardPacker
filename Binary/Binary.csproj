@@ -5,13 +5,13 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>texwizard_packer.ico</ApplicationIcon>
-    <Version>2.10.4</Version>
+    <Version>0.1</Version>
     <Authors>r033</Authors>
     <PublisherName>MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033</PublisherName>
     <Description>Tool for editing TexWizard texture packs for Need for Speed games. Based on Binarius fork by nlgxzef of Binary tool by MaxHwoy.</Description>
     <Copyright>© 2026 MaxHwoy, rx, avail, Sh2dow, NI240SX, nlgxzef and r033. No rights reserved.</Copyright>
-    <AssemblyVersion>2.10.4</AssemblyVersion>
-    <FileVersion>2.10.4</FileVersion>
+    <AssemblyVersion>0.1</AssemblyVersion>
+    <FileVersion>0.1</FileVersion>
 	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	<Product>TexWizard Packer</Product>
 	<AssemblyName>TexWizard Packer</AssemblyName>
