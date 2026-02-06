@@ -17,10 +17,11 @@ namespace Binary.Prompt
         public string Value { get; private set; } = String.Empty;
         public string SourceFile { get; private set; } = String.Empty;
         public bool CopyParams { get; private set; } = false;
+        public bool AutoSource { get; private set; } = false;
 
         private string gamePath;
 
-        public TextureImport(string initial, string gamePath, GameINT gameType, bool batchImport)
+        public TextureImport(string initial, string gamePath, string sourceFile, bool batchImport)
         {
             this.InitializeComponent();
             this.ToggleTheme();
@@ -30,26 +31,14 @@ namespace Binary.Prompt
             this.nameLabel.Enabled = !batchImport;
             this.textureNameText.Enabled = !batchImport;
 
-            switch (gameType)
+            this.sourceFilePathText.Text = sourceFile;
+
+            if (sourceFile == "(multiple)")
             {
-                case GameINT.Carbon:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML5RA.BUN";
-                    break;
-                case GameINT.MostWanted:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML2RA.BUN";
-                    break;
-                case GameINT.Underground2:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML4RA.BUN";
-                    break;
-                case GameINT.Underground1:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML1RA.BUN";
-                    break;
-                case GameINT.Prostreet:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML6R_FE.BUN";
-                    break;
-                case GameINT.Undercover:
-                    this.sourceFilePathText.Text = "TRACKS\\STREAML8R_MW2.BUN";
-                    break;
+                this.AutoSource = true;
+                this.sourceFileLabel.Enabled = false;
+                this.sourceFilePathText.Enabled = false;
+                this.openSourceFileButton.Enabled = false;
             }
         }
 
@@ -88,9 +77,9 @@ namespace Binary.Prompt
 
         private void copyParamsToggle_CheckedChanged(object sender, EventArgs e)
         {
-            this.sourceFileLabel.Enabled = this.copyParamsToggle.Checked;
-            this.sourceFilePathText.Enabled = this.copyParamsToggle.Checked;
-            this.openSourceFileButton.Enabled = this.copyParamsToggle.Checked;
+            this.sourceFileLabel.Enabled = this.copyParamsToggle.Checked && !this.AutoSource;
+            this.sourceFilePathText.Enabled = this.copyParamsToggle.Checked && !this.AutoSource;
+            this.openSourceFileButton.Enabled = this.copyParamsToggle.Checked && !this.AutoSource;
         }
 
         private void openSourceFileButton_Click(object sender, EventArgs e)

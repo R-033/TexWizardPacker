@@ -229,12 +229,9 @@ namespace Binary
                             if (links[i].textures.Count == 0)
                             {
                                 links.RemoveAt(i);
-                                j = -1;
+                                i--;
 
-                                if (links.Count == 0)
-                                {
-                                    return;
-                                }
+                                break;
                             }
                         }
                     }

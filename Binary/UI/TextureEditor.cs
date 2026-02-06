@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -392,9 +393,59 @@ namespace Binary.UI
 
         private void ImportMultipleTextures(string[] textures)
         {
+            string sourceFile = string.Empty;
+
+            switch (editor.GameType)
+            {
+                case Nikki.Core.GameINT.Carbon:
+                    sourceFile = "TRACKS\\STREAML5RA.BUN";
+                    break;
+                case Nikki.Core.GameINT.MostWanted:
+                    sourceFile = "TRACKS\\STREAML2RA.BUN";
+                    break;
+                case Nikki.Core.GameINT.Underground2:
+                    sourceFile = "TRACKS\\STREAML4RA.BUN";
+                    break;
+                case Nikki.Core.GameINT.Underground1:
+                    sourceFile = "TRACKS\\STREAML1RA.BUN";
+                    break;
+                case Nikki.Core.GameINT.Prostreet:
+                    sourceFile = "TRACKS\\STREAML6R_FE.BUN";
+                    break;
+                case Nikki.Core.GameINT.Undercover:
+                    sourceFile = "TRACKS\\STREAML8R_MW2.BUN";
+                    break;
+            }
+
             if (textures.Length > 1)
             {
-                using var input = new TextureImport($"({textures.Length} textures)", editor.GamePath, editor.GameType, true);
+                string preferredSourceFile = string.Empty;
+
+                for (int i = 0; i < textures.Length; i++)
+                {
+                    var initial = Path.GetFileNameWithoutExtension(textures[i]);
+
+                    var preferredSourceFile2 = this.editor.Meta.GetLink(initial);
+
+                    if (i == 0)
+                    {
+                        preferredSourceFile = preferredSourceFile2;
+                        continue;
+                    }
+
+                    if (preferredSourceFile2 != preferredSourceFile)
+                    {
+                        preferredSourceFile = "(multiple)";
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(preferredSourceFile))
+                {
+                    sourceFile = preferredSourceFile;
+                }
+
+                using var input = new TextureImport($"({textures.Length} textures)", editor.GamePath, sourceFile, true);
 
                 if (input.ShowDialog() == DialogResult.OK)
                 {
@@ -402,7 +453,20 @@ namespace Binary.UI
 
                     foreach (var fileName in textures)
                     {
-                        this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, input.SourceFile, input.CopyParams, couldntFindThese);
+                        string fileSourceFile = input.SourceFile;
+                        bool copyParams = input.CopyParams;
+
+                        if (input.AutoSource)
+                        {
+                            fileSourceFile = this.editor.Meta.GetLink(Path.GetFileNameWithoutExtension(fileName));
+
+                            if (string.IsNullOrEmpty(fileSourceFile))
+                            {
+                                copyParams = false;
+                            }
+                        }
+
+                        this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, fileSourceFile, copyParams, couldntFindThese);
                     }
 
                     if (this.TexEditorListView.SelectedIndices.Count > 0)
@@ -418,11 +482,11 @@ namespace Binary.UI
                     {
                         if (couldntFindThese.Count > 10)
                         {
-                            MessageBox.Show("Couldn't find " + couldntFindThese.Count + " original textures in " + loadedAuxFile + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Couldn't find " + couldntFindThese.Count + " original textures in " + (input.AutoSource ? "source files" : loadedAuxFile) + ". Used default parameters.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
-                            string message = "Couldn't find these textures in " + loadedAuxFile + ":\n\n";
+                            string message = "Couldn't find these textures in " + (input.AutoSource ? "source files" : loadedAuxFile) + ":\n\n";
 
                             foreach (var tex in couldntFindThese)
                             {
@@ -439,7 +503,15 @@ namespace Binary.UI
             else
             {
                 var initial = Path.GetFileNameWithoutExtension(textures[0]);
-                using var input = new TextureImport(initial, editor.GamePath, editor.GameType, false);
+
+                var preferredSourceFile = this.editor.Meta.GetLink(initial);
+
+                if (!string.IsNullOrEmpty(preferredSourceFile))
+                {
+                    sourceFile = preferredSourceFile;
+                }
+
+                using var input = new TextureImport(initial, editor.GamePath, sourceFile, false);
 
                 if (input.ShowDialog() == DialogResult.OK)
                 {
