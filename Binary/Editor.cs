@@ -38,7 +38,264 @@ namespace Binary
         [Serializable]
         public class MetaFile
         {
+            [Serializable]
+            public class OriginalFileLink
+            {
+                public string path;
+                public List<string> textures = new List<string>();
+            }
+
             public List<string[]> textures = new List<string[]>();
+            public List<OriginalFileLink> links = new List<OriginalFileLink>();
+
+            public void GetBothNames(uint newHash, ref string origName, ref string newName)
+            {
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() == newHash)
+                    {
+                        origName = textures[i][0];
+                        newName = textures[i][1];
+                        return;
+                    }
+                }
+            }
+
+            public void GetOrigName(uint newHash, ref string origName)
+            {
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() == newHash)
+                    {
+                        origName = textures[i][0];
+                        return;
+                    }
+                }
+            }
+
+            public string GetOrigName(uint newHash)
+            {
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() == newHash)
+                    {
+                        return textures[i][0];
+                    }
+                }
+                return string.Empty;
+            }
+
+            public string GetOrigName(string newName)
+            {
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() == newName.BinHash())
+                    {
+                        return textures[i][0];
+                    }
+                }
+                return string.Empty;
+            }
+
+            public string GetLink(string origName)
+            {
+                for (int i = 0; i < links.Count; i++)
+                {
+                    for (int j = 0; j < links[i].textures.Count; j++)
+                    {
+                        if (links[i].textures[j].BinHash() == origName.BinHash())
+                        {
+                            return links[i].path;
+                        }
+                    }
+                }
+                return string.Empty;
+            }
+
+            public void AddTexture(string origName, string newName, string file)
+            {
+                this.DeleteTexture(newName);
+
+                textures.Add(new string[] { origName, newName });
+
+                this.AddTextureLink(origName, file);
+            }
+
+            public void ChangeTextureOrigName(string origName, string newName, string file)
+            {
+                if (this.GetOrigName(newName) == origName)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() == newName.BinHash())
+                    {
+                        bool origNameIsUsed = false;
+
+                        for (int j = 0; j < textures.Count; j++)
+                        {
+                            if (i != j && textures[j][0].BinHash() == textures[i][0].BinHash())
+                            {
+                                origNameIsUsed = true;
+                                break;
+                            }
+                        }
+
+                        if (!origNameIsUsed)
+                        {
+                            this.DeleteTextureLink(textures[i][0]);
+                        }
+
+                        textures[i][0] = origName;
+
+                        this.AddTextureLink(origName, file);
+
+                        return;
+                    }
+                }
+
+                this.AddTexture(origName, newName, file);
+            }
+
+            public void ChangeTextureNewName(string origName, string oldNewName, string newName, string file)
+            {
+                if (oldNewName == newName)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][0].BinHash() == origName.BinHash() && textures[i][1].BinHash() == oldNewName.BinHash())
+                    {
+                        textures[i][1] = newName;
+                        return;
+                    }
+                }
+
+                this.AddTexture(origName, newName, file);
+            }
+
+            public void AddTextureLink(string origName, string file)
+            {
+                for (int i = 0; i < links.Count; i++)
+                {
+                    if (links[i].path == file)
+                    {
+                        for (int j = 0; j < links[i].textures.Count; j++)
+                        {
+                            if (links[i].textures[j].BinHash() == origName.BinHash())
+                            {
+                                return;
+                            }
+                        }
+
+                        links[i].textures.Add(origName);
+                        return;
+                    }
+                }
+
+                var link = new OriginalFileLink();
+                link.path = file;
+                link.textures.Add(origName);
+                links.Add(link);
+            }
+
+            public void ChangeTextureLink(string origName, string path)
+            {
+                if (this.GetLink(origName) == path)
+                {
+                    return;
+                }
+
+                this.DeleteTextureLink(origName);
+
+                this.AddTextureLink(origName, path);
+            }
+
+            public void DeleteTextureLink(string origName)
+            {
+                for (int i = 0; i < links.Count; i++)
+                {
+                    for (int j = 0; j < links[i].textures.Count; j++)
+                    {
+                        if (links[i].textures[j].BinHash() == origName.BinHash())
+                        {
+                            links[i].textures.RemoveAt(j);
+                            j--;
+
+                            if (links[i].textures.Count == 0)
+                            {
+                                links.RemoveAt(i);
+                                j = -1;
+
+                                if (links.Count == 0)
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            public void DeleteTexture(uint newHash)
+            {
+                var origName = this.GetOrigName(newHash);
+
+                bool origNameIsUsed = false;
+
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() != newHash)
+                    {
+                        if (textures[i][0].BinHash() == origName.BinHash())
+                        {
+                            origNameIsUsed = true;
+                        }
+                    }
+                    else
+                    {
+                        textures.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+                if (!origNameIsUsed)
+                {
+                    this.DeleteTextureLink(origName);
+                }
+            }
+
+            public void DeleteTexture(string newName)
+            {
+                var origName = this.GetOrigName(newName);
+
+                bool origNameIsUsed = false;
+
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    if (textures[i][1].BinHash() != newName.BinHash())
+                    {
+                        if (textures[i][0].BinHash() == origName.BinHash())
+                        {
+                            origNameIsUsed = true;
+                        }
+                    }
+                    else
+                    {
+                        textures.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+                if (!origNameIsUsed)
+                {
+                    this.DeleteTextureLink(origName);
+                }
+            }
         }
 
         public MetaFile Meta = new MetaFile();

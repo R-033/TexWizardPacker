@@ -1,24 +1,24 @@
 ﻿namespace Binary.UI
 {
-	partial class TextureEditor
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class TextureEditor
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         #region Windows Form Designer generated code
 
@@ -34,7 +34,6 @@
             this.TexEditorAddTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorAddTextureFolderItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorRemoveTextureItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TexEditorCopyTextureItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorOptionsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorExportAllItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorFindReplaceItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,11 +41,17 @@
             this.TexEditorHasherItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorRaiderItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.TexEditorListView = new System.Windows.Forms.ListView();
             this.ColumnOriginalName = new System.Windows.Forms.ColumnHeader();
             this.ColumnNewName = new System.Windows.Forms.ColumnHeader();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.TexEditorPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.originalNameText = new System.Windows.Forms.TextBox();
+            this.openOrigFileButton = new System.Windows.Forms.Button();
+            this.applyOrigParamsButton = new System.Windows.Forms.Button();
+            this.fromFileText = new System.Windows.Forms.TextBox();
+            this.originalNameEditLabel = new System.Windows.Forms.Label();
+            this.fromFileEditLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.TexEditorImage = new System.Windows.Forms.PictureBox();
             this.AddTextureDialog = new System.Windows.Forms.OpenFileDialog();
@@ -92,7 +97,7 @@
             // 
             // TexEditorTexturesStrip
             // 
-            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorAddTextureFolderItem, this.TexEditorRemoveTextureItem, this.TexEditorCopyTextureItem });
+            this.TexEditorTexturesStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorAddTextureItem, this.TexEditorAddTextureFolderItem, this.TexEditorRemoveTextureItem });
             this.TexEditorTexturesStrip.Name = "TexEditorTexturesStrip";
             this.TexEditorTexturesStrip.Size = new System.Drawing.Size(62, 20);
             this.TexEditorTexturesStrip.Text = "Textures";
@@ -119,14 +124,6 @@
             this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(235, 22);
             this.TexEditorRemoveTextureItem.Text = "Remove Texture(s)";
             this.TexEditorRemoveTextureItem.Click += this.TexEditorRemoveTextureItem_Click;
-            // 
-            // TexEditorCopyTextureItem
-            // 
-            this.TexEditorCopyTextureItem.Name = "TexEditorCopyTextureItem";
-            this.TexEditorCopyTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C;
-            this.TexEditorCopyTextureItem.Size = new System.Drawing.Size(235, 22);
-            this.TexEditorCopyTextureItem.Text = "Copy Texture";
-            this.TexEditorCopyTextureItem.Click += this.TexEditorCopyTextureItem_Click;
             // 
             // TexEditorOptionsStrip
             // 
@@ -185,39 +182,17 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Panel1.Controls.Add(this.TexEditorListView);
             this.splitContainer1.Panel1MinSize = 300;
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.panel1);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Panel2MinSize = 524;
             this.splitContainer1.Size = new System.Drawing.Size(1148, 603);
             this.splitContainer1.SplitterDistance = 532;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 1;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.TexEditorListView);
-            this.splitContainer2.Panel1MinSize = 200;
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.TexEditorPropertyGrid);
-            this.splitContainer2.Panel2MinSize = 200;
-            this.splitContainer2.Size = new System.Drawing.Size(532, 603);
-            this.splitContainer2.SplitterDistance = 271;
-            this.splitContainer2.SplitterWidth = 5;
-            this.splitContainer2.TabIndex = 0;
             // 
             // TexEditorListView
             // 
@@ -229,7 +204,7 @@
             this.TexEditorListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorListView.Name = "TexEditorListView";
             this.TexEditorListView.OwnerDraw = true;
-            this.TexEditorListView.Size = new System.Drawing.Size(514, 261);
+            this.TexEditorListView.Size = new System.Drawing.Size(514, 588);
             this.TexEditorListView.TabIndex = 0;
             this.TexEditorListView.UseCompatibleStateImageBehavior = false;
             this.TexEditorListView.View = System.Windows.Forms.View.Details;
@@ -249,16 +224,104 @@
             this.ColumnNewName.Text = "New Name";
             this.ColumnNewName.Width = 240;
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.TexEditorPropertyGrid);
+            this.splitContainer2.Panel1.Controls.Add(this.originalNameText);
+            this.splitContainer2.Panel1.Controls.Add(this.openOrigFileButton);
+            this.splitContainer2.Panel1.Controls.Add(this.applyOrigParamsButton);
+            this.splitContainer2.Panel1.Controls.Add(this.fromFileText);
+            this.splitContainer2.Panel1.Controls.Add(this.originalNameEditLabel);
+            this.splitContainer2.Panel1.Controls.Add(this.fromFileEditLabel);
+            this.splitContainer2.Panel1MinSize = 0;
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.panel1);
+            this.splitContainer2.Panel2MinSize = 0;
+            this.splitContainer2.Size = new System.Drawing.Size(611, 603);
+            this.splitContainer2.SplitterDistance = 400;
+            this.splitContainer2.SplitterWidth = 5;
+            this.splitContainer2.TabIndex = 0;
+            // 
             // TexEditorPropertyGrid
             // 
             this.TexEditorPropertyGrid.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.TexEditorPropertyGrid.HelpVisible = false;
-            this.TexEditorPropertyGrid.Location = new System.Drawing.Point(14, 3);
+            this.TexEditorPropertyGrid.Location = new System.Drawing.Point(4, 34);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(512, 280);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(594, 453);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
+            // 
+            // originalNameText
+            // 
+            this.originalNameText.Enabled = false;
+            this.originalNameText.Location = new System.Drawing.Point(64, 5);
+            this.originalNameText.Name = "originalNameText";
+            this.originalNameText.Size = new System.Drawing.Size(263, 23);
+            this.originalNameText.TabIndex = 3;
+            this.originalNameText.TextChanged += this.originalNameText_TextChanged;
+            // 
+            // openOrigFileButton
+            // 
+            this.openOrigFileButton.Enabled = false;
+            this.openOrigFileButton.Location = new System.Drawing.Point(512, 3);
+            this.openOrigFileButton.Name = "openOrigFileButton";
+            this.openOrigFileButton.Size = new System.Drawing.Size(28, 27);
+            this.openOrigFileButton.TabIndex = 6;
+            this.openOrigFileButton.Text = "...";
+            this.openOrigFileButton.UseVisualStyleBackColor = true;
+            this.openOrigFileButton.Click += this.openOrigFileButton_Click;
+            // 
+            // applyOrigParamsButton
+            // 
+            this.applyOrigParamsButton.Enabled = false;
+            this.applyOrigParamsButton.Location = new System.Drawing.Point(546, 3);
+            this.applyOrigParamsButton.Name = "applyOrigParamsButton";
+            this.applyOrigParamsButton.Size = new System.Drawing.Size(52, 27);
+            this.applyOrigParamsButton.TabIndex = 5;
+            this.applyOrigParamsButton.Text = "Apply";
+            this.applyOrigParamsButton.UseVisualStyleBackColor = true;
+            this.applyOrigParamsButton.Click += this.applyOrigParamsButton_Click;
+            // 
+            // fromFileText
+            // 
+            this.fromFileText.Enabled = false;
+            this.fromFileText.Location = new System.Drawing.Point(377, 5);
+            this.fromFileText.Name = "fromFileText";
+            this.fromFileText.Size = new System.Drawing.Size(129, 23);
+            this.fromFileText.TabIndex = 4;
+            this.fromFileText.TextChanged += this.fromFileText_TextChanged;
+            // 
+            // originalNameEditLabel
+            // 
+            this.originalNameEditLabel.AutoSize = true;
+            this.originalNameEditLabel.Enabled = false;
+            this.originalNameEditLabel.Location = new System.Drawing.Point(6, 9);
+            this.originalNameEditLabel.Name = "originalNameEditLabel";
+            this.originalNameEditLabel.Size = new System.Drawing.Size(52, 15);
+            this.originalNameEditLabel.TabIndex = 1;
+            this.originalNameEditLabel.Text = "Original:";
+            // 
+            // fromFileEditLabel
+            // 
+            this.fromFileEditLabel.AutoSize = true;
+            this.fromFileEditLabel.Enabled = false;
+            this.fromFileEditLabel.Location = new System.Drawing.Point(333, 9);
+            this.fromFileEditLabel.Name = "fromFileEditLabel";
+            this.fromFileEditLabel.Size = new System.Drawing.Size(38, 15);
+            this.fromFileEditLabel.TabIndex = 2;
+            this.fromFileEditLabel.Text = "From:";
             // 
             // panel1
             // 
@@ -267,16 +330,16 @@
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(558, 570);
+            this.panel1.Size = new System.Drawing.Size(668, 665);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
             // 
             this.TexEditorImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.TexEditorImage.Location = new System.Drawing.Point(0, 0);
+            this.TexEditorImage.Location = new System.Drawing.Point(-1, -1);
             this.TexEditorImage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorImage.Name = "TexEditorImage";
-            this.TexEditorImage.Size = new System.Drawing.Size(560, 560);
+            this.TexEditorImage.Size = new System.Drawing.Size(594, 308);
             this.TexEditorImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.TexEditorImage.TabIndex = 0;
             this.TexEditorImage.TabStop = false;
@@ -309,6 +372,7 @@
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)this.splitContainer2).EndInit();
             this.splitContainer2.ResumeLayout(false);
@@ -323,27 +387,32 @@
         #endregion
 
         private System.Windows.Forms.CustomMenuStrip TexEditorMenuStrip;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorTexturesStrip;
-		private System.Windows.Forms.SplitContainer splitContainer1;
-		private System.Windows.Forms.SplitContainer splitContainer2;
-		private System.Windows.Forms.ListView TexEditorListView;
-		private System.Windows.Forms.PropertyGrid TexEditorPropertyGrid;
-		private System.Windows.Forms.PictureBox TexEditorImage;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorAddTextureItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorRemoveTextureItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorCopyTextureItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorOptionsStrip;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorExportAllItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorFindReplaceItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorToolsStrip;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorHasherItem;
-		private System.Windows.Forms.ToolStripMenuItem TexEditorRaiderItem;
-		private System.Windows.Forms.ColumnHeader ColumnNewName;
-		private System.Windows.Forms.OpenFileDialog AddTextureDialog;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorTexturesStrip;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.ListView TexEditorListView;
+        private System.Windows.Forms.PropertyGrid TexEditorPropertyGrid;
+        private System.Windows.Forms.PictureBox TexEditorImage;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorAddTextureItem;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorRemoveTextureItem;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorOptionsStrip;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorExportAllItem;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorFindReplaceItem;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorToolsStrip;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorHasherItem;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorRaiderItem;
+        private System.Windows.Forms.ColumnHeader ColumnNewName;
+        private System.Windows.Forms.OpenFileDialog AddTextureDialog;
         private System.Windows.Forms.FolderBrowserDialog AddTextureFolderDialog;
         private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.SaveFileDialog ExportTextureDialog;
+        private System.Windows.Forms.SaveFileDialog ExportTextureDialog;
         private System.Windows.Forms.ColumnHeader ColumnOriginalName;
         private System.Windows.Forms.ToolStripMenuItem TexEditorAddTextureFolderItem;
+        private System.Windows.Forms.Label fromFileEditLabel;
+        private System.Windows.Forms.Label originalNameEditLabel;
+        private System.Windows.Forms.Button applyOrigParamsButton;
+        private System.Windows.Forms.TextBox fromFileText;
+        private System.Windows.Forms.TextBox originalNameText;
+        private System.Windows.Forms.Button openOrigFileButton;
     }
 }

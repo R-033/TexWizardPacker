@@ -115,8 +115,6 @@ namespace Binary
             this.fileTreeView.ForeColor = theme.Colors.PrimForeColor;
 
             this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
-            this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
-            this.gameDirLabel.ForeColor = theme.Colors.LabelTextColor;
 
             this.gameDirPath.BackColor = theme.Colors.TextBoxBackColor;
             this.gameDirPath.ForeColor = theme.Colors.TextBoxForeColor;
