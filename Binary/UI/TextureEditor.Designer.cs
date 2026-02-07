@@ -1,4 +1,6 @@
-﻿namespace Binary.UI
+﻿using Binary.Properties;
+
+namespace Binary.UI
 {
     partial class TextureEditor
     {
@@ -37,6 +39,7 @@
             this.TexEditorOptionsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorExportAllItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorFindReplaceItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorToolsStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorHasherItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorRaiderItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,15 +108,15 @@
             // TexEditorAddTextureItem
             // 
             this.TexEditorAddTextureItem.Name = "TexEditorAddTextureItem";
-            this.TexEditorAddTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A;
-            this.TexEditorAddTextureItem.Size = new System.Drawing.Size(235, 22);
+            this.TexEditorAddTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A;
+            this.TexEditorAddTextureItem.Size = new System.Drawing.Size(267, 22);
             this.TexEditorAddTextureItem.Text = "Add/Update Texture(s)";
             this.TexEditorAddTextureItem.Click += this.TexEditorAddTextureItem_Click;
             // 
             // TexEditorAddTextureFolderItem
             // 
             this.TexEditorAddTextureFolderItem.Name = "TexEditorAddTextureFolderItem";
-            this.TexEditorAddTextureFolderItem.Size = new System.Drawing.Size(235, 22);
+            this.TexEditorAddTextureFolderItem.Size = new System.Drawing.Size(267, 22);
             this.TexEditorAddTextureFolderItem.Text = "Add/Update From Folder";
             this.TexEditorAddTextureFolderItem.Click += this.TexEditorAddTextureFolderItem_Click;
             // 
@@ -121,13 +124,13 @@
             // 
             this.TexEditorRemoveTextureItem.Name = "TexEditorRemoveTextureItem";
             this.TexEditorRemoveTextureItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D;
-            this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(235, 22);
+            this.TexEditorRemoveTextureItem.Size = new System.Drawing.Size(267, 22);
             this.TexEditorRemoveTextureItem.Text = "Remove Texture(s)";
             this.TexEditorRemoveTextureItem.Click += this.TexEditorRemoveTextureItem_Click;
             // 
             // TexEditorOptionsStrip
             // 
-            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorFindReplaceItem });
+            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorFindReplaceItem, this.selectAllToolStripMenuItem });
             this.TexEditorOptionsStrip.Name = "TexEditorOptionsStrip";
             this.TexEditorOptionsStrip.Size = new System.Drawing.Size(61, 20);
             this.TexEditorOptionsStrip.Text = "Options";
@@ -147,6 +150,14 @@
             this.TexEditorFindReplaceItem.Size = new System.Drawing.Size(239, 22);
             this.TexEditorFindReplaceItem.Text = "Find And Replace";
             this.TexEditorFindReplaceItem.Click += this.TexEditorFindReplaceItem_Click;
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A;
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.selectAllToolStripMenuItem.Text = "Select All";
+            this.selectAllToolStripMenuItem.Click += this.selectAllToolStripMenuItem_Click;
             // 
             // TexEditorToolsStrip
             // 
@@ -217,12 +228,12 @@
             // ColumnOriginalName
             // 
             this.ColumnOriginalName.Text = "Original Name";
-            this.ColumnOriginalName.Width = 240;
+            this.ColumnOriginalName.Width = 238;
             // 
             // ColumnNewName
             // 
             this.ColumnNewName.Text = "New Name";
-            this.ColumnNewName.Width = 240;
+            this.ColumnNewName.Width = 238;
             // 
             // splitContainer2
             // 
@@ -251,6 +262,7 @@
             this.splitContainer2.SplitterDistance = 400;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
+            this.splitContainer2.SplitterMoved += this.SplitContainer2_SplitterMoved;
             // 
             // TexEditorPropertyGrid
             // 
@@ -259,7 +271,7 @@
             this.TexEditorPropertyGrid.Location = new System.Drawing.Point(4, 34);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(594, 453);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(594, 363);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
             // 
@@ -330,7 +342,7 @@
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(668, 665);
+            this.panel1.Size = new System.Drawing.Size(592, 181);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -414,5 +426,6 @@
         private System.Windows.Forms.TextBox fromFileText;
         private System.Windows.Forms.TextBox originalNameText;
         private System.Windows.Forms.Button openOrigFileButton;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }

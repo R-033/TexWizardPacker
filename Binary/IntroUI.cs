@@ -363,26 +363,8 @@ namespace Binary
 
             if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.asi")))
             {
-                try
-                {
-                    string dir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                    string twfrom = Path.Combine(dir, "TexWizard.asi");
-
-                    if (!File.Exists(twfrom))
-                    {
-                        this.packList.Items.Add("scripts\\TexWizard.asi doesn't exist. Please install TexWizard script to begin.");
-                        return;
-                    }
-
-                    string twto = Path.Combine(gamePath, "scripts", "TexWizard.asi");
-                    Directory.CreateDirectory(Path.Combine(gamePath, "scripts"));
-                    File.Copy(twfrom, twto, true);
-                }
-                catch (Exception ex)
-                {
-                    this.packList.Items.Add(ex.GetLowestMessage());
-                    return;
-                }
+                this.packList.Items.Add("TexWizard.asi is not installed to this instance of the game. Please install it before proceeding.");
+                return;
             }
 
             if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.json")))

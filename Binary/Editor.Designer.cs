@@ -106,9 +106,23 @@ namespace Binary
             // 
             // EditorMenuStrip
             // 
+            this.EditorMenuStrip.ImageMarginGradientBegin = System.Drawing.Color.Maroon;
+            this.EditorMenuStrip.ImageMarginGradientEnd = System.Drawing.Color.WhiteSmoke;
+            this.EditorMenuStrip.ImageMarginGradientMiddle = System.Drawing.Color.WhiteSmoke;
             this.EditorMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.EditorMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.EditorMenuStripMain, this.EditorMenuStripTools, this.EditorMenuStripOptions, this.EditorMenuStripScripting, this.EditorMenuStripWindows, this.EditorMenuStripHelp });
             this.EditorMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.EditorMenuStrip.MenuBorder = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuItemBorder = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuItemPressedGradientBegin = System.Drawing.Color.DimGray;
+            this.EditorMenuStrip.MenuItemPressedGradientEnd = System.Drawing.Color.DimGray;
+            this.EditorMenuStrip.MenuItemPressedGradientMiddle = System.Drawing.Color.DimGray;
+            this.EditorMenuStrip.MenuItemSelected = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuItemSelectedGradientBegin = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuItemSelectedGradientEnd = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuStripForeColor = System.Drawing.Color.WhiteSmoke;
+            this.EditorMenuStrip.MenuStripGradientBegin = System.Drawing.Color.Black;
+            this.EditorMenuStrip.MenuStripGradientEnd = System.Drawing.Color.DimGray;
             this.EditorMenuStrip.Name = "EditorMenuStrip";
             this.EditorMenuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.EditorMenuStrip.Size = new System.Drawing.Size(904, 24);
@@ -167,7 +181,7 @@ namespace Binary
             // 
             this.EMSToolsHasher.Name = "EMSToolsHasher";
             this.EMSToolsHasher.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H;
-            this.EMSToolsHasher.Size = new System.Drawing.Size(180, 22);
+            this.EMSToolsHasher.Size = new System.Drawing.Size(158, 22);
             this.EMSToolsHasher.Text = "Hasher";
             this.EMSToolsHasher.Click += this.EMSToolsHasher_Click;
             // 
@@ -175,7 +189,7 @@ namespace Binary
             // 
             this.EMSToolsRaider.Name = "EMSToolsRaider";
             this.EMSToolsRaider.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R;
-            this.EMSToolsRaider.Size = new System.Drawing.Size(180, 22);
+            this.EMSToolsRaider.Size = new System.Drawing.Size(158, 22);
             this.EMSToolsRaider.Text = "Raider";
             this.EMSToolsRaider.Click += this.EMSToolsRaider_Click;
             // 
@@ -183,7 +197,7 @@ namespace Binary
             // 
             this.EMSToolsSwatcher.Name = "EMSToolsSwatcher";
             this.EMSToolsSwatcher.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S;
-            this.EMSToolsSwatcher.Size = new System.Drawing.Size(180, 22);
+            this.EMSToolsSwatcher.Size = new System.Drawing.Size(158, 22);
             this.EMSToolsSwatcher.Text = "Swatcher";
             this.EMSToolsSwatcher.Click += this.EMSToolsSwatcher_Click;
             // 
@@ -327,7 +341,7 @@ namespace Binary
             // 
             this.EMSHelpAbout.Name = "EMSHelpAbout";
             this.EMSHelpAbout.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.EMSHelpAbout.Size = new System.Drawing.Size(180, 22);
+            this.EMSHelpAbout.Size = new System.Drawing.Size(159, 22);
             this.EMSHelpAbout.Text = "About";
             this.EMSHelpAbout.Click += this.EMSHelpAbout_Click;
             // 
@@ -335,7 +349,7 @@ namespace Binary
             // 
             this.EMSHelpTutorials.Name = "EMSHelpTutorials";
             this.EMSHelpTutorials.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T;
-            this.EMSHelpTutorials.Size = new System.Drawing.Size(180, 22);
+            this.EMSHelpTutorials.Size = new System.Drawing.Size(159, 22);
             this.EMSHelpTutorials.Text = "Tutorials";
             this.EMSHelpTutorials.Click += this.EMSHelpTutorials_Click;
             // 
@@ -390,6 +404,7 @@ namespace Binary
             this.EditorFindTextBox.Location = new System.Drawing.Point(3, 6);
             this.EditorFindTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.EditorFindTextBox.Name = "EditorFindTextBox";
+            this.EditorFindTextBox.PlaceholderText = "Search";
             this.EditorFindTextBox.Size = new System.Drawing.Size(287, 24);
             this.EditorFindTextBox.TabIndex = 0;
             this.EditorFindTextBox.TextChanged += this.EditorFindTextBox_TextChanged;

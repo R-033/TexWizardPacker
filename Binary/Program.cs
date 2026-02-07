@@ -23,6 +23,8 @@ namespace Binary
 {
     static class Program
     {
+        public static string MainHashList { get; set; }
+        public static string CustomHashList { get; set; }
         public static string MainHashListVLT { get; set; }
         public static string CustomHashListVLT { get; set; }
 
@@ -58,7 +60,7 @@ namespace Binary
                 if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
                 {
 
-                    MessageBox.Show("TexWizard Packer is currently running in User Mode. To prevent issues while working with games installed in restricted places, it's highly recommended to run TexWizard Packer as Administrator.", "Warning",
+                    MessageBox.Show("You should run TexWizard Packer as Administrator to prevent any issues.\n\nYou can disable this warning in the Settings menu.", "Warning",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 }
@@ -106,6 +108,8 @@ namespace Binary
             string userug1 = Path.Combine(thispath, @"userkeys\underground1.txt");
             string mainug2 = Path.Combine(thispath, @"mainkeys\underground2.txt");
             string userug2 = Path.Combine(thispath, @"userkeys\underground2.txt");
+            string mainshared = Path.Combine(thispath, @"mainkeys\shared.txt");
+            string usershared = Path.Combine(thispath, @"userkeys\shared.txt");
             string mainvlt = Path.Combine(thispath, @"mainkeys\vltkeys.txt");
             string uservlt = Path.Combine(thispath, @"userkeys\vltkeys.txt");
             string usercustattr = Path.Combine(thispath, @"userkeys\CustomAttributes.txt");
@@ -122,6 +126,8 @@ namespace Binary
             Underground1Profile.CustomHashList = userug1;
             Underground2Profile.MainHashList = mainug2;
             Underground2Profile.CustomHashList = userug2;
+            MainHashList = mainshared;
+            CustomHashList = usershared;
             MainHashListVLT = mainvlt;
             CustomHashListVLT = uservlt;
             Nikki.Core.Map.CustomAttribFile = usercustattr;
@@ -137,6 +143,7 @@ namespace Binary
             if (!File.Exists(useruc)) { _ = File.Create(useruc); }
             if (!File.Exists(userug1)) { _ = File.Create(userug1); }
             if (!File.Exists(userug2)) { _ = File.Create(userug2); }
+            if (!File.Exists(usershared)) { _ = File.Create(usershared); }
             if (!File.Exists(uservlt)) { _ = File.Create(uservlt); }
             if (!File.Exists(usercustattr)) { _ = File.Create(usercustattr); }
         }

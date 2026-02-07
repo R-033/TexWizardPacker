@@ -133,5 +133,20 @@ namespace Binary.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
+        public int TexSplitterDistance
+        {
+            get
+            {
+                return ((int)(this["TexSplitterDistance"]));
+            }
+            set
+            {
+                this["TexSplitterDistance"] = value;
+            }
+        }
     }
 }

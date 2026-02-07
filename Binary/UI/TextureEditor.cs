@@ -60,6 +60,7 @@ namespace Binary.UI
             this.TexEditorImage.Width = this.panel1.Width;
             this.TexEditorImage.Height = this.panel1.Height;
             this.TexEditorListView.Columns[^1].Width = -2;
+            this.splitContainer2.SplitterDistance = Configurations.Default.TexSplitterDistance;
             this.ToggleTheme();
             this.LoadListView();
             this.ToggleMenuStripControls();
@@ -122,6 +123,8 @@ namespace Binary.UI
             this.TexEditorExportAllItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.TexEditorFindReplaceItem.BackColor = theme.Colors.MenuItemBackColor;
             this.TexEditorFindReplaceItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.selectAllToolStripMenuItem.BackColor = theme.Colors.MenuItemBackColor;
+            this.selectAllToolStripMenuItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.TexEditorHasherItem.BackColor = theme.Colors.MenuItemBackColor;
             this.TexEditorHasherItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.TexEditorRaiderItem.BackColor = theme.Colors.MenuItemBackColor;
@@ -679,12 +682,19 @@ namespace Binary.UI
             }
         }
 
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in this.TexEditorListView.Items)
+            {
+                item.Selected = true;
+            }
+        }
+
         private void TexEditorExportAllItem_Click(object sender, EventArgs e)
         {
             using var browser = new FolderBrowserDialog()
             {
-                AutoUpgradeEnabled = false,
-                Description = "Select directory where selected textures should be exported.",
+                AutoUpgradeEnabled = true,
                 RootFolder = Environment.SpecialFolder.MyComputer,
                 ShowNewFolderButton = true,
             };
@@ -816,7 +826,7 @@ namespace Binary.UI
 
             this.TexEditorPropertyGrid.SelectedObject = this.TexEditorListView.SelectedItems.Count == 1 ? texture : null;
 
-            if (texture != null && this.TexEditorListView.SelectedItems.Count == 1)
+            if (texture != null && this.TexEditorListView.SelectedItems.Count == 1 && this.splitContainer2.SplitterDistance < this.splitContainer2.Height - 20)
             {
                 try
                 {
@@ -1090,7 +1100,7 @@ namespace Binary.UI
 
         private void applyOrigParamsButton_Click(object sender, EventArgs e)
         {
-            if (!this.editor.IsTexturePack ||this.TexEditorListView.SelectedItems.Count == 0)
+            if (!this.editor.IsTexturePack || this.TexEditorListView.SelectedItems.Count == 0)
             {
                 return;
             }
@@ -1177,6 +1187,13 @@ namespace Binary.UI
 
                 this.editor.Meta.ChangeTextureLink(selected.SubItems[0].Text, this.fromFileText.Text);
             }
+        }
+
+        private void SplitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            Configurations.Default.TexSplitterDistance = this.splitContainer2.SplitterDistance;
+
+            this.TexEditorListView_SelectedIndexChanged(sender, new EventArgs());
         }
     }
 }

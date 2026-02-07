@@ -2105,6 +2105,9 @@ namespace Binary
                 var watch = new Stopwatch();
                 watch.Start();
 
+
+                string[] exceptions = this.Profile.Load(launch);
+
                 if (this.IsTexturePack)
                 {
                     this.Meta = (MetaFile)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(this.GamePath, this.PackPath, "meta.json")), typeof(MetaFile));
@@ -2114,13 +2117,27 @@ namespace Binary
                         if (!this.Meta.textures[i][0].StartsWith("0x"))
                         {
                             this.Meta.textures[i][0].BinHash();
-                            this.Meta.textures[i][0].VltHash();
                         }
                         if (!this.Meta.textures[i][1].StartsWith("0x"))
                         {
                             this.Meta.textures[i][1].BinHash();
-                            this.Meta.textures[i][1].VltHash();
                         }
+                    }
+                }
+
+                if (File.Exists(Program.MainHashList))
+                {
+                    foreach (var line in File.ReadLines(Program.MainHashList))
+                    {
+                        line.BinHash();
+                    }
+                }
+
+                if (File.Exists(Program.CustomHashList))
+                {
+                    foreach (var line in File.ReadLines(Program.CustomHashList))
+                    {
+                        line.BinHash();
                     }
                 }
 
@@ -2139,8 +2156,6 @@ namespace Binary
                         line.VltHash();
                     }
                 }
-
-                string[] exceptions = this.Profile.Load(launch);
 
                 watch.Stop();
 
