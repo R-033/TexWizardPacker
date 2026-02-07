@@ -422,13 +422,52 @@ namespace Binary.UI
 
                 var prevTexture = this.FindTexture(newName.BinHash());
 
+                bool created = false;
+
                 if (prevTexture != null)
                 {
+                    var ClassKey = prevTexture.ClassKey;
+                    var MipmapBiasType = prevTexture.MipmapBiasType;
+                    var BiasLevel = prevTexture.BiasLevel;
+                    var AlphaUsageType = prevTexture.AlphaUsageType;
+                    var AlphaBlendType = prevTexture.AlphaBlendType;
+                    var ApplyAlphaSort = prevTexture.ApplyAlphaSort;
+                    var ScrollType = prevTexture.ScrollType;
+                    var RenderingOrder = prevTexture.RenderingOrder;
+                    var TileableUV = prevTexture.TileableUV;
+                    var OffsetS = prevTexture.OffsetS;
+                    var OffsetT = prevTexture.OffsetT;
+                    var ScaleS = prevTexture.ScaleS;
+                    var ScaleT = prevTexture.ScaleT;
+                    var ScrollTimestep = prevTexture.ScrollTimestep;
+                    var ScrollSpeedS = prevTexture.ScrollSpeedS;
+                    var ScrollSpeedT = prevTexture.ScrollSpeedT;
+                    var Flags = prevTexture.Flags;
+
                     prevTexture.Reload(filePath);
                     this.GenerateReplaceTextureCommand(newName, filePath, 0);
+
+                    prevTexture.ClassKey = ClassKey;
+                    prevTexture.MipmapBiasType = MipmapBiasType;
+                    prevTexture.BiasLevel = BiasLevel;
+                    prevTexture.AlphaUsageType = AlphaUsageType;
+                    prevTexture.AlphaBlendType = AlphaBlendType;
+                    prevTexture.ApplyAlphaSort = ApplyAlphaSort;
+                    prevTexture.ScrollType = ScrollType;
+                    prevTexture.RenderingOrder = RenderingOrder;
+                    prevTexture.TileableUV = TileableUV;
+                    prevTexture.OffsetS = OffsetS;
+                    prevTexture.OffsetT = OffsetT;
+                    prevTexture.ScaleS = ScaleS;
+                    prevTexture.ScaleT = ScaleT;
+                    prevTexture.ScrollTimestep = ScrollTimestep;
+                    prevTexture.ScrollSpeedS = ScrollSpeedS;
+                    prevTexture.ScrollSpeedT = ScrollSpeedT;
+                    prevTexture.Flags = Flags;
                 }
                 else
                 {
+                    created = true;
                     this.TPK[0].AddTexture(newName, filePath);
                     this.GenerateAddTextureCommand(newName, filePath, 0);
                 }
@@ -447,8 +486,11 @@ namespace Binary.UI
                         couldntFindThese.Add(textureName);
                     }
 
-                    this.FindTexture(newName.BinHash()).RenderingOrder = 0;
-                    this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0", 0);
+                    if (created)
+                    {
+                        this.FindTexture(newName.BinHash()).RenderingOrder = 0;
+                        this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0", 0);
+                    }
                 }
 
                 if (editor.IsTexturePack)
