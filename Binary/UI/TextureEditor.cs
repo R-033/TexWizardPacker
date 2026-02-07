@@ -896,8 +896,6 @@ namespace Binary.UI
                             var newName = texture.CollectionName;
                             var link = this.editor.Meta.GetLink(origName);
 
-                            texture.CollectionName = cname;
-
                             this.editor.Meta.ChangeTextureOrigName(cname, newName, link);
 
                             this.TexEditorListView.Items[i].SubItems[0].Text = cname;
