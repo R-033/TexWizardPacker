@@ -190,6 +190,14 @@ namespace Binary
 
                 }
 
+                if (manager.Name == "TPKBlocks")
+                {
+                    if (managenode.Nodes.Count > 1)
+                    {
+                        managenode.Nodes.Insert(0, new TreeNode("All Textures"));
+                    }
+                }
+
                 if (tpkBlocksOnly)
                 {
                     managenode.Expand();

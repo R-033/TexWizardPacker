@@ -1490,6 +1490,35 @@ namespace Binary
             var sdb = this.Profile.Find(_ => _.Filename == fname);
             var manager = sdb.Database.GetManager(mname);
 
+            if (cname == "All Textures")
+            {
+                var tpks = new List<TPKBlock>();
+                var paths = new List<string>();
+
+                foreach (object col in manager)
+                {
+                    if (col is TPKBlock tpk)
+                    {
+                        tpks.Add(tpk);
+                        paths.Add(fname + "/" + mname + "/" + tpk.CollectionName);
+                    }
+                }
+
+                using var editor = new TextureEditor(this, tpks.ToArray(), paths.ToArray())
+                {
+                    WindowState = this.WindowState
+                };
+
+                this.Hide();
+                _ = editor.ShowDialog();
+                this.EditorPropertyGrid.Refresh();
+                this.Show();
+                this.WriteLineToEndCommandPrompt(editor.Commands);
+                this._edited = true;
+
+                return;
+            }
+
             object collection = manager[manager.FindIndex(cname)];
             string path = this.GetCurrentSeparatedPath();
 
@@ -1519,7 +1548,7 @@ namespace Binary
             else if (collection is TPKBlock tpk)
             {
 
-                using var editor = new TextureEditor(this, tpk, path)
+                using var editor = new TextureEditor(this, new TPKBlock[] { tpk }, new string[] { path })
                 {
                     WindowState = this.WindowState
                 };
@@ -2297,6 +2326,24 @@ namespace Binary
         private void EditorTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             Console.WriteLine(e.Node.FullPath);
+
+            string[] splits = e.Node.FullPath.Split(this.EditorTreeView.PathSeparator);
+
+            if (splits.Length > 2 && splits[2] == "All Textures")
+            {
+                this.openEditorToolStripMenuItem.Enabled = true;
+                this.ManageButtonAddNode(null);
+                this.ManageButtonRemoveNode(null);
+                this.ManageButtonCopyNode(null);
+                this.ManageButtonExportNode(null);
+                this.ManageButtonImportNode(null);
+                this.ManageButtonScriptNode(null);
+                this.ManageButtonMoveNode(null);
+                this.EditorPropertyGrid.SelectedObject = null;
+                this.EditorNodeInfo.Text = "Show textures from all TPKs";
+                return;
+            }
+
             var selected = Utils.GetReflective(e.Node.FullPath, this.EditorTreeView.PathSeparator, this.Profile);
 
             this.ManageButtonOpenEditor(selected);

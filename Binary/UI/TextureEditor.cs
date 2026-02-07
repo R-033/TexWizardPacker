@@ -36,9 +36,9 @@ namespace Binary.UI
 {
     public partial class TextureEditor : Form
     {
-        private TPKBlock TPK { get; }
+        private TPKBlock[] TPK { get; }
         private readonly List<Form> _openforms;
-        private readonly string _tpkpath;
+        private readonly string[] _tpkpath;
         public List<string> Commands { get; }
         private int _last_column_clicked = -1;
 
@@ -48,7 +48,9 @@ namespace Binary.UI
 
         private string searchQuery;
 
-        public TextureEditor(Editor parent, TPKBlock tpk, string path)
+        Timer changeDelayTimer = null;
+
+        public TextureEditor(Editor parent, TPKBlock[] tpk, string[] path)
         {
             this.editor = parent;
             this.InitializeComponent();
@@ -56,13 +58,22 @@ namespace Binary.UI
             this._tpkpath = path;
             this._openforms = new List<Form>();
             this.Commands = new List<string>();
-            this.Text = $"Texture Editor : {this.TPK.CollectionName}";
+            if (this.TPK.Length == 1)
+            {
+                this.Text = $"Texture Editor : {this.TPK[0].CollectionName}";
+            }
+            else
+            {
+                this.Text = $"Texture Editor : {this.TPK.Length} TPKs";
+            }
             this.TexEditorImage.BackColor = Color.FromArgb(0, 0, 0, 0);
             this.TexEditorImage.BorderStyle = BorderStyle.FixedSingle;
             this.TexEditorImage.Width = this.panel1.Width;
             this.TexEditorImage.Height = this.panel1.Height;
             this.TexEditorListView.Columns[^1].Width = -2;
             this.splitContainer2.SplitterDistance = Configurations.Default.TexSplitterDistance;
+            this.TexEditorAddTextureItem.Enabled = this.TPK.Length == 1;
+            this.TexEditorAddTextureFolderItem.Enabled = this.TPK.Length == 1;
             this.ToggleTheme();
             this.LoadListView();
             this.ToggleMenuStripControls();
@@ -184,7 +195,11 @@ namespace Binary.UI
         private void LoadListView()
         {
             this.TexEditorListView.Items.Clear();
-            var list = this.TPK.GetTextures();
+            List<Texture> list = new List<Texture>();
+            foreach (var tpk in this.TPK)
+            {
+                list.AddRange(tpk.GetTextures());
+            }
             this.TexEditorListView.BeginUpdate();
 
             bool doSearch = !string.IsNullOrEmpty(searchQuery);
@@ -312,6 +327,21 @@ namespace Binary.UI
             }
         }
 
+        private Texture FindTexture(uint key)
+        {
+            foreach (var tpk in this.TPK)
+            {
+                var tex = tpk.FindTexture(key, KeyType.BINKEY);
+
+                if (tex != null)
+                {
+                    return tex;
+                }
+            }
+
+            return null;
+        }
+
         private bool CopyAuxParams(string origName, string newName)
         {
             if (auxProfile == null)
@@ -323,7 +353,7 @@ namespace Binary.UI
 
             if (origTex != null)
             {
-                var newTex = this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY);
+                Texture newTex = this.FindTexture(newName.BinHash());
 
                 newTex.ClassKey = origTex.ClassKey;
                 newTex.MipmapBiasType = origTex.MipmapBiasType;
@@ -372,17 +402,17 @@ namespace Binary.UI
                     newName = textureName;
                 }
 
-                var prevTexture = this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY);
+                var prevTexture = this.FindTexture(newName.BinHash());
 
                 if (prevTexture != null)
                 {
                     prevTexture.Reload(filePath);
-                    this.GenerateReplaceTextureCommand(newName, filePath);
+                    this.GenerateReplaceTextureCommand(newName, filePath, 0);
                 }
                 else
                 {
-                    this.TPK.AddTexture(newName, filePath);
-                    this.GenerateAddTextureCommand(newName, filePath);
+                    this.TPK[0].AddTexture(newName, filePath);
+                    this.GenerateAddTextureCommand(newName, filePath, 0);
                 }
 
                 bool copied = false;
@@ -399,8 +429,8 @@ namespace Binary.UI
                         couldntFindThese.Add(textureName);
                     }
 
-                    this.TPK.FindTexture(newName.BinHash(), KeyType.BINKEY).RenderingOrder = 0;
-                    this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0");
+                    this.FindTexture(newName.BinHash()).RenderingOrder = 0;
+                    this.GenerateUpdateTextureCommand(newName, "RenderingOrder", "0", 0);
                 }
 
                 if (editor.IsTexturePack)
@@ -665,12 +695,31 @@ namespace Binary.UI
                 foreach (int index in arr)
                 {
                     var key = this.TexEditorListView.Items[index].SubItems[1].Text.BinHash();
-                    this.TPK.RemoveTexture(key, KeyType.BINKEY);
-                    this.GenerateRemoveTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}");
+                    var tpkIndex = 0;
+
+                    for (int i = 0; i < this.TPK.Length; i++)
+                    {
+                        var tpk = this.TPK[i];
+
+                        if (tpk.FindTexture(key, KeyType.BINKEY) != null)
+                        {
+                            tpk.RemoveTexture(key, KeyType.BINKEY);
+                            tpkIndex = i;
+                            break;
+                        }
+                    }
+                    this.GenerateRemoveTextureCommand($"0x{this.TexEditorListView.Items[index].SubItems[1].Text.BinHash():X8}", tpkIndex);
 
                     this.editor.Meta.DeleteTexture(key);
 
-                    if (this.TPK.TextureCount == 0)
+                    var totalTextureCount = 0;
+
+                    foreach (var tpk in this.TPK)
+                    {
+                        totalTextureCount += tpk.TextureCount;
+                    }
+
+                    if (totalTextureCount == 0)
                     {
                         this.LoadListView();
                         this.TexEditorPropertyGrid.SelectedObject = null;
@@ -713,7 +762,7 @@ namespace Binary.UI
                 foreach (int index in this.TexEditorListView.SelectedIndices)
                 {
                     var key = this.TexEditorListView.Items[index].SubItems[1].Text.BinHash();
-                    var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
+                    var texture = this.FindTexture(key);
                     var name = texture.BinKey == texture.CollectionName.BinHash() ? texture.CollectionName : $"0x{texture.BinKey:X8}";
 
                     this.editor.Meta.GetOrigName(key, ref name);
@@ -752,29 +801,33 @@ namespace Binary.UI
 
                     this.TexEditorListView.BeginUpdate();
 
-                    for (int i = 0; i < this.TPK.TextureCount; ++i)
+                    for (int j = 0; j < this.TPK.Length; j++)
                     {
+                        var tpk = this.TPK[j];
 
-                        var texture = this.TPK.Textures[i];
-                        var key = $"0x{texture.BinKey:X8}";
-                        var oname = texture.CollectionName;
-                        if (oname.Contains(' ')) oname = $"\"{oname}\"";
+                        for (int i = 0; i < tpk.TextureCount; ++i)
+                        {
+                            var texture = tpk.Textures[i];
+                            var key = $"0x{texture.BinKey:X8}";
+                            var oname = texture.CollectionName;
+                            if (oname.Contains(' ')) oname = $"\"{oname}\"";
 
-                        if (texture.BinKey != texture.CollectionName.BinHash()) continue;
-                        var cname = Regex.Replace(texture.CollectionName, input.Value, with.Value, options);
-                        if (cname == texture.CollectionName) continue;
+                            if (texture.BinKey != texture.CollectionName.BinHash()) continue;
+                            var cname = Regex.Replace(texture.CollectionName, input.Value, with.Value, options);
+                            if (cname == texture.CollectionName) continue;
 
-                        var origName = this.editor.Meta.GetOrigName(texture.CollectionName);
-                        var oldName = texture.CollectionName;
-                        var link = this.editor.Meta.GetLink(origName);
+                            var origName = this.editor.Meta.GetOrigName(texture.CollectionName);
+                            var oldName = texture.CollectionName;
+                            var link = this.editor.Meta.GetLink(origName);
 
-                        texture.CollectionName = cname;
+                            texture.CollectionName = cname;
 
-                        this.editor.Meta.ChangeTextureNewName(origName, oldName, cname, link);
+                            this.editor.Meta.ChangeTextureNewName(origName, oldName, cname, link);
 
-                        this.TexEditorListView.Items[i].SubItems[1].Text = cname;
+                            this.TexEditorListView.Items[i].SubItems[1].Text = cname;
 
-                        this.GenerateUpdateTextureCommand(oname, "CollectionName", cname);
+                            this.GenerateUpdateTextureCommand(oname, "CollectionName", cname, j);
+                        }
                     }
 
                     this.TexEditorListView.EndUpdate();
@@ -807,6 +860,22 @@ namespace Binary.UI
 
         private void TexEditorListView_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (this.changeDelayTimer == null)
+            {
+                this.changeDelayTimer = new Timer();
+                this.changeDelayTimer.Tick += this.ChangeDelayTimerTick;
+                this.changeDelayTimer.Interval = 200;
+            }
+            this.changeDelayTimer.Enabled = false;
+            this.changeDelayTimer.Enabled = true;
+        }
+
+        private void ChangeDelayTimerTick(object sender, EventArgs e)
+        {
+            this.changeDelayTimer.Enabled = false;
+            this.changeDelayTimer.Dispose();
+            this.changeDelayTimer = null;
+
             if (this.TexEditorListView.SelectedItems.Count == 0)
             {
                 previewItem = null;
@@ -829,7 +898,7 @@ namespace Binary.UI
 
             var key = previewItem.SubItems[1].Text.BinHash();
 
-            var texture = this.TPK.FindTexture(key, KeyType.BINKEY);
+            var texture = this.FindTexture(key);
 
             this.TexEditorPropertyGrid.SelectedObject = this.TexEditorListView.SelectedItems.Count == 1 ? texture : null;
 
@@ -938,37 +1007,55 @@ namespace Binary.UI
 
             }
 
+            TPKBlock tpk = null;
+
+            if (this.TPK.Length == 1)
+            {
+                tpk = this.TPK[0];
+            }
+            else
+            {
+                foreach (var tpk2 in this.TPK)
+                {
+                    if (tpk2.FindTexture(key, KeyType.BINKEY) != null)
+                    {
+                        tpk = tpk2;
+                        break;
+                    }
+                }
+            }
+
             switch (e.Column)
             {
                 case 1: // BinKey
-                    this.TPK.SortTexturesByType(false);
+                    tpk.SortTexturesByType(false);
 
                     if (this._last_column_clicked == 1)
                     {
 
-                        this.TPK.Textures.Reverse();
+                        tpk.Textures.Reverse();
                         this._last_column_clicked = -1;
 
                     }
                     else this._last_column_clicked = 1;
 
-                    if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
+                    if (index == 0) index = tpk.GetTextureIndex(key, KeyType.BINKEY);
                     this.LoadListView();
                     break;
 
                 case 2: // CollectionName
-                    this.TPK.SortTexturesByType(true);
+                    tpk.SortTexturesByType(true);
 
                     if (this._last_column_clicked == 2)
                     {
 
-                        this.TPK.Textures.Reverse();
+                        tpk.Textures.Reverse();
                         this._last_column_clicked = -1;
 
                     }
                     else this._last_column_clicked = 2;
 
-                    if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
+                    if (index == 0) index = tpk.GetTextureIndex(key, KeyType.BINKEY);
                     this.LoadListView();
                     break;
 
@@ -1006,7 +1093,20 @@ namespace Binary.UI
 
             }
 
-            this.GenerateUpdateTextureCommand(key, e.ChangedItem.Label, e.ChangedItem.Value.ToString());
+            int tpkIndex = 0;
+
+            if (this.TPK.Length > 1)
+            {
+                for (int i = 0; i < this.TPK.Length; i++)
+                {
+                    if (this.TPK[i].FindTexture(this.TexEditorListView.SelectedItems[0].SubItems[1].Text.BinHash(), KeyType.BINKEY) != null)
+                    {
+                        tpkIndex = i;
+                    }
+                }
+            }
+
+            this.GenerateUpdateTextureCommand(key, e.ChangedItem.Label, e.ChangedItem.Value.ToString(), tpkIndex);
         }
 
         private void TextureEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -1026,46 +1126,32 @@ namespace Binary.UI
 
         #region Commands
 
-        private void GenerateUpdateTextureCommand(string key, string property, string value)
+        private void GenerateUpdateTextureCommand(string key, string property, string value, int tpkIndex)
         {
             if (property.Contains(' ')) property = $"\"{property}\"";
             if (value.Contains(' ')) property = $"\"{value}\"";
-            var command = $"{eCommandType.update_texture} {this._tpkpath} {key} {property} {value}";
+            var command = $"{eCommandType.update_texture} {this._tpkpath[tpkIndex]} {key} {property} {value}";
             this.Commands.Add(command);
         }
 
-        private void GenerateAddTextureCommand(string name, string file)
+        private void GenerateAddTextureCommand(string name, string file, int tpkIndex)
         {
             if (name.Contains(' ')) name = $"\"{name}\"";
             if (file.Contains(' ')) file = $"\"{file}\"";
-            var command = $"{eCommandType.add_texture} {this._tpkpath} {name} {file}";
+            var command = $"{eCommandType.add_texture} {this._tpkpath[tpkIndex]} {name} {file}";
             this.Commands.Add(command);
         }
 
-        private void GenerateRemoveTextureCommand(string key)
+        private void GenerateRemoveTextureCommand(string key, int tpkIndex)
         {
-            var command = $"{eCommandType.remove_texture} {this._tpkpath} {key}";
+            var command = $"{eCommandType.remove_texture} {this._tpkpath[tpkIndex]} {key}";
             this.Commands.Add(command);
         }
 
-        private void GenerateCopyTextureCommand(string key, string name)
-        {
-            var command = $"{eCommandType.copy_texture} {this._tpkpath} {key} {name}";
-            this.Commands.Add(command);
-        }
-
-        private void GenerateReplaceTextureCommand(string key, string file)
+        private void GenerateReplaceTextureCommand(string key, string file, int tpkIndex)
         {
             if (file.Contains(' ')) file = $"\"{file}\"";
-            var command = $"{eCommandType.replace_texture} {this._tpkpath} {key} {file}";
-            this.Commands.Add(command);
-        }
-
-        private void GenerateBindTexturesCommand(SerializeType type, string directory)
-        {
-            string import = type.ToString().ToLowerInvariant();
-            if (directory.Contains(' ')) directory = $"\"{directory}\"";
-            var command = $"{eCommandType.bind_textures} {import} {this._tpkpath} {directory}";
+            var command = $"{eCommandType.replace_texture} {this._tpkpath[tpkIndex]} {key} {file}";
             this.Commands.Add(command);
         }
 
