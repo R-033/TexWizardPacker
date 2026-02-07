@@ -46,6 +46,8 @@ namespace Binary.UI
 
         private Editor editor;
 
+        private string searchQuery;
+
         public TextureEditor(Editor parent, TPKBlock tpk, string path)
         {
             this.editor = parent;
@@ -150,6 +152,9 @@ namespace Binary.UI
             this.applyOrigParamsButton.ForeColor = theme.Colors.ButtonForeColor;
             this.applyOrigParamsButton.FlatAppearance.BorderColor = theme.Colors.ButtonFlatColor;
 
+            this.EditorFindTextBox.BackColor = theme.Colors.TextBoxBackColor;
+            this.EditorFindTextBox.ForeColor = theme.Colors.TextBoxForeColor;
+
             // Highlight color
             this.HighlightColor = theme.DarkTheme
                 ? Color.FromArgb(70, 0, 20)
@@ -160,11 +165,33 @@ namespace Binary.UI
 
         #region Methods
 
-        private void LoadListView(int index = -1)
+        private void EditorFindTextBox_TextChanged(object sender, EventArgs e)
+        {
+            searchQuery = this.EditorFindTextBox.Text;
+
+            this.LoadListView();
+        }
+
+        /*private void ChangeSelection(int[] indices)
+        {
+            for (int i = 0; i < this.TexEditorListView.Items.Count; i++)
+            {
+                ListViewItem item = this.TexEditorListView.Items[i];
+                item.Selected = indices.Contains(i);
+                if (item.Selected)
+                {
+                    item.EnsureVisible();
+                }
+            }
+        }*/
+
+        private void LoadListView()
         {
             this.TexEditorListView.Items.Clear();
             var list = this.TPK.GetTextures();
             this.TexEditorListView.BeginUpdate();
+
+            bool doSearch = !string.IsNullOrEmpty(searchQuery);
 
             foreach (var texture in list)
             {
@@ -172,6 +199,14 @@ namespace Binary.UI
                 string newName = texture.BinKey != texture.CollectionName.BinHash() ? $"0x{texture.BinKey:X8}" : texture.CollectionName;
 
                 editor.Meta.GetBothNames(texture.BinKey, ref originalName, ref newName);
+
+                if (doSearch)
+                {
+                    if (!originalName.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase) && !newName.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+                }
 
                 var item = new ListViewItem
                 {
@@ -185,13 +220,6 @@ namespace Binary.UI
             }
 
             this.TexEditorListView.EndUpdate();
-
-            if (index < 0 || index >= this.TexEditorListView.Items.Count) return;
-
-            this.TexEditorListView.Items[index].Selected = true;
-            this.TexEditorListView.Select();
-            this.TexEditorListView.HideSelection = false;
-            this.TexEditorListView.Items[index].EnsureVisible();
         }
 
         private void ToggleMenuStripControls()
@@ -472,14 +500,7 @@ namespace Binary.UI
                         this.ImportTexture(Path.GetFileNameWithoutExtension(fileName), fileName, fileSourceFile, copyParams, couldntFindThese);
                     }
 
-                    if (this.TexEditorListView.SelectedIndices.Count > 0)
-                    {
-                        this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-                    }
-                    else
-                    {
-                        this.LoadListView();
-                    }
+                    this.LoadListView();
 
                     if (couldntFindThese.Count > 0)
                     {
@@ -522,14 +543,7 @@ namespace Binary.UI
 
                     this.ImportTexture(input.Value, textures[0], input.SourceFile, input.CopyParams, couldntFindThese);
 
-                    if (this.TexEditorListView.SelectedIndices.Count > 0)
-                    {
-                        this.LoadListView(this.TexEditorListView.SelectedIndices[0]);
-                    }
-                    else
-                    {
-                        this.LoadListView();
-                    }
+                    this.LoadListView();
 
                     if (couldntFindThese.Count > 0)
                     {
@@ -670,8 +684,7 @@ namespace Binary.UI
                     }
                 }
 
-                if (this.TexEditorListView.SelectedIndices[0] == 0) this.LoadListView(0);
-                else this.LoadListView(this.TexEditorListView.SelectedIndices[0] - 1);
+                this.LoadListView();
 
             }
             catch (Exception ex)
@@ -948,7 +961,7 @@ namespace Binary.UI
                     else this._last_column_clicked = 1;
 
                     if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
-                    this.LoadListView(index);
+                    this.LoadListView();
                     break;
 
                 case 2: // CollectionName
@@ -964,7 +977,7 @@ namespace Binary.UI
                     else this._last_column_clicked = 2;
 
                     if (index == 0) index = this.TPK.GetTextureIndex(key, KeyType.BINKEY);
-                    this.LoadListView(index);
+                    this.LoadListView();
                     break;
 
                 default:

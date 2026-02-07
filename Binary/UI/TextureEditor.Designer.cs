@@ -60,6 +60,7 @@ namespace Binary.UI
             this.AddTextureDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportTextureDialog = new System.Windows.Forms.SaveFileDialog();
             this.AddTextureFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.EditorFindTextBox = new System.Windows.Forms.TextBox();
             this.TexEditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -193,6 +194,7 @@ namespace Binary.UI
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.EditorFindTextBox);
             this.splitContainer1.Panel1.Controls.Add(this.TexEditorListView);
             this.splitContainer1.Panel1MinSize = 300;
             // 
@@ -211,11 +213,11 @@ namespace Binary.UI
             this.TexEditorListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.TexEditorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.ColumnOriginalName, this.ColumnNewName });
             this.TexEditorListView.FullRowSelect = true;
-            this.TexEditorListView.Location = new System.Drawing.Point(12, 3);
+            this.TexEditorListView.Location = new System.Drawing.Point(12, 39);
             this.TexEditorListView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorListView.Name = "TexEditorListView";
             this.TexEditorListView.OwnerDraw = true;
-            this.TexEditorListView.Size = new System.Drawing.Size(514, 588);
+            this.TexEditorListView.Size = new System.Drawing.Size(514, 552);
             this.TexEditorListView.TabIndex = 0;
             this.TexEditorListView.UseCompatibleStateImageBehavior = false;
             this.TexEditorListView.View = System.Windows.Forms.View.Details;
@@ -268,17 +270,17 @@ namespace Binary.UI
             // 
             this.TexEditorPropertyGrid.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.TexEditorPropertyGrid.HelpVisible = false;
-            this.TexEditorPropertyGrid.Location = new System.Drawing.Point(4, 34);
+            this.TexEditorPropertyGrid.Location = new System.Drawing.Point(4, 39);
             this.TexEditorPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TexEditorPropertyGrid.Name = "TexEditorPropertyGrid";
-            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(594, 363);
+            this.TexEditorPropertyGrid.Size = new System.Drawing.Size(594, 358);
             this.TexEditorPropertyGrid.TabIndex = 0;
             this.TexEditorPropertyGrid.PropertyValueChanged += this.TexEditorPropertyGrid_PropertyValueChanged;
             // 
             // originalNameText
             // 
             this.originalNameText.Enabled = false;
-            this.originalNameText.Location = new System.Drawing.Point(64, 5);
+            this.originalNameText.Location = new System.Drawing.Point(65, 10);
             this.originalNameText.Name = "originalNameText";
             this.originalNameText.Size = new System.Drawing.Size(263, 23);
             this.originalNameText.TabIndex = 3;
@@ -287,7 +289,7 @@ namespace Binary.UI
             // openOrigFileButton
             // 
             this.openOrigFileButton.Enabled = false;
-            this.openOrigFileButton.Location = new System.Drawing.Point(512, 3);
+            this.openOrigFileButton.Location = new System.Drawing.Point(513, 8);
             this.openOrigFileButton.Name = "openOrigFileButton";
             this.openOrigFileButton.Size = new System.Drawing.Size(28, 27);
             this.openOrigFileButton.TabIndex = 6;
@@ -298,7 +300,7 @@ namespace Binary.UI
             // applyOrigParamsButton
             // 
             this.applyOrigParamsButton.Enabled = false;
-            this.applyOrigParamsButton.Location = new System.Drawing.Point(546, 3);
+            this.applyOrigParamsButton.Location = new System.Drawing.Point(547, 8);
             this.applyOrigParamsButton.Name = "applyOrigParamsButton";
             this.applyOrigParamsButton.Size = new System.Drawing.Size(52, 27);
             this.applyOrigParamsButton.TabIndex = 5;
@@ -309,7 +311,7 @@ namespace Binary.UI
             // fromFileText
             // 
             this.fromFileText.Enabled = false;
-            this.fromFileText.Location = new System.Drawing.Point(377, 5);
+            this.fromFileText.Location = new System.Drawing.Point(378, 10);
             this.fromFileText.Name = "fromFileText";
             this.fromFileText.Size = new System.Drawing.Size(129, 23);
             this.fromFileText.TabIndex = 4;
@@ -319,7 +321,7 @@ namespace Binary.UI
             // 
             this.originalNameEditLabel.AutoSize = true;
             this.originalNameEditLabel.Enabled = false;
-            this.originalNameEditLabel.Location = new System.Drawing.Point(6, 9);
+            this.originalNameEditLabel.Location = new System.Drawing.Point(7, 14);
             this.originalNameEditLabel.Name = "originalNameEditLabel";
             this.originalNameEditLabel.Size = new System.Drawing.Size(52, 15);
             this.originalNameEditLabel.TabIndex = 1;
@@ -329,7 +331,7 @@ namespace Binary.UI
             // 
             this.fromFileEditLabel.AutoSize = true;
             this.fromFileEditLabel.Enabled = false;
-            this.fromFileEditLabel.Location = new System.Drawing.Point(333, 9);
+            this.fromFileEditLabel.Location = new System.Drawing.Point(334, 14);
             this.fromFileEditLabel.Name = "fromFileEditLabel";
             this.fromFileEditLabel.Size = new System.Drawing.Size(38, 15);
             this.fromFileEditLabel.TabIndex = 2;
@@ -342,7 +344,7 @@ namespace Binary.UI
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(592, 181);
+            this.panel1.Size = new System.Drawing.Size(592, 180);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -360,6 +362,19 @@ namespace Binary.UI
             // 
             this.AddTextureDialog.Filter = "Direct Draw Surface Files|*.dds";
             this.AddTextureDialog.Multiselect = true;
+            // 
+            // EditorFindTextBox
+            // 
+            this.EditorFindTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.EditorFindTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.EditorFindTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.EditorFindTextBox.Location = new System.Drawing.Point(12, 9);
+            this.EditorFindTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.EditorFindTextBox.Name = "EditorFindTextBox";
+            this.EditorFindTextBox.PlaceholderText = "Search";
+            this.EditorFindTextBox.Size = new System.Drawing.Size(513, 24);
+            this.EditorFindTextBox.TabIndex = 1;
+            this.EditorFindTextBox.TextChanged += this.EditorFindTextBox_TextChanged;
             // 
             // TextureEditor
             // 
@@ -380,6 +395,7 @@ namespace Binary.UI
             this.TexEditorMenuStrip.ResumeLayout(false);
             this.TexEditorMenuStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -427,5 +443,6 @@ namespace Binary.UI
         private System.Windows.Forms.TextBox originalNameText;
         private System.Windows.Forms.Button openOrigFileButton;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+        private System.Windows.Forms.TextBox EditorFindTextBox;
     }
 }
