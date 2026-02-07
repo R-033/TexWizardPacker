@@ -54,8 +54,8 @@
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.openFileButton = new System.Windows.Forms.Button();
             this.fileTreeView = new System.Windows.Forms.TreeView();
+            this.openFileButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxUpdates).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTools).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.PictureBoxTheme).BeginInit();
@@ -186,7 +186,9 @@
             // 
             // gameDirPath
             // 
+            this.gameDirPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.gameDirPath.Location = new System.Drawing.Point(241, 89);
+            this.gameDirPath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gameDirPath.Name = "gameDirPath";
             this.gameDirPath.Size = new System.Drawing.Size(304, 23);
             this.gameDirPath.TabIndex = 8;
@@ -291,6 +293,15 @@
             this.tabPage2.Text = "Files";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // fileTreeView
+            // 
+            this.fileTreeView.Location = new System.Drawing.Point(0, 0);
+            this.fileTreeView.Name = "fileTreeView";
+            this.fileTreeView.Size = new System.Drawing.Size(602, 362);
+            this.fileTreeView.TabIndex = 8;
+            this.fileTreeView.AfterSelect += this.fileTreeView_AfterSelect;
+            this.fileTreeView.NodeMouseDoubleClick += this.fileTreeView_NodeMouseDoubleClick;
+            // 
             // openFileButton
             // 
             this.openFileButton.Enabled = false;
@@ -301,15 +312,6 @@
             this.openFileButton.Text = "Open File";
             this.openFileButton.UseVisualStyleBackColor = true;
             this.openFileButton.Click += this.openFileButton_Click;
-            // 
-            // fileTreeView
-            // 
-            this.fileTreeView.Location = new System.Drawing.Point(0, 0);
-            this.fileTreeView.Name = "fileTreeView";
-            this.fileTreeView.Size = new System.Drawing.Size(602, 362);
-            this.fileTreeView.TabIndex = 8;
-            this.fileTreeView.AfterSelect += fileTreeView_AfterSelect;
-            this.fileTreeView.NodeMouseDoubleClick += fileTreeView_NodeMouseDoubleClick;
             // 
             // IntroUI
             // 

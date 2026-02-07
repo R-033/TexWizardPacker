@@ -134,12 +134,8 @@ namespace Binary.UI
             this.TexEditorRemoveTextureItem.BackColor = theme.Colors.MenuItemBackColor;
             this.TexEditorRemoveTextureItem.ForeColor = theme.Colors.MenuItemForeColor;
 
-            this.originalNameEditLabel.ForeColor = theme.Colors.LabelTextColor;
-
             this.originalNameText.BackColor = theme.Colors.TextBoxBackColor;
             this.originalNameText.ForeColor = theme.Colors.TextBoxForeColor;
-
-            this.fromFileEditLabel.ForeColor = theme.Colors.LabelTextColor;
 
             this.fromFileText.BackColor = theme.Colors.TextBoxBackColor;
             this.fromFileText.ForeColor = theme.Colors.TextBoxForeColor;
@@ -820,10 +816,8 @@ namespace Binary.UI
                 this.TexEditorImage.Width = this.panel1.Width;
                 this.TexEditorImage.Height = this.panel1.Height;
                 this.ToggleMenuStripControls();
-                this.originalNameEditLabel.Enabled = false;
                 this.originalNameText.Enabled = false;
                 this.originalNameText.Text = "";
-                this.fromFileEditLabel.Enabled = false;
                 this.fromFileText.Enabled = false;
                 this.fromFileText.Text = "";
                 this.openOrigFileButton.Enabled = false;
@@ -896,11 +890,9 @@ namespace Binary.UI
                 }
             }
 
-            this.originalNameEditLabel.Enabled = this.editor.IsTexturePack && this.TexEditorListView.SelectedItems.Count == 1;
             this.originalNameText.Enabled = this.editor.IsTexturePack && this.TexEditorListView.SelectedItems.Count == 1;
             this.originalNameText.Text = origName;
 
-            this.fromFileEditLabel.Enabled = this.editor.IsTexturePack;
             this.fromFileText.Enabled = this.editor.IsTexturePack;
             this.fromFileText.Text = link;
 

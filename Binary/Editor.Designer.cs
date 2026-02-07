@@ -106,6 +106,7 @@ namespace Binary
             // 
             // EditorMenuStrip
             // 
+            this.EditorMenuStrip.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.EditorMenuStrip.ImageMarginGradientBegin = System.Drawing.Color.Maroon;
             this.EditorMenuStrip.ImageMarginGradientEnd = System.Drawing.Color.WhiteSmoke;
             this.EditorMenuStrip.ImageMarginGradientMiddle = System.Drawing.Color.WhiteSmoke;
@@ -400,7 +401,6 @@ namespace Binary
             // 
             this.EditorFindTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.EditorFindTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditorFindTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.EditorFindTextBox.Location = new System.Drawing.Point(3, 6);
             this.EditorFindTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.EditorFindTextBox.Name = "EditorFindTextBox";
