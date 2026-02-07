@@ -226,7 +226,8 @@ namespace Binary.UI
                     {
                         if (!originalName.Contains(searchTokens[i], StringComparison.InvariantCultureIgnoreCase) && !newName.Contains(searchTokens[i], StringComparison.InvariantCultureIgnoreCase))
                         {
-                            continue;
+                            fits = false;
+                            break;
                         }
                     }
 
