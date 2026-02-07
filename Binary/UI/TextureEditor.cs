@@ -136,6 +136,8 @@ namespace Binary.UI
             this.TexEditorExportAllItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.TexEditorFindReplaceItem.BackColor = theme.Colors.MenuItemBackColor;
             this.TexEditorFindReplaceItem.ForeColor = theme.Colors.MenuItemForeColor;
+            this.TexEditorFindReplaceItem2.BackColor = theme.Colors.MenuItemBackColor;
+            this.TexEditorFindReplaceItem2.ForeColor = theme.Colors.MenuItemForeColor;
             this.selectAllToolStripMenuItem.BackColor = theme.Colors.MenuItemBackColor;
             this.selectAllToolStripMenuItem.ForeColor = theme.Colors.MenuItemForeColor;
             this.TexEditorHasherItem.BackColor = theme.Colors.MenuItemBackColor;
@@ -203,6 +205,11 @@ namespace Binary.UI
             this.TexEditorListView.BeginUpdate();
 
             bool doSearch = !string.IsNullOrEmpty(searchQuery);
+            string[] searchTokens = null;
+            if (doSearch)
+            {
+                searchTokens = searchQuery.Split(' ');
+            }
 
             foreach (var texture in list)
             {
@@ -213,7 +220,17 @@ namespace Binary.UI
 
                 if (doSearch)
                 {
-                    if (!originalName.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase) && !newName.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                    bool fits = true;
+
+                    for (int i = 0; i < searchTokens.Length; i++)
+                    {
+                        if (!originalName.Contains(searchTokens[i], StringComparison.InvariantCultureIgnoreCase) && !newName.Contains(searchTokens[i], StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!fits)
                     {
                         continue;
                     }
@@ -816,7 +833,7 @@ namespace Binary.UI
                             var cname = Regex.Replace(texture.CollectionName, input.Value, with.Value, options);
                             if (cname == texture.CollectionName) continue;
 
-                            var origName = this.editor.Meta.GetOrigName(texture.CollectionName);
+                            var origName = this.editor.Meta.GetOrigName(texture.BinKey);
                             var oldName = texture.CollectionName;
                             var link = this.editor.Meta.GetLink(origName);
 
@@ -827,6 +844,63 @@ namespace Binary.UI
                             this.TexEditorListView.Items[i].SubItems[1].Text = cname;
 
                             this.GenerateUpdateTextureCommand(oname, "CollectionName", cname, j);
+                        }
+                    }
+
+                    this.TexEditorListView.EndUpdate();
+                    this.TexEditorPropertyGrid.Refresh();
+
+                }
+
+            }
+        }
+
+        private void TexEditorFindReplaceItem2_Click(object sender, EventArgs e)
+        {
+            if (this.TexEditorListView.Items.Count == 0) return;
+
+            using var with = new Input("Enter string to replace with");
+            using var input = new Input("Enter string to search for",
+                                        new Predicate<string>(_ => !String.IsNullOrEmpty(_)),
+                                        "Input string cannot be null or empty");
+
+            if (input.ShowDialog() == DialogResult.OK && with.ShowDialog() == DialogResult.OK)
+            {
+
+                using var check = new Check("Make case-sensitive replace?", false);
+
+                if (check.ShowDialog() == DialogResult.OK)
+                {
+
+                    var options = check.Value
+                        ? RegexOptions.Multiline | RegexOptions.CultureInvariant
+                        : RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
+
+                    this.TexEditorListView.BeginUpdate();
+
+                    for (int j = 0; j < this.TPK.Length; j++)
+                    {
+                        var tpk = this.TPK[j];
+
+                        for (int i = 0; i < tpk.TextureCount; ++i)
+                        {
+                            var texture = tpk.Textures[i];
+                            var key = $"0x{texture.BinKey:X8}";
+                            var oname = this.editor.Meta.GetOrigName(texture.BinKey);
+                            if (oname.Contains(' ')) oname = $"\"{oname}\"";
+
+                            var cname = Regex.Replace(this.editor.Meta.GetOrigName(texture.BinKey), input.Value, with.Value, options);
+                            if (cname == this.editor.Meta.GetOrigName(texture.BinKey)) continue;
+
+                            var origName = this.editor.Meta.GetOrigName(texture.BinKey);
+                            var newName = texture.CollectionName;
+                            var link = this.editor.Meta.GetLink(origName);
+
+                            texture.CollectionName = cname;
+
+                            this.editor.Meta.ChangeTextureOrigName(cname, newName, link);
+
+                            this.TexEditorListView.Items[i].SubItems[0].Text = cname;
                         }
                     }
 

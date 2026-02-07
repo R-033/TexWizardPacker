@@ -38574,3 +38574,6 @@ Tree Leaves
 Barrier Mask
 Tree Cards
 MultiPass Blend
+Bloom Alpha Mask
+Terrain Shadow
+Cubic Environment Map

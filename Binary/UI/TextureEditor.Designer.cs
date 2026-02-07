@@ -59,6 +59,7 @@ namespace Binary.UI
             this.AddTextureDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportTextureDialog = new System.Windows.Forms.SaveFileDialog();
             this.AddTextureFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.TexEditorFindReplaceItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.TexEditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -129,7 +130,7 @@ namespace Binary.UI
             // 
             // TexEditorOptionsStrip
             // 
-            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorFindReplaceItem, this.selectAllToolStripMenuItem });
+            this.TexEditorOptionsStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.TexEditorExportAllItem, this.TexEditorFindReplaceItem, this.TexEditorFindReplaceItem2, this.selectAllToolStripMenuItem });
             this.TexEditorOptionsStrip.Name = "TexEditorOptionsStrip";
             this.TexEditorOptionsStrip.Size = new System.Drawing.Size(61, 20);
             this.TexEditorOptionsStrip.Text = "Options";
@@ -338,7 +339,7 @@ namespace Binary.UI
             this.panel1.Controls.Add(this.TexEditorImage);
             this.panel1.Location = new System.Drawing.Point(6, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(592, 177);
+            this.panel1.Size = new System.Drawing.Size(592, 176);
             this.panel1.TabIndex = 1;
             // 
             // TexEditorImage
@@ -356,6 +357,13 @@ namespace Binary.UI
             // 
             this.AddTextureDialog.Filter = "Direct Draw Surface Files|*.dds";
             this.AddTextureDialog.Multiselect = true;
+            // 
+            // TexEditorFindReplaceItem2
+            // 
+            this.TexEditorFindReplaceItem2.Name = "TexEditorFindReplaceItem2";
+            this.TexEditorFindReplaceItem2.Size = new System.Drawing.Size(239, 22);
+            this.TexEditorFindReplaceItem2.Text = "Find And Replace (Orig.)";
+            this.TexEditorFindReplaceItem2.Click += this.TexEditorFindReplaceItem2_Click;
             // 
             // TextureEditor
             // 
@@ -423,5 +431,6 @@ namespace Binary.UI
         private System.Windows.Forms.Button openOrigFileButton;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.TextBox EditorFindTextBox;
+        private System.Windows.Forms.ToolStripMenuItem TexEditorFindReplaceItem2;
     }
 }
