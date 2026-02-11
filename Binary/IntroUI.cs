@@ -346,6 +346,7 @@ namespace Binary
             this.openFileButton.Enabled = false;
 
             this.packList.Items.Clear();
+            this.fileTreeView.Nodes.Clear();
 
             string gamePath = this.gameDirPath.Text;
 
@@ -360,6 +361,8 @@ namespace Binary
                 this.packList.Items.Add("Invalid directory. Please make sure it's correct.");
                 return;
             }
+
+            this.FillTreeView(gamePath, new string[] { ".bun", ".bin", ".lzc" });
 
             if (!File.Exists(Path.Combine(gamePath, "scripts", "TexWizard.asi")))
             {
@@ -402,8 +405,6 @@ namespace Binary
             {
                 this.packList.SelectedIndex = 0;
             }
-
-            this.FillTreeView(gamePath, new string[] { ".bun", ".bin", ".lzc" });
         }
 
         private void FillTreeView(string rootPath, string[] extensions)
