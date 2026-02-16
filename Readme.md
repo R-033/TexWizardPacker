@@ -13,4 +13,4 @@ TexWizard Packer is a fork of [Binarius v2.10.4](https://github.com/nlgxzef/Bina
 - Easier way to open individual files, just like NFS-TexEd
 
 ## How to Use
-Check out [TexWizard Wiki Page](https://github.com/R-033/texwizard/wiki) for usage.
+Check out [TexWizard Wiki Page](https://github.com/R-033/texwizard/wiki/Using-TexWizard-Packer) for usage.
